@@ -1,0 +1,26 @@
+{
+  "vi": {
+    "hello": "Xin chào!",
+    "welcome": "Chào mừng bạn đến với ZenT",
+    "change_language": "Đổi ngôn ngữ",
+    "error": "Đã xảy ra lỗi!",
+    "settings": "Cài đặt",
+    "dark_mode": "Chế độ tối",
+    "light_mode": "Chế độ sáng",
+    "logout": "Đăng xuất",
+    "profile": "Hồ sơ",
+    "home": "Trang chủ"
+  },
+  "en": {
+    "hello": "Hello!",
+    "welcome": "Welcome to ZenT",
+    "change_language": "Change Language",
+    "error": "An error occurred!",
+    "settings": "Settings",
+    "dark_mode": "Dark Mode",
+    "light_mode": "Light Mode",
+    "logout": "Logout",
+    "profile": "Profile",
+    "home": "Home"
+  }
+}

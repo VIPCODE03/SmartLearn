@@ -1,0 +1,2 @@
+C:/Users/daonh/AndroidStudioProjects/smart_learn/android/app/.cxx/Debug/f6yc2z1e/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/daonh/AndroidStudioProjects/smart_learn/android/app/.cxx/Debug/f6yc2z1e/x86_64/CMakeFiles/rebuild_cache.dir

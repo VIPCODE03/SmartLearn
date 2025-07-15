@@ -1,4 +1,3 @@
-
 import 'package:performer/main.dart';
 import 'package:smart_learn/data/models/quiz/c_quiz_result.dart';
 import 'package:smart_learn/performers/data_state/quiz_state.dart';
@@ -10,7 +9,7 @@ class StartQuiz extends ActionUnit<QuizState> {
 
   @override
   Stream<QuizState> execute(QuizState current) async* {
-    yield QuizStateProgress(quizs: quizs, userAnswers: const {}, isCompleted: false);
+    yield QuizStateProgress(quizs: quizs..shuffle(), userAnswers: const {}, isCompleted: false);
   }
 }
 

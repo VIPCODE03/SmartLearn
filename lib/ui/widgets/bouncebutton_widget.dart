@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BounceButton extends StatefulWidget {
+class WdgBounceButton extends StatefulWidget {
   final Widget child;
   final VoidCallback onTap;
   final Duration duration;
@@ -9,7 +9,7 @@ class BounceButton extends StatefulWidget {
   final Function(DragUpdateDetails)? onPanUpdate;
   final Function(DragEndDetails)? onPanEnd;
 
-  const BounceButton({
+  const WdgBounceButton({
     super.key,
     required this.child,
     required this.onTap,
@@ -21,10 +21,10 @@ class BounceButton extends StatefulWidget {
   });
 
   @override
-  State<BounceButton> createState() => _BounceButtonState();
+  State<WdgBounceButton> createState() => _WdgBounceButtonState();
 }
 
-class _BounceButtonState extends State<BounceButton> {
+class _WdgBounceButtonState extends State<WdgBounceButton> {
   double _scale = 1.0;
 
   void _onTapDown(TapDownDetails details) {

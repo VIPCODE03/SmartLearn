@@ -18,7 +18,7 @@ class Subject {
     required this.exercisesScores,
   });
 
-  double average() {
+  double get averageCore {
     double average = 0;
     int count = 0;
     int limit = exercisesScores.length;

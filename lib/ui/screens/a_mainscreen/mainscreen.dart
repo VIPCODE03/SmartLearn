@@ -1,9 +1,10 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/screens/a_mainscreen/pages/1_ai/a_ai_page.dart';
+import 'package:smart_learn/ui/screens/a_mainscreen/pages/1_home/a_home_page.dart';
 import 'package:smart_learn/ui/screens/a_mainscreen/pages/2_subject/a_subject_page.dart';
-import 'package:smart_learn/ui/screens/a_mainscreen/pages/2_subject/a_subjects.dart';
+import 'package:smart_learn/ui/screens/a_mainscreen/pages/3_schedule/a_schedule.dart';
+import 'package:smart_learn/ui/screens/a_mainscreen/pages/4_profile/a_profile.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,10 +17,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selected = 0;
 
   final List<Widget> _pages = [
-    const AIPage(),
+    const HomePage(),
     const SubjectPage(),
+    const SchedulePage(),
     const PS(),
-    const Center(child: Text('Hồ sơ', style: TextStyle(fontSize: 24))),
   ];
 
   @override

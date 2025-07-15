@@ -38,7 +38,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_math_fork: ^0.7.3
+  flutter_tex: ^5.1.8
   convex_bottom_bar: ^3.2.0
   flutter_bloc: ^9.1.0
   image_picker: ^1.1.2
@@ -48,28 +48,37 @@ dependencies:
   crop_your_image: ^2.0.0
   image_editor: ^1.6.0
   custom_image_crop: ^0.1.1
-  google_generative_ai: ^0.4.6
-  equatable: ^2.0.5
   async: ^2.10.0
   flutter_drawing_board: ^0.9.8
-  flutter_quill: ^11.2.0
+  flutter_quill: ^11.2.0 #thư viện nhập kí tự
   file_picker: ^10.1.2
   open_filex: ^4.7.0
   path: ^1.9.1
-  ulid: ^2.0.1
+  ulid: ^2.0.1 #thư viện id ngẫu nhiên
   flutter_expandable_fab: ^2.5.0
   star_menu: ^4.0.1
   flutter_awesome_calculator: ^1.0.0+1
+  intl: ^0.19.0 #thư viện định dạng thời gian
+  fl_chart: ^1.0.0 #thư viện biểu đồ
+  home_widget: ^0.8.0
+  app_links: ^6.4.0
+  flutter_tts: ^4.2.3
+  week_of_year: ^2.2.0
+
+#-----------------------------
+  dartz: ^0.10.1
+  equatable: ^2.0.7
+  get_it: ^8.0.3
 
   zent_gemini:
     git:
       url: https://github.com/VIPCODE03/GeminiAI.git
-      ref: main # hoặc develop, hoặc tên branch khác
+      ref: main
 
   performer:
     git:
       url: https://github.com/VIPCODE03/Performer.git
-      ref: master # hoặc develop, hoặc tên branch khác
+      ref: master
 
 dev_dependencies:
   flutter_test:

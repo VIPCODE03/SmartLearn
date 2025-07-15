@@ -3,11 +3,13 @@ abstract class AppFile {
   final String id;
   String name;
   String? pathId;
+  final DateTime dateCreated;
 
   AppFile({
     required this.id,
     required this.name,
-    required this.pathId
+    required this.pathId,
+    required this.dateCreated,
   });
 
   Map<String, dynamic> toJson();
@@ -31,7 +33,7 @@ abstract class AppFile {
 }
 
 class AppFileFolder extends AppFile {
-  AppFileFolder({required super.id, required super.name, required super.pathId});
+  AppFileFolder({required super.id, required super.name, required super.pathId, required super.dateCreated, });
 
   @override
   Map<String, dynamic> toJson() => {
@@ -39,19 +41,21 @@ class AppFileFolder extends AppFile {
     'id': id,
     'name': name,
     'pathId': pathId,
+    'dateCreated': dateCreated.toIso8601String(),
   };
 
   factory AppFileFolder.fromJson(Map<String, dynamic> json) => AppFileFolder(
     id: json['id'],
     name: json['name'],
     pathId: json['pathId'],
+    dateCreated: DateTime.parse(json['dateCreated'] as String),
   );
 }
 
 class AppFileTxt extends AppFile {
   String content;
 
-  AppFileTxt({required super.id, required super.name, required super.pathId, required this.content});
+  AppFileTxt({required super.id, required super.name, required super.pathId, required this.content, required super.dateCreated});
 
   @override
   Map<String, dynamic> toJson() => {
@@ -60,6 +64,7 @@ class AppFileTxt extends AppFile {
     'name': name,
     'pathId': pathId,
     'content': content,
+    'dateCreated': dateCreated.toIso8601String(),
   };
 
   factory AppFileTxt.fromJson(Map<String, dynamic> json) => AppFileTxt(
@@ -67,13 +72,14 @@ class AppFileTxt extends AppFile {
     name: json['name'],
     pathId: json['pathId'],
     content: json['content'],
+    dateCreated: DateTime.parse(json['dateCreated'] as String),
   );
 }
 
 class AppFileDraw extends AppFile {
   String json;
 
-  AppFileDraw({required super.id, required super.name, required super.pathId, required this.json});
+  AppFileDraw({required super.id, required super.name, required super.pathId, required this.json, required super.dateCreated});
 
   @override
   Map<String, dynamic> toJson() => {
@@ -82,6 +88,7 @@ class AppFileDraw extends AppFile {
     'name': name,
     'pathId': pathId,
     'json': json,
+    'dateCreated': dateCreated.toIso8601String(),
   };
 
   factory AppFileDraw.fromJson(Map<String, dynamic> json) => AppFileDraw(
@@ -89,13 +96,14 @@ class AppFileDraw extends AppFile {
     name: json['name'],
     pathId: json['pathId'],
     json: json['json'],
+    dateCreated: DateTime.parse(json['dateCreated'] as String),
   );
 }
 
 class AppFileQuiz extends AppFile {
   String? json;
 
-  AppFileQuiz({required super.id, required super.name, required super.pathId, this.json});
+  AppFileQuiz({required super.id, required super.name, required super.pathId, this.json, required super.dateCreated});
 
   @override
   Map<String, dynamic> toJson() => {
@@ -104,6 +112,7 @@ class AppFileQuiz extends AppFile {
     'name': name,
     'pathId': pathId,
     'json': json,
+    'dateCreated': dateCreated.toIso8601String(),
   };
 
   factory AppFileQuiz.fromJson(Map<String, dynamic> json) => AppFileQuiz(
@@ -111,13 +120,14 @@ class AppFileQuiz extends AppFile {
     name: json['name'],
     pathId: json['pathId'],
     json: json['json'],
+    dateCreated: DateTime.parse(json['dateCreated'] as String),
   );
 }
 
 class AppFileSystem extends AppFile {
   String filePath;
 
-  AppFileSystem({required super.id, required super.name, required super.pathId, required this.filePath});
+  AppFileSystem({required super.id, required super.name, required super.pathId, required this.filePath, required super.dateCreated});
 
   @override
   Map<String, dynamic> toJson() => {
@@ -126,6 +136,7 @@ class AppFileSystem extends AppFile {
     'name': name,
     'pathId': pathId,
     'filePath': filePath,
+    'dateCreated': dateCreated.toIso8601String(),
   };
 
   factory AppFileSystem.fromJson(Map<String, dynamic> json) => AppFileSystem(
@@ -133,5 +144,6 @@ class AppFileSystem extends AppFile {
     name: json['name'],
     pathId: json['pathId'],
     filePath: json['filePath'],
+    dateCreated: DateTime.parse(json['dateCreated'] as String),
   );
 }

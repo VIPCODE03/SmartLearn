@@ -1,24 +1,40 @@
-
 import 'package:performer/performer.dart';
 
-class GeminiState extends DataState {
-  final String answers;
-  final GemState state;
-
-  const GeminiState(this.answers, this.state);
-
-  GeminiState copyWith({
-    String? answers,
-    GemState? state,
-  }) {
-    return GeminiState(
-      answers ?? this.answers,
-      state ?? this.state,
-    );
-  }
+abstract class GeminiState extends DataState {
+  const GeminiState();
 
   @override
-  List<Object?> get props => [answers, state];
+  List<Object?> get props => [];
 }
 
-enum GemState {none, progress, done, error}
+class GeminiInitialState extends GeminiState {
+  const GeminiInitialState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class GeminiProgressState extends GeminiState {
+  const GeminiProgressState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class GeminiDoneState extends GeminiState {
+  final String answers;
+
+  const GeminiDoneState(this.answers);
+
+  @override
+  List<Object?> get props => [answers];
+}
+
+class GeminiErrorState extends GeminiState {
+  final String? message;
+
+  const GeminiErrorState([this.message]);
+
+  @override
+  List<Object?> get props => [message];
+}

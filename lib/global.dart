@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:smart_learn/services/floating_bubble_service.dart';
 import 'package:smart_learn/ui/dialogs/bubble_funs_dialog.dart';
 import 'package:smart_learn/ui/widgets/item_widget.dart';
-import 'package:smart_learn/ui/widgets/translate_widget.dart';
 import 'package:star_menu/star_menu.dart';
-
 import 'languages/a_global_language.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 late GlobalLanguage globalLanguage;
 
 Color primaryColor(BuildContext context) => Theme.of(context).primaryColor;
 
+//---   Chuyển màn hình   ----------------------------------------------------
 void navigateToNextScreen(
     BuildContext context,
     Widget nextScreen, {
@@ -38,24 +36,18 @@ async {
     },
   ));
 
-  // 📝 Sau khi màn hình được pop và có kết quả (nếu có), gọi callback.
   if (onScreenPop != null) {
     onScreenPop(result);
   }
 }
 
+//---   Ẩn bàn phím   --------------------------------------------------
 void hideKeyboardAndRemoveFocus(BuildContext context) {
-  // 1. Ẩn bàn phím:
-  //    - Sử dụng FocusManager để lấy focus hiện tại (primaryFocus).
-  //    - Gọi unfocus() trên focus hiện tại để ẩn bàn phím.
   FocusManager.instance.primaryFocus?.unfocus();
-
-  // 2. Xóa focus của tất cả TextField (trong phạm vi context hiện tại):
-  //    - Sử dụng FocusScope.of(context) để lấy FocusScope hiện tại.
-  //    - Gọi unfocus() trên FocusScope để loại bỏ focus khỏi bất kỳ widget nào đang có focus trong scope đó, bao gồm cả TextField.
   FocusScope.of(context).unfocus();
 }
 
+//---   Show tiện ích   ------------------------------------------------
 void showFloatingBubble(BuildContext context) {
   final StarMenuController controller = StarMenuController();
   final otherEntries = <Widget>[
@@ -112,6 +104,7 @@ void showFloatingBubble(BuildContext context) {
   );
 }
 
+//---   Ẩn tiện ích   -------------------------------------------------------
 void hideFloatingBubble() {
   FloatingBubbleService.hideBubble();
 }

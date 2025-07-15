@@ -22,6 +22,7 @@ class WdgPopupMenu extends StatelessWidget {
       borderRadius: BorderRadius.circular(6),
       menuBuilder: () => IntrinsicWidth(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: items.map((item) => InkWell(
                   onTap: () {
                     item.func();
@@ -44,8 +45,7 @@ class WdgPopupMenu extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
-              .toList(),
+              ).toList(),
         ),
       ),
       child: child,

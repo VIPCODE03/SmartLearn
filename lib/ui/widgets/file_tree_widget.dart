@@ -7,13 +7,13 @@ import 'package:smart_learn/global.dart';
 import 'package:smart_learn/libraries/text_quill/text_editor_screen.dart';
 import 'package:smart_learn/ui/dialogs/dialog_textfiled.dart';
 import 'package:smart_learn/ui/dialogs/scale_dialog.dart';
-import 'package:smart_learn/ui/screens/quizeditorscreen/quiz_list_screen.dart';
-import 'package:smart_learn/ui/screens/quizscreen/a_quiz_screen.dart';
+import 'package:smart_learn/ui/screens/b_quizscreen/manage/a_quiz_manage_screen.dart';
 import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
 import 'package:ulid/ulid.dart';
 import 'package:path/path.dart' as p;
 
 import '../../libraries/flutter_drawing_custom/draw_screen.dart';
+import '../screens/b_quizscreen/play/a_quiz_screen.dart';
 
 class WdgFileTree extends StatefulWidget {
   final bool isTheory;
@@ -40,7 +40,7 @@ class _WdgFileTreeState extends State<WdgFileTree> {
     final id = stackId.last;
     return widget.files.whereType<AppFileFolder>().firstWhere(
           (f) => f.id == id,
-          orElse: () => AppFileFolder(id: 'root', name: 'Root', pathId: null),
+          orElse: () => AppFileFolder(id: 'root', name: 'Root', pathId: null, dateCreated: DateTime.now()),
         );
   }
 
@@ -113,7 +113,7 @@ class _WdgFileTreeState extends State<WdgFileTree> {
         );
         if(name != null && name.isNotEmpty) {
           setState(() {
-            widget.files.add(AppFileFolder(id: Ulid().toString(), name: name, pathId: stackId.last));
+            widget.files.add(AppFileFolder(id: Ulid().toString(), name: name, pathId: stackId.last, dateCreated: DateTime.now()));
           });
         }
       }
@@ -123,7 +123,7 @@ class _WdgFileTreeState extends State<WdgFileTree> {
         final content = await Navigator.push(context, MaterialPageRoute(builder: (context) => const TextEditorScreen()));
         if(content != null) {
           setState(() {
-            widget.files.add(AppFileTxt(id: Ulid().toString(), name: 'Tài liệu', pathId: stackId.last, content: content));
+            widget.files.add(AppFileTxt(id: Ulid().toString(), name: 'Tài liệu', pathId: stackId.last, content: content, dateCreated: DateTime.now()));
           });
         }
       }
@@ -133,7 +133,7 @@ class _WdgFileTreeState extends State<WdgFileTree> {
         final jsonDraw = await Navigator.push(context, MaterialPageRoute(builder: (context) => const DrawScreen()));
         if(jsonDraw != null) {
           setState(() {
-            widget.files.add(AppFileDraw(id: Ulid().toString(), name: 'Bản vẽ', pathId: stackId.last, json: jsonDraw));
+            widget.files.add(AppFileDraw(id: Ulid().toString(), name: 'Bản vẽ', pathId: stackId.last, json: jsonDraw, dateCreated: DateTime.now()));
           });
         }
       }
@@ -152,7 +152,8 @@ class _WdgFileTreeState extends State<WdgFileTree> {
                   id: Ulid().toString(),
                   name: fileName,
                   pathId: stackId.last,
-                  filePath: filePath)
+                  filePath: filePath,
+                  dateCreated: DateTime.now())
               );
             });
           }
@@ -163,26 +164,37 @@ class _WdgFileTreeState extends State<WdgFileTree> {
 
       //----------------------quiz------------------
       case 'quiz': {
-        final name = await showInputDialog(
-          context: context,
-          title: 'Thêm bài tập',
-          hint: 'Nhập tên bài tập'
-        );
-        if(name != null && name.isNotEmpty) {
-          final newFile = AppFileQuiz(id: Ulid().toString(), name: name, pathId: stackId.last);
-          setState(() {
-            widget.files.add(newFile);
-          });
-          if (context.mounted) {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => QuizListScreen(
-                  name: name,
-                  onSave: (newJson) {
-                    newFile.json = newJson;
-                  },
-                ))
+        try {
+          final name = await showInputDialog(
+              context: context,
+              title: 'Thêm bài tập',
+              hint: 'Nhập tên bài tập'
+          );
+          if (name != null && name.isNotEmpty) {
+            final newFile = AppFileQuiz(
+                id: Ulid().toString(),
+                name: name,
+                pathId: stackId.last,
+                dateCreated: DateTime.now()
             );
+            setState(() {
+              widget.files.add(newFile);
+            });
+            if (context.mounted) {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) =>
+                      QuizManageScreen(
+                        name: name,
+                        onSave: (newJson) {
+                          newFile.json = newJson;
+                        },
+                      )
+              ));
+            }
           }
+        }
+        catch (e) {
+          debugPrint(e.toString());
         }
       }
     }
@@ -346,6 +358,7 @@ class _WdgFileTreeState extends State<WdgFileTree> {
   }
 }
 
+/// Menu Quiz ----------------------------------------------------------------------
 class _MenuQuiz extends StatelessWidget {
   final AppFileQuiz fileQuiz;
   const _MenuQuiz(this.fileQuiz);
@@ -362,8 +375,9 @@ class _MenuQuiz extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: InkWell(
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => QuizListScreen(
+                    builder: (context) => QuizManageScreen(
                       name: fileQuiz.name,
                       json: fileQuiz.json,
                       onSave: (newJson) {

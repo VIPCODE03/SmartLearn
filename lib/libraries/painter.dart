@@ -1,11 +1,7 @@
-// Trong file painter.dart (hoặc nơi bạn định nghĩa CvsCoordinatePainter)
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'drawable.dart';
-
-// Giả sử các class CvsPoint, CvsLine, CvsCurve, CvsDashedLine, CvsDrawable đã được định nghĩa ở file khác
 
 class CvsCoordinatePainter extends CustomPainter {
   final List<CvsDrawable> drawables;

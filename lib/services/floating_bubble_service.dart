@@ -3,6 +3,7 @@ import 'package:smart_learn/global.dart';
 import 'package:smart_learn/ui/widgets/bouncebutton_widget.dart';
 
 class FloatingBubbleService {
+  static final ValueNotifier isVisibled = ValueNotifier(false);
   static OverlayEntry? _overlayEntry;
   static Offset _currentPosition = const Offset(50, 100);
   static const double _bubbleSize = 50.0;
@@ -45,11 +46,13 @@ class FloatingBubbleService {
     );
 
     Overlay.of(context).insert(_overlayEntry!);
+    FloatingBubbleService.isVisibled.value = true;
   }
 
   static void hideBubble() {
     _overlayEntry?.remove();
     _overlayEntry = null;
+    FloatingBubbleService.isVisibled.value = false;
   }
 
   static void toggleBubble(
@@ -266,7 +269,7 @@ class _DraggableBubbleState extends State<_DraggableBubble> with SingleTickerPro
     return Positioned(
       left: _position.dx,
       top: _position.dy,
-      child: BounceButton(
+      child: WdgBounceButton(
           onPanStart: (_) {
             // Dừng animation nếu người dùng bắt đầu kéo
             if (_animationController.isAnimating) {

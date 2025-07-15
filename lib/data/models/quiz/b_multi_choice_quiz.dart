@@ -38,7 +38,6 @@ class MultiChoiceQuiz extends Quiz {
   }
 
   bool checkSingle(String answer) {
-    if(correctAnswer.contains(answer)) return true;
-    return false;
+    return correctAnswer.contains(answer);
   }
 }

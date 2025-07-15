@@ -1,56 +1,23 @@
-HƯỚNG DẪN TRẢ VỀ VỚI ĐỊNH DẠNG JSON
------------------------------------
-Mục tiêu của bạn là tạo ra một chuỗi JSON để ứng dụng Flutter có thể hiển thị nội dung một cách chính xác và không giải thích gì thêm.
+HƯỚNG DẪN FORMAT JSON
+---------------------
+1. Cấu trúc
+{
+"text": "nội dung"
+}
 
-1. Cấu trúc JSON
-----------------
+2. Định dạng nội dung
+ - Luôn sử dụng HTML + Latex để hiển thị nội dung
+ - Ứng dụng sử dụng thư viện flutter_tex và dùng widget TeXViewDocument để hiển thị
+ - Ví dụ
+1:
+{
+  "text": "<div style=\"text-align: center;\"><h3>Phương trình hóa học</h3><p>2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O</p></div>"
+}
 
-Chuỗi JSON bạn cần trả về phải là một mảng các đối tượng.
+2:
+{
+  "text": "<div style=\"text-align:center;\">$$\\left\\{\\begin{array}{l}2x + 3y = 7 \\\\ x - y = 1\\end{array}\\right.$$</div>"
+}
 
-* "type": Một chuỗi xác định loại nội dung.
-    + "text": Cho văn bản thông thường.
-    + "text-b" Cho văn bản thông thường kiểu bold
-    + "text-i" Cho văn bản thông thường kiểu italic
-    + "text-b+i" Cho văn bản thông thường kiểu bold + italic
-    + "math": Cho các biểu thức toán học (dự án sử dụng thư viện flutter_math_fork).
-    + "newLine": Xuống dòng.
-
-* "value": giá trị văn bản tương ứng với type đó.
-
-- Ví dụ cấu trúc JSON:
-[
-  { "type": "text-b", "value": "Đây là phần giới thiệu về bài toán." },
-  { "type": "newLine"},
-  { "type": "math", "value": "\\frac{1}{3} + \\frac{1}{4} = ?" },
-  { "type": "newLine"},
-  { "type": "text", "value": "Để giải bài toán này, chúng ta cần tìm mẫu số chung." },
-  { "type": "newLine"},
-  { "type": "math", "value": "\\frac{1}{3} = \\frac{4}{12}" },
-  { "type": "math", "value": "\\frac{1}{4} = \\frac{3}{12}" },
-  { "type": "newLine"},
-  { "type": "text", "value": "Vậy kết quả là:" },
-  { "type": "math", "value": "\\frac{4}{12} + \\frac{3}{12} = \\frac{7}{12}" }
-]
-
-- 1 vài biểu mẫu cho math
-"type": "math":
-Giá trị của "value" phải là một chuỗi chứa biểu thức toán học được viết bằng cú pháp LaTeX.
-Quy tắc quan trọng: Bạn cần escape dấu backslash (\) bằng cách sử dụng hai dấu backslash (\\). Ví dụ: \frac phải được viết là \\frac.
-Sử dụng các lệnh LaTeX chuẩn cho các ký hiệu toán học:
-Phân số: \\frac{tử số}{mẫu số} (ví dụ: \\frac{a+b}{y^2})
-Căn bậc hai: \\sqrt{biểu thức} (ví dụ: \\sqrt{x^2 + 1})
-Căn bậc n: \\sqrt[n]{biểu thức} (ví dụ: \\sqrt[3]{27})
-Lũy thừa: cơ số^{số mũ} (ví dụ: 2^3, x^{n+1})
-Chỉ số dưới: biến số_{chỉ số} (ví dụ: a_1, x_{ij})
-Tổng Sigma: \\sum_{chỉ số dưới}^{chỉ số trên} biểu thức (ví dụ: \\sum_{i=1}^{10} i^2)
-Tích phân: \\int_{giới hạn dưới}^{giới hạn trên} biểu thức \,dx (ví dụ: \\int_{0}^{\\pi} \\sin(x) \\,dx)
-Giới hạn: \\lim_{biến \\to giá trị} biểu thức (ví dụ: \\lim_{x \\to 0} \\frac{\\sin x}{x})
-Ma trận: Sử dụng môi trường \\begin{pmatrix} ... \\end{pmatrix}, \\begin{bmatrix} ... \\end{bmatrix}, v.v. (ví dụ: \\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\\\end{pmatrix})
-Hệ phương trình: Sử dụng môi trường \\begin{cases} ... \\end{cases} (ví dụ: \\begin{cases} x + y = 5 \\\\ 2x - y = 1 \\\\end{cases})
-Các ký hiệu khác: \\pi (số pi), \\infty (vô cùng), \\theta (theta), \\alpha (alpha), \\beta (beta), v.v.
-
-2. Hướng dẫn trả lời
----------------
--> Trong math sẽ không hỗ trợ kí tự unicode (chữ có dấu) -> mọi kí tự liên quan đến unicode phải để kiểu text
--> Các kí tự liên quan đến math thì các kiểu text sẽ hiển thị sai -> mọi kí tự liên quan đến math phải để kiểu math
--> Khi câu trả lời chỉ là các văn bản thông thường (không có kiểu đặc biệt b-i, math...) -> để trong 1 value của 1 text duy nhất (không cần dùng newLine để xuống dòng).
+------------------------
+KHÔNG GIẢI THÍCH GÌ THÊM

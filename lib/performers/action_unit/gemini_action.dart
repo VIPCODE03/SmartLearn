@@ -3,6 +3,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:smart_learn/global.dart';
 import 'package:smart_learn/performers/data_state/gemini_state.dart';
 import 'package:performer/performer.dart';
+import 'package:smart_learn/utils/json_util.dart';
 import 'package:zent_gemini/gemini_config.dart';
 import 'package:zent_gemini/gemini_service.dart';
 
@@ -28,7 +29,6 @@ abstract class GeminiAction extends ActionUnit<GeminiState> {
   }
 }
 
-
 class AskAction extends GeminiAction {
   final String topic;
   final String instruct;
@@ -39,7 +39,7 @@ class AskAction extends GeminiAction {
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
     try {
-      yield current.copyWith(state: GemState.progress);
+      yield const GeminiProgressState();
       String intructFormat = await UtilAssets.loadString(UtilAssets.path.train.format);
       String intructMission = await UtilAssets.loadString(UtilAssets.path.train.mission);
 
@@ -62,87 +62,83 @@ class AskAction extends GeminiAction {
       }
 
       if(answers != null) {
-        yield current.copyWith(state: GemState.done, answers: answers);
+        yield GeminiDoneState(JsonUtil.cleanRawJsonString(answers));
       }
       else {
-        yield current.copyWith(state: GemState.error);
+        yield const GeminiErrorState();
       }
     }
     catch(e) {
-      yield current.copyWith(state: GemState.error);
+      yield const GeminiErrorState();
     }
   }
 }
 
 class CreateQuiz extends GeminiAction {
-  final String? nameSubject;
-  final String? jsonQuizCurrent;
   final String instruct;
   final dynamic file;
 
-  CreateQuiz({required this.instruct, this.nameSubject, this.jsonQuizCurrent, this.file}) : super(GeminiModels.flash2_0);
+  CreateQuiz({required this.instruct, this.file}) : super(GeminiModels.flash2_0);
 
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
     try {
-      yield current.copyWith(state: GemState.progress);
+      yield const GeminiProgressState();
       String intructFormat = await UtilAssets.loadString(UtilAssets.path.train.quiz);
       gemAI.setSystemInstruction = intructFormat;
       String? answers = await gemAI.generateContent(
           'Mong muốn từ user: $instruct'
       );
       if (answers != null) {
-        yield current.copyWith(state: GemState.done, answers: answers);
+        yield GeminiDoneState(JsonUtil.cleanRawJsonString(answers));
       }
       else {
-        yield current.copyWith(state: GemState.error);
+        yield const GeminiErrorState();
       }
     }
     catch(e) {
-      yield current.copyWith(state: GemState.error);
+      yield const GeminiErrorState();
     }
   }
 }
 
 class GemTranslate extends GeminiAction {
-  final String translate;
-  final String language;
+  final String originalText;
+  final String targetLanguage;
 
-  GemTranslate({required this.translate, required this.language}) : super(GeminiModels.flash1_5);
+  GemTranslate({required this.originalText, required this.targetLanguage}) : super(GeminiModels.flash1_5);
 
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
-    Map<String, String>? translates = translateds[translate];
-    if (translateds.containsKey(translate) && translates != null && translates.containsKey(language)) {
-      yield current.copyWith(
-          state: GemState.done,
-          answers: translates[language]
-      );
+    Map<String, String>? translates = translateds[originalText];
+    if (translateds.containsKey(originalText) && translates != null && translates.containsKey(targetLanguage)) {
+      yield GeminiDoneState(translates[targetLanguage]!);
     }
     else {
       try {
-        yield current.copyWith(state: GemState.progress);
+        yield const GeminiProgressState();
         String intructFormat = await UtilAssets.loadString(UtilAssets.path.train.translate);
         gemAI.setSystemInstruction = intructFormat;
         String? answer = await gemAI.generateContent(''
-            '\nVăn bản: $translate'
-            '\nDịch sang: $language'
+            'NỘI DUNG CẦN DỊCH:'
+            '\noriginalText: $originalText'
+            '\ntargetLanguage: $targetLanguage'
         );
         if (answer != null) {
-          if(translateds.containsKey(translate)) {
-            translateds[translate]![language] = answer;
-          }
-          else {
-            translateds[translate] = {language: answer};
-          }
-          yield current.copyWith(state: GemState.done, answers: answer);
+          // if(translateds.containsKey(originalText)) {
+          //   translateds[originalText]![targetLanguage] = answer;
+          // }
+          // else {
+          //   translateds[originalText] = {targetLanguage: answer};
+          // }
+          yield GeminiDoneState(JsonUtil.cleanRawJsonString(answer));
         }
         else {
-          yield current.copyWith(state: GemState.error);
+          yield const GeminiErrorState();
         }
       }
       catch (e) {
-        yield current.copyWith(state: GemState.error);
+        yield const GeminiErrorState();
       }
     }
   }
@@ -156,20 +152,20 @@ class GemChat extends GeminiAction {
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
     try {
-      yield current.copyWith(state: GemState.progress);
+      yield const GeminiProgressState();
       gemAI.setSystemInstruction = 'Cuộc trò chuyện với User';
       String? answer = await gemAI.sendMessage(
           'Tin nhắn từ user: $mess'
       );
       if (answer != null) {
-        yield current.copyWith(state: GemState.done, answers: answer);
+        yield GeminiDoneState(answer);
       }
       else {
-        yield current.copyWith(state: GemState.error);
+        yield const GeminiErrorState();
       }
     }
     catch(e) {
-      yield current.copyWith(state: GemState.error);
+      yield const GeminiErrorState();
     }
   }
 }

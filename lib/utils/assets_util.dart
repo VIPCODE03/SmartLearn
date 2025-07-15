@@ -38,6 +38,7 @@ class _ImageAssets {
 
   final String logo = "assets/images/logo.png";
   final String backgroundAI = "assets/images/background_ai.png";
+  final String loadingGif = "assets/images/loading.gif";
 }
 
 // 📂 Icon
@@ -55,4 +56,5 @@ class _TrainAssets {
   final String mission = "assets/train/mission";
   final String quiz = "assets/train/quiz";
   final String translate = "assets/train/translate";
+  final String testJson = "assets/train/test_json";
 }

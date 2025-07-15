@@ -126,15 +126,15 @@ class _FilterSubject extends SubjectAction {
     else {
       List<Subject> subjectFiltered = current.subjects.where((subject) {
         if (filterBy == FilterSubjectBy.good) {
-          return subject.average() >= 8.2;
+          return subject.averageCore >= 8.2;
         } else if (filterBy == FilterSubjectBy.quiteGood) {
-          double average = subject.average();
+          double average = subject.averageCore;
           return average >= 6.5 && average < 8.2;
         } else if (filterBy == FilterSubjectBy.average) {
-          double average = subject.average();
+          double average = subject.averageCore;
           return average >= 4 && average < 6.5;
         } else if (filterBy == FilterSubjectBy.poor) {
-          return subject.average() < 4;
+          return subject.averageCore < 4;
         }
         return true;
       }).toList();

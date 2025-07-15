@@ -1,0 +1,9 @@
+<!-- res/xml/widget_info.xml -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="150dp"
+    android:minHeight="180dp"
+    android:updatePeriodMillis="86400000"
+    android:previewImage="@drawable/bg_widget"
+    android:initialLayout="@layout/flashcard_layout"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen" />

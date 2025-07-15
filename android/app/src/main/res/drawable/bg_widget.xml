@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Bóng đổ (shadow effect) -->
+    <item android:right="2dp" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#33000000" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <!-- Lớp chính -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Gradient nhẹ tạo chiều sâu -->
+            <gradient
+                android:startColor="#FDFDFD"
+                android:endColor="#E6E6E6"
+                android:angle="270" />
+
+            <corners android:radius="16dp" />
+
+            <!-- Viền mỏng, tinh tế -->
+            <stroke
+                android:width="1dp"
+                android:color="#B0B0B0" />
+        </shape>
+    </item>
+
+</layer-list>

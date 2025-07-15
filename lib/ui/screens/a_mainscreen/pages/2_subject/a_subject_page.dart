@@ -7,6 +7,7 @@ import 'package:smart_learn/performers/data_state/subject_state.dart';
 import 'package:smart_learn/data/models/subject/a_subject.dart';
 import 'package:smart_learn/global.dart';
 import 'package:smart_learn/ui/screens/a_mainscreen/pages/2_subject/b_detail_subject_screen.dart';
+import 'package:smart_learn/ui/widgets/loading_widget.dart';
 import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
 
 class SubjectPage extends StatefulWidget {
@@ -43,89 +44,92 @@ class _SubjectPageState extends State<SubjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PerformerProvider<SubjectPageConductor>(
-      create: () => SubjectPageConductor()..add(LoadAllSubject()),
-      child: ConductorBuilder<SubjectPageConductor>(builder: (context, conductor) {
+    return PerformerProvider<SubjectPageConductor>.create(
+      create: (_) => SubjectPageConductor()..add(LoadAllSubject()),
+      child: PerformerBuilder<SubjectPageConductor>(builder: (context, conductor) {
         _context = context;
         if (conductor.current.state == StateData.loading) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: WdgLoading(),
           );
 
         } else if (conductor.current.state == StateData.loaded) {
-          return SafeArea(child: Column(children: [
+          return Column(
+            children: [
               const SizedBox(height: 16),
 
-              Row(children: [
-                ///-  Lọc --------------------------------------------------------
-                WdgPopupMenu(
-                  items: [
-                    MenuItem(globalLanguage.good, Icons.add, () {
-                      conductor.add(ProcessSubject(filterBy: FilterSubjectBy.good));
-                      _filter = globalLanguage.good;
-                    }),
-                    MenuItem(globalLanguage.quiteGood, Icons.add, () {
-                      conductor.add(ProcessSubject(filterBy: FilterSubjectBy.quiteGood));
-                      _filter = globalLanguage.quiteGood;
-                    }),
-                    MenuItem(globalLanguage.average, Icons.add, () {
-                      conductor.add(ProcessSubject(filterBy: FilterSubjectBy.average));
-                      _filter = globalLanguage.average;
-                    }),
-                    MenuItem(globalLanguage.poor, Icons.add, () {
-                      conductor.add(ProcessSubject(filterBy: FilterSubjectBy.poor));
-                      _filter = globalLanguage.poor;
-                    }),
-                  ],
-                  child: const Icon(Icons.filter_alt),
-                ),
+              SizedBox(
+                child: Row(children: [
+                  ///-  Lọc --------------------------------------------------------
+                  WdgPopupMenu(
+                    items: [
+                      MenuItem(globalLanguage.good, Icons.add, () {
+                        conductor.add(ProcessSubject(filterBy: FilterSubjectBy.good));
+                        _filter = globalLanguage.good;
+                      }),
+                      MenuItem(globalLanguage.quiteGood, Icons.add, () {
+                        conductor.add(ProcessSubject(filterBy: FilterSubjectBy.quiteGood));
+                        _filter = globalLanguage.quiteGood;
+                      }),
+                      MenuItem(globalLanguage.average, Icons.add, () {
+                        conductor.add(ProcessSubject(filterBy: FilterSubjectBy.average));
+                        _filter = globalLanguage.average;
+                      }),
+                      MenuItem(globalLanguage.poor, Icons.add, () {
+                        conductor.add(ProcessSubject(filterBy: FilterSubjectBy.poor));
+                        _filter = globalLanguage.poor;
+                      }),
+                    ],
+                    child: const Icon(Icons.filter_alt),
+                  ),
 
-                ///-Tìm kiếm  --------------------------------------------------
-                Expanded(
-                  child: Container(
-                      margin: const EdgeInsets.all(8),
-                      height: 50,
-                      child: TextField(
-                        controller: _searchController,
-                        cursorColor: primaryColor(context),
-                        decoration: InputDecoration(
-                          hintText: globalLanguage.search,
-                          contentPadding: const EdgeInsets.all(16),
-                          border: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                  ///-Tìm kiếm  --------------------------------------------------
+                  Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.all(8),
+                        height: 50,
+                        child: TextField(
+                          controller: _searchController,
+                          cursorColor: primaryColor(context),
+                          decoration: InputDecoration(
+                            hintText: globalLanguage.search,
+                            contentPadding: const EdgeInsets.all(16),
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                  color: primaryColor(context).withAlpha(50)),
+                            ),
+                            suffixIcon: _searchController.text.isNotEmpty ?
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            ) : null,
+
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                                color: primaryColor(context).withAlpha(50)),
-                          ),
-                          suffixIcon: _searchController.text.isNotEmpty ?
-                          IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                            },
-                          ) : null,
+                        )),
+                  ),
 
-                        ),
-                      )),
-                ),
-
-                ///-  Sắp xếp -------------------------------------------------------
-                WdgPopupMenu(
-                  items: [
-                    MenuItem(globalLanguage.name, Icons.add, () {
-                      conductor.add(ProcessSubject(sortType: SortType.byName));
-                      _arannge = globalLanguage.name;
-                    }),
-                    MenuItem(globalLanguage.lastStudyDate, Icons.add, () {
-                      conductor.add(ProcessSubject(sortType: SortType.byLastStudyDate));
-                      _arannge = globalLanguage.lastStudyDate;
-                    }),
-                  ],
-                  child: const Icon(Icons.compare_arrows),
-                ),
-              ]),
+                  ///-  Sắp xếp -------------------------------------------------------
+                  WdgPopupMenu(
+                    items: [
+                      MenuItem(globalLanguage.name, Icons.add, () {
+                        conductor.add(ProcessSubject(sortType: SortType.byName));
+                        _arannge = globalLanguage.name;
+                      }),
+                      MenuItem(globalLanguage.lastStudyDate, Icons.add, () {
+                        conductor.add(ProcessSubject(sortType: SortType.byLastStudyDate));
+                        _arannge = globalLanguage.lastStudyDate;
+                      }),
+                    ],
+                    child: const Icon(Icons.compare_arrows),
+                  ),
+                ]),
+              ),
 
               ///-  Các ô lọc, sắp xếp-----------------------------------------------
               Wrap(spacing: 8, runSpacing: 8, children: [
@@ -139,21 +143,18 @@ class _SubjectPageState extends State<SubjectPage> {
 
               ///-  Danh sách subject ------------------------------------------------
               Expanded(
-                child: Padding(
+                child: SingleChildScrollView(child:
+                  Padding(
                     padding: const EdgeInsets.all(10),
-                    child: SingleChildScrollView(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    child: Row(children: [
                           /// Cột 1-----------------------------------------------------
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: List.generate(conductor.current.subjectsFilted.length, (index) {
                                 if (index.isEven) {
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
-                                    child: Card(child: SubjectItem(conductor.current.subjectsFilted[index])),
+                                    child: Card(child: _SubjectItem(conductor.current.subjectsFilted[index])),
                                   );
                                 }
                                 return const SizedBox.shrink();
@@ -164,12 +165,11 @@ class _SubjectPageState extends State<SubjectPage> {
                           /// Cột 2-----------------------------------------------------
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: List.generate(conductor.current.subjectsFilted.length, (index) {
                                 if (index.isOdd) {
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
-                                    child: Card(child: SubjectItem(conductor.current.subjectsFilted[index])),
+                                    child: Card(child: _SubjectItem(conductor.current.subjectsFilted[index])),
                                   );
                                 }
                                 return const SizedBox.shrink();
@@ -178,10 +178,12 @@ class _SubjectPageState extends State<SubjectPage> {
                           ),
                         ],
                       ),
-                    )),
-              ),
+                    ),
+                )
+              )
             ],
-          ));
+          );
+
         } else if (conductor.current.state == StateData.error) {
           return const Center(
             child: Text('Error'),
@@ -225,10 +227,10 @@ class _SubjectPageState extends State<SubjectPage> {
   }
 }
 
-class SubjectItem extends StatelessWidget {
+class _SubjectItem extends StatelessWidget {
   final Subject subject;
 
-  const SubjectItem(this.subject, {super.key});
+  const _SubjectItem(this.subject);
   
   Map<String, dynamic> evaluate(double average) {
     if (average < 4) {
@@ -244,48 +246,39 @@ class SubjectItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    double average = subject.average();
+    double average = subject.averageCore;
     return InkWell(
         onTap: () {
           navigateToNextScreen(context, DetailSubjectScreen(subject: subject));
         },
         child: Container(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width / 2.4),
+                maxWidth: MediaQuery.of(context).size.width / 2.3
+            ),
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: primaryColor(context).withAlpha(100),
+                width: 1.5
+              ),
               boxShadow: [
                 BoxShadow(
+                  spreadRadius: 4,
                   color: primaryColor(context).withAlpha(5),
-                  blurRadius: 12,
-                  spreadRadius: 1,
-                  offset: const Offset(1, 2),
-                ),
-              ],
-              border: Border.all(
-                color: primaryColor(context).withAlpha(50),
-              )
+                  offset: const Offset(0, 2)
+                )
+              ]
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: WdgPopupMenu(
-                    items: [
-                      MenuItem('Chỉnh sửa', Icons.edit, () {
-                      }),
-                      MenuItem('Xóa', Icons.delete, () {
-                        PerformerProvider.of<SubjectPageConductor>(context).add(DeleteSubjectById(subject.id));
-                      }),
-                    ],
-                    child: const Icon(Icons.more_horiz),
-                  ),
+                Text(
+                    subject.name,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)
                 ),
-                Text(subject.name,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
                 const SizedBox(height: 15),
                 Text('${globalLanguage.lastStudyDate}: ${subject.lastStudyDate}',
                     style: const TextStyle(color: Colors.grey)),

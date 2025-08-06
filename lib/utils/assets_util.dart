@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-class UtilAssets {
+class UTIAssets {
   static const path = _AssetsPath();
 
   static Future<String> loadString(String path) async {

@@ -18,7 +18,7 @@ class WdgLoading extends StatelessWidget {
       height: height ?? 100,
       width: width ?? 100,
       child: Image.asset(
-        UtilAssets.path.images.loadingGif,
+        UTIAssets.path.images.loadingGif,
         fit: BoxFit.cover,
       ),
     );

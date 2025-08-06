@@ -55,7 +55,7 @@
 //               fontWeight: FontWeight.bold,
 //               fontStyle: FontStyle.italic,
 //             );
-//           } else if (type == 'math') {
+//           } else if (type == 'math_matrix') {
 //             textSpans.add(
 //               WidgetSpan(
 //                 alignment: PlaceholderAlignment.middle,

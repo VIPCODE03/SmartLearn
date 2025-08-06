@@ -11,7 +11,7 @@ abstract class REPCalendar {
 
   Future<Either<Failure, List<ENTCalendar>>> getById(String id);
   Future<Either<Failure, List<ENTCalendar>>> getAll();
-  Future<Either<Failure, List<ENTCalendar>>> getByDate(DateTime date);
+  Future<Either<Failure, List<ENTCalendar>>> getEventsOnDate(DateTime date);
   Future<Either<Failure, List<ENTCalendar>>> getByDateRange(DateTime start, DateTime end);
 
   Future<Either<Failure, List<ENTCalendar>>> search(String title);

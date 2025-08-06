@@ -1,14 +1,31 @@
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:image_cropper/image_cropper.dart';
-import 'package:smart_learn/global.dart';
+import 'package:smart_learn/config/gemini_config.dart';
 import 'package:smart_learn/performers/data_state/gemini_state.dart';
 import 'package:performer/performer.dart';
-import 'package:smart_learn/utils/json_util.dart';
 import 'package:zent_gemini/gemini_config.dart';
+import 'package:zent_gemini/gemini_models.dart';
 import 'package:zent_gemini/gemini_service.dart';
 
-import '../../constants/gemini_constant.dart';
 import '../../utils/assets_util.dart';
+
+class GeminiModels {
+  //- Model 2.5 ----------------------------------------------------------------
+  static const String pro2_5 = "gemini-2.5-pro";
+  static const String flash2_5 = "gemini-2.5-flash";
+  static const String flashLite2_5 = "gemini-2.5-flash-lite-preview-06-17";
+
+  //- Model 2.0 ----------------------------------------------------------------
+  static const String flash2_0 = "gemini-2.0-flash";
+  static const String flashLite2_0 = "gemini-2.0-flash-lite";
+
+  //- Model 1.5 ----------------------------------------------------------------
+  static const String flash1_5 = "gemini-1.5-flash";
+  static const String flashLite1_5 = "gemini-1.5-flash-8b";
+  static const String pro1_5 = "gemini-1.5-pro";
+}
 
 abstract class GeminiAction extends ActionUnit<GeminiState> {
   late final GeminiAI gemAI;
@@ -21,7 +38,7 @@ abstract class GeminiAction extends ActionUnit<GeminiState> {
       gemAI = _geminiInstances[model]!;
     } else {
       gemAI = GeminiAI(GeminiConfig(
-        apiKey: 'AIzaSyBwQDMZO8sx4dYcEXMWuQad-eqf1CnEFQ8',
+        apiKey: GeminiAIConfig.apiKey,
         model: model,
       ));
       _geminiInstances[model] = gemAI;
@@ -34,14 +51,14 @@ class AskAction extends GeminiAction {
   final String instruct;
   final dynamic question;
 
-  AskAction({required this.topic, required this.instruct, required this.question}) : super(GeminiModels.flash2_0);
+  AskAction({required this.topic, required this.instruct, required this.question}) : super(GeminiModels.pro2_5);
 
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
     try {
       yield const GeminiProgressState();
-      String intructFormat = await UtilAssets.loadString(UtilAssets.path.train.format);
-      String intructMission = await UtilAssets.loadString(UtilAssets.path.train.mission);
+      String intructFormat = await UTIAssets.loadString(UTIAssets.path.train.format);
+      String intructMission = await UTIAssets.loadString(UTIAssets.path.train.mission);
 
       gemAI.setSystemInstruction = ""
           "mission: $intructMission"
@@ -52,17 +69,19 @@ class AskAction extends GeminiAction {
           "";
 
       String newQuestion;
-      String? answers;
+      Content? answers;
       if (question is String) {
         newQuestion = 'Trả lời câu hỏi: $question';
-        answers = await gemAI.generateContent(newQuestion);
+        answers = await gemAI.generateContent(await Content.build(textPrompt: newQuestion));
       } else {
         newQuestion = 'Giải bài trong ảnh';
-        answers = await gemAI.generateContentWithImage(newQuestion, (question as CroppedFile).path);
+        final file = File((question as CroppedFile).path);
+        final image = await file.readAsBytes();
+        answers = await gemAI.generateContent(await Content.build(textPrompt: newQuestion, image: image));
       }
 
       if(answers != null) {
-        yield GeminiDoneState(JsonUtil.cleanRawJsonString(answers));
+        yield GeminiDoneState(answers);
       }
       else {
         yield const GeminiErrorState();
@@ -84,13 +103,11 @@ class CreateQuiz extends GeminiAction {
   Stream<GeminiState> execute(GeminiState current) async* {
     try {
       yield const GeminiProgressState();
-      String intructFormat = await UtilAssets.loadString(UtilAssets.path.train.quiz);
+      String intructFormat = await UTIAssets.loadString(UTIAssets.path.train.quiz);
       gemAI.setSystemInstruction = intructFormat;
-      String? answers = await gemAI.generateContent(
-          'Mong muốn từ user: $instruct'
-      );
+      Content? answers = await gemAI.generateContent(await Content.build(textPrompt: 'Mong muốn từ user: $instruct'));
       if (answers != null) {
-        yield GeminiDoneState(JsonUtil.cleanRawJsonString(answers));
+        yield GeminiDoneState(answers);
       }
       else {
         yield const GeminiErrorState();
@@ -110,55 +127,53 @@ class GemTranslate extends GeminiAction {
 
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
-    Map<String, String>? translates = translateds[originalText];
-    if (translateds.containsKey(originalText) && translates != null && translates.containsKey(targetLanguage)) {
-      yield GeminiDoneState(translates[targetLanguage]!);
-    }
-    else {
-      try {
-        yield const GeminiProgressState();
-        String intructFormat = await UtilAssets.loadString(UtilAssets.path.train.translate);
-        gemAI.setSystemInstruction = intructFormat;
-        String? answer = await gemAI.generateContent(''
-            'NỘI DUNG CẦN DỊCH:'
-            '\noriginalText: $originalText'
-            '\ntargetLanguage: $targetLanguage'
-        );
-        if (answer != null) {
-          // if(translateds.containsKey(originalText)) {
-          //   translateds[originalText]![targetLanguage] = answer;
-          // }
-          // else {
-          //   translateds[originalText] = {targetLanguage: answer};
-          // }
-          yield GeminiDoneState(JsonUtil.cleanRawJsonString(answer));
-        }
-        else {
-          yield const GeminiErrorState();
-        }
+    try {
+      yield const GeminiProgressState();
+      String intructFormat = await UTIAssets.loadString(UTIAssets.path.train.translate);
+      gemAI.setSystemInstruction = intructFormat;
+      Content? answer = await gemAI.generateContent(await Content.build(textPrompt:
+      'NỘI DUNG CẦN DỊCH:'
+          '\noriginalText: $originalText'
+          '\ntargetLanguage: $targetLanguage'));
+      if (answer != null) {
+        yield GeminiDoneState(answer);
       }
-      catch (e) {
+      else {
         yield const GeminiErrorState();
       }
+    }
+    catch (e) {
+      yield const GeminiErrorState();
     }
   }
 }
 
 class GemChat extends GeminiAction {
   final String mess;
+  final Uint8List? image;
+  final Uint8List? pdf;
+  final List<Content>? histories;
 
-  GemChat({required this.mess}) : super(GeminiModels.flash2_0, forceNew: false);
+  GemChat({
+    required this.mess,
+    this.image,
+    this.pdf,
+    this.histories
+  }) : super(GeminiModels.flash2_0);
 
   @override
   Stream<GeminiState> execute(GeminiState current) async* {
     try {
+      if(histories != null) {
+        gemAI.setHistory = histories!;
+      }
       yield const GeminiProgressState();
       gemAI.setSystemInstruction = 'Cuộc trò chuyện với User';
-      String? answer = await gemAI.sendMessage(
-          'Tin nhắn từ user: $mess'
-      );
-      if (answer != null) {
-        yield GeminiDoneState(answer);
+      gemAI.setGoogleSearch = true;
+      final Content? result;
+      result = await gemAI.sendMessage(await Content.build(textPrompt: mess, image: image, pdf: pdf));
+      if (result != null) {
+        yield GeminiDoneState(result);
       }
       else {
         yield const GeminiErrorState();

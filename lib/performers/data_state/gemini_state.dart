@@ -1,4 +1,5 @@
 import 'package:performer/performer.dart';
+import 'package:zent_gemini/gemini_models.dart';
 
 abstract class GeminiState extends DataState {
   const GeminiState();
@@ -22,7 +23,7 @@ class GeminiProgressState extends GeminiState {
 }
 
 class GeminiDoneState extends GeminiState {
-  final String answers;
+  final Content answers;
 
   const GeminiDoneState(this.answers);
 

@@ -15,7 +15,6 @@ class REPFocusImpl implements REPFocus {
   REPFocusImpl({required this.focusLocalDataSource});
 
   @override
-  @override
   Future<Either<Failure, ENTWeeklyFocus>> getWeeklyFocus() async {
     try {
       final model = await focusLocalDataSource.getLastWeeklyFocus();

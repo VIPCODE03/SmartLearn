@@ -59,10 +59,10 @@ class StartFocus extends FocusAction {
     FocusState state = current;
 
     BannerService().showBanner(const GlobalFocusTimerBar());
-    emit(FocusingState(elapsed: elapsed, weeklyFocus: current.weeklyFocus));
+    yield FocusingState(elapsed: elapsed, weeklyFocus: current.weeklyFocus);
 
     FocusAction._timer = Timer.periodic(const Duration(seconds: 1), (_) async {
-        const time = Duration(seconds: 5);
+        const time = Duration(seconds: 1);
         elapsed += time;
         final today = DateTime.now();
         final addParams = AddTimeFocusParams(
@@ -94,7 +94,7 @@ class StopFocus extends FocusAction {
     if (current is FocusingState) {
       _stopTimer();
       BannerService().removeBanner();
-      emit(FocusInitiated(elapsed: Duration.zero, weeklyFocus: current.weeklyFocus));
+      yield FocusInitiated(elapsed: Duration.zero, weeklyFocus: current.weeklyFocus);
     }
   }
 }

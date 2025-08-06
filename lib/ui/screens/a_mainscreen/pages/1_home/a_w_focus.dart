@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/feature_provider/widget_provider.dart';
+import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
 import 'dart:math';
 
 import '../../../../../global.dart';
@@ -12,7 +12,7 @@ class HomeFocusStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final widget = appWidget.focusWidget.focusManage(({
+    return appWidget.focus.focusManage(({
       required isFocused,
       required getTotal,
       required getHoursInWeekly,
@@ -79,7 +79,6 @@ class HomeFocusStatus extends StatelessWidget {
         );
       }
     );
-    return widget;
   }
 }
 

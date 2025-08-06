@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_learn/ui/screens/ai_question_screen/a_ai_screen.dart';
-
+import 'package:smart_learn/core/router/app_router.dart';
+import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import '../../../../../global.dart';
-import '../../../../widgets/bouncebutton_widget.dart';
 
 class HomeAI extends StatelessWidget {
   const HomeAI({super.key});
@@ -57,7 +56,7 @@ class HomeAI extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AIScreen.text()));
+                      appRouter.aiHomework.goAIText(context);
                     },
                     child: const Text(
                     'Tìm kiếm câu trả lời',
@@ -67,7 +66,7 @@ class HomeAI extends StatelessWidget {
 
                 WdgBounceButton(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AIScreen.camera()));
+                    appRouter.aiHomework.goAICamera(context);
                   },
                   child: Icon(Icons.camera_alt_outlined, color: primaryColor(context).withAlpha(150)),
                 ),

@@ -8,16 +8,11 @@ class ENTCalendarEvent extends ENTCalendar {
     required super.title,
     this.description,
     super.cycle,
-    required super.startTime,
-    required super.endTime,
-    required super.startDate,
-    super.endDate,
+    required super.start,
+    required super.end,
     super.ignoredDates,
     super.valueColor
   });
-
-  @override
-  String get type => 'CalendarEvent';
 }
 
 class ENTCalendarSubject extends ENTCalendar {
@@ -26,16 +21,11 @@ class ENTCalendarSubject extends ENTCalendar {
   ENTCalendarSubject({
     required super.id,
     required super.title,
-    required super.startTime,
-    required super.endTime,
-    required super.startDate,
-    super.endDate,
+    required super.start,
+    required super.end,
     super.cycle,
     super.ignoredDates,
     super.valueColor,
     required this.subjectId,
   });
-
-  @override
-  String get type => "CalendarSubject";
 }

@@ -6,7 +6,7 @@ import 'package:smart_learn/features/calendar/data/models/a_calendar_model.dart'
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/domain/repositories/calendar_repository.dart';
 
-class REPCalendarImpl extends REPCalendar {
+class REPCalendarImpl implements REPCalendar {
   final LDSCalendar localDataSource;
   REPCalendarImpl({required this.localDataSource});
 
@@ -53,16 +53,6 @@ class REPCalendarImpl extends REPCalendar {
   }
 
   @override
-  Future<Either<Failure, List<ENTCalendar>>> getByDate(DateTime date) async {
-    try {
-      final models = await localDataSource.getByDate(date);
-      return Right(models);
-    } catch (e) {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
   Future<Either<Failure, List<ENTCalendar>>> getByDateRange(DateTime start, DateTime end) async {
     try {
       final models = await localDataSource.getByDateRange(start, end);
@@ -86,6 +76,16 @@ class REPCalendarImpl extends REPCalendar {
   Future<Either<Failure, List<ENTCalendar>>> search(String title) async {
     try {
       final models = await localDataSource.search(title);
+      return Right(models);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ENTCalendar>>> getEventsOnDate(DateTime date) async {
+    try {
+      final models = await localDataSource.getEventsOnDate(date);
       return Right(models);
     } catch (e) {
       return Left(CacheFailure());

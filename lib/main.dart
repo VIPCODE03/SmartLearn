@@ -10,7 +10,6 @@ import 'package:smart_learn/providers/theme_provider.dart';
 import 'package:smart_learn/services/banner_service.dart';
 import 'package:smart_learn/services/language_service.dart';
 import 'package:smart_learn/ui/screens/a_mainscreen/mainscreen.dart';
-import 'package:smart_learn/ui/screens/b_flashcard_manage_screen/a_flashcardsetmanage_screen.dart';
 import 'global.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -88,7 +87,7 @@ class _SmartLearnState extends State<SmartLearn> {
 
   void _navigateTo(Uri uri) {
     if (uri.host == 'edit') {
-      navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const FlashCardSetManageScreen()));
+      // navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const FlashCardSetManageScreen()));
     }
   }
 
@@ -126,9 +125,6 @@ class _SmartLearnState extends State<SmartLearn> {
           ),
         );
       },
-      // routes: {
-      //   '/edit': (context) => const FlashCardSetManageScreen(),
-      // },
       home: const MainScreen(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

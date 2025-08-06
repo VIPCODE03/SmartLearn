@@ -124,7 +124,7 @@
 //   @override
 //   void initState() {
 //     super.initState();
-//     _position = widget.initialPosition;
+//     _position = screens.initialPosition;
 //     _currentOpacity = 1.0;
 //
 //     _animationController = AnimationController(
@@ -152,13 +152,13 @@
 //
 //     final screenSize = MediaQuery.of(context).size;
 //     final targetPosition = Offset(
-//       (screenSize.width - widget.bubbleSize) / 2,
-//       (screenSize.height - widget.bubbleSize) / 2,
+//       (screenSize.width - screens.bubbleSize) / 2,
+//       (screenSize.height - screens.bubbleSize) / 2,
 //     );
 //
 //     // Nếu đã ở giữa rồi thì không cần làm gì thêm
 //     if ((_position - targetPosition).distanceSquared < 0.01) {
-//       widget.userOnTap?.call(); // Gọi hành động của người dùng nếu có
+//       screens.userOnTap?.call(); // Gọi hành động của người dùng nếu có
 //       return;
 //     }
 //
@@ -179,8 +179,8 @@
 //       }
 //     })..addStatusListener((status) {
 //       if (status == AnimationStatus.completed) {
-//         widget.onDragEnd(_position);
-//         widget.userOnTap?.call();
+//         screens.onDragEnd(_position);
+//         screens.userOnTap?.call();
 //       }
 //     });
 //
@@ -195,7 +195,7 @@
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     // Nếu đang có animation chạy, chúng ta không muốn widget Positioned
+//     // Nếu đang có animation chạy, chúng ta không muốn screens Positioned
 //     // bị rebuild với giá trị _position cũ từ state trước khi animation listener cập nhật.
 //     // Tuy nhiên, với cách listener gọi setState, nó sẽ tự động rebuild.
 //     return Positioned(
@@ -224,7 +224,7 @@
 //           }
 //         },
 //         onPanEnd: (details) {
-//           widget.onDragEnd(_position);
+//           screens.onDragEnd(_position);
 //         },
 //         onTap: () {
 //           // _moveToCenter();
@@ -238,10 +238,10 @@
 //             clipBehavior: Clip.antiAlias,
 //             color: primaryColor(context),
 //             child: Container(
-//               width: widget.bubbleSize,
-//               height: widget.bubbleSize,
+//               width: screens.bubbleSize,
+//               height: screens.bubbleSize,
 //               alignment: Alignment.center,
-//               child: widget.child ?? const Icon(Icons.star, color: Colors.white, size: 30),
+//               child: screens.child ?? const Icon(Icons.star, color: Colors.white, size: 30),
 //             ),
 //           ),
 //         )

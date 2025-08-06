@@ -120,8 +120,8 @@ class _CircularProgressPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     // Tính toán góc quét (sweepAngle) dựa trên phần trăm
-    // 2 * math.pi là 360 độ (một vòng tròn đầy đủ)
-    // percentage * 2 * math.pi là góc quét tương ứng với phần trăm
+    // 2 * math_matrix.pi là 360 độ (một vòng tròn đầy đủ)
+    // percentage * 2 * math_matrix.pi là góc quét tương ứng với phần trăm
     double sweepAngle = 2 * math.pi * percentage;
 
     canvas.drawArc(

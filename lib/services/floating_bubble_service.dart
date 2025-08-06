@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/bouncebutton_widget.dart';
+import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 
 class FloatingBubbleService {
   static final ValueNotifier isVisibled = ValueNotifier(false);
@@ -220,13 +220,13 @@ class _DraggableBubbleState extends State<_DraggableBubble> with SingleTickerPro
 
     final screenSize = MediaQuery.of(context).size;
     final targetPosition = Offset(
-      (screenSize.width - widget.bubbleSize) / 2,
-      (screenSize.height - widget.bubbleSize) / 2,
+      (screenSize.width - screens.bubbleSize) / 2,
+      (screenSize.height - screens.bubbleSize) / 2,
     );
 
     // Nếu đã ở giữa rồi thì không cần làm gì thêm
     if ((_position - targetPosition).distanceSquared < 0.01) {
-      widget.userOnTap?.call(); // Gọi hành động của người dùng nếu có
+      screens.userOnTap?.call(); // Gọi hành động của người dùng nếu có
       return;
     }
 
@@ -247,8 +247,8 @@ class _DraggableBubbleState extends State<_DraggableBubble> with SingleTickerPro
       }
     })..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        widget.onDragEnd(_position);
-        widget.userOnTap?.call();
+        screens.onDragEnd(_position);
+        screens.userOnTap?.call();
       }
     });
 
@@ -263,7 +263,7 @@ class _DraggableBubbleState extends State<_DraggableBubble> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    // Nếu đang có animation chạy, chúng ta không muốn widget Positioned
+    // Nếu đang có animation chạy, chúng ta không muốn screens Positioned
     // bị rebuild với giá trị _position cũ từ state trước khi animation listener cập nhật.
     // Tuy nhiên, với cách listener gọi setState, nó sẽ tự động rebuild.
     return Positioned(

@@ -4,19 +4,9 @@ enum RecurrenceType {
   none,
 }
 
-enum DayOfWeek {
-  monday,
-  tuesday,
-  wednesday,
-  thursday,
-  friday,
-  saturday,
-  sunday,
-}
-
 class ENTCycle {
   final RecurrenceType type;
-  final List<DayOfWeek>? daysOfWeek;
+  final Set<int>? daysOfWeek;
 
   ENTCycle({
     required this.type,
@@ -25,6 +15,15 @@ class ENTCycle {
   (type == RecurrenceType.weekly && daysOfWeek != null && daysOfWeek.isNotEmpty) ||
       (type != RecurrenceType.weekly && daysOfWeek == null),
   'Invalid Cycle configuration for type $type'
+  );
+
+  ENTCycle.daily()
+      : this(type: RecurrenceType.daily);
+
+  ENTCycle.weekly(Set<int> daysOfWeek)
+      : this(
+      type: RecurrenceType.weekly,
+      daysOfWeek: daysOfWeek
   );
 
   bool get requiresDaysOfWeek => type == RecurrenceType.weekly;

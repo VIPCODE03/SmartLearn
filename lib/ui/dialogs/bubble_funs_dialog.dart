@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_learn/ui/widgets/utilities_widget/ai_chat_widget.dart';
-import '../widgets/utilities_widget/calculator_widget.dart';
-import '../widgets/utilities_widget/translate_widget.dart';
+import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
 
 bool _isShowingTranslationSheet = false;
 
@@ -12,7 +10,7 @@ void showTranslationBottomSheet(BuildContext context) {
 
   _showUtilBottomSheet(
       context,
-      const WdgTranslation(),
+      appWidget.translate.translateView(),
       'Dịch ',
           () {
             _isShowingTranslationSheet = false;
@@ -29,7 +27,7 @@ void showCaculator(BuildContext context) {
 
   _showUtilBottomSheet(
       context,
-      const WdgCalculator(),
+      appWidget.calculator.calculatorView(),
       'Máy tính ',
           () {
         _isShowCaculator = false;
@@ -46,7 +44,7 @@ void showChatBottomSheet(BuildContext context) {
 
   _showUtilBottomSheet(
       context,
-      const WdgChat(),
+      appWidget.assistant.assistantView(),
       'Trợ lý', () {
     _isShowChat = false;
   });
@@ -66,30 +64,11 @@ void _showUtilBottomSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
+    useSafeArea: true,
     builder: (context) {
-      return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(children: [
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.design_services),
-                  )
-              ),
-              Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )
-              )
-            ]),
-            Expanded(child: widget)
-          ]
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: widget,
       );
     },
   ).whenComplete(onCompleted);

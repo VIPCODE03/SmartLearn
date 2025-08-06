@@ -1,32 +1,32 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_awesome_calculator/flutter_awesome_calculator.dart';
+import 'package:flutter_tex/flutter_tex.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_learn/a_test/schedule.dart';
-import 'package:smart_learn/a_test/state.dart';
 import 'package:smart_learn/config/app_config.dart';
-import 'package:smart_learn/data/models/file/file.dart';
-import 'package:smart_learn/data/models/quiz/a_quiz.dart';
-import 'package:smart_learn/data/models/quiz/b_choice_quiz.dart';
-import 'package:smart_learn/data/models/quiz/b_multi_choice_quiz.dart';
-import 'package:smart_learn/data/models/quiz/c_quiz_result.dart';
+import 'package:smart_learn/core/di/injection.dart';
+import 'package:smart_learn/features/assistant/presentation/screens/assistant_screen.dart';
+import 'package:smart_learn/features/file/presentation/screens/appfile_screen.dart';
+import 'package:smart_learn/features/flashcard/presentation/screens/manage/flashcardset_manage_screen.dart';
+import 'package:smart_learn/features/games/maze/presentation/widgets/direction_pad.dart';
 import 'package:smart_learn/global.dart';
 import 'package:smart_learn/providers/theme_provider.dart';
+import 'package:smart_learn/services/banner_service.dart';
 import 'package:smart_learn/services/language_service.dart';
-import 'package:smart_learn/ui/screens/a_mainscreen/pages/3_schedule/a_schedule.dart';
-import 'package:smart_learn/ui/screens/a_mainscreen/pages/4_profile/a_profile.dart';
-import 'package:smart_learn/ui/screens/b_flashcard_manage_screen/a_flashcardsetmanage_screen.dart';
-import 'package:smart_learn/ui/screens/b_quizscreen/manage/a_quiz_manage_screen.dart';
-import 'package:smart_learn/ui/widgets/utilities_widget/ai_chat_widget.dart';
+import 'package:smart_learn/ui/screens/a_mainscreen/mainscreen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:smart_learn/ui/widgets/bouncebutton_widget.dart';
-
-import '../ui/screens/a_mainscreen/pages/1_home/a_home_page.dart';
-import '../ui/screens/b_quizscreen/play/c_quiz_result_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await TeXRenderingServer.start();
+
   await initializeDateFormatting('vi_VN', null);
+  await initAppDI();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) {
@@ -35,6 +35,7 @@ void main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(create: (_) => BannerService()),
         ],
         child: const SmartLearn(),
       ),
@@ -42,25 +43,58 @@ void main() async {
   });
 }
 
-class SmartLearn extends StatelessWidget {
+class SmartLearn extends StatefulWidget {
   const SmartLearn({super.key});
+
+  @override
+  State<SmartLearn> createState() => _SmartLearnState();
+}
+
+class _SmartLearnState extends State<SmartLearn> {
 
   @override
   Widget build(BuildContext context) {
     final languageService = Provider.of<LanguageService>(context);
+    final bannerService  = context.watch<BannerService>();
     final themeProvider = Provider.of<ThemeProvider>(context);
+
     globalLanguage = languageService.textGlobal;
 
-    return  MaterialApp(
-        title: AppConfig.appName,
-        debugShowCheckedModeBanner: AppConfig.isDebug,
-        locale: languageService.locale,
-        theme: themeProvider.themeData,
-        home: Scaffold(
-            // body: QuizListScreen(json: null, name: 'ngu')
-          // body: QuizScreen.review(jsonQuiz: jsonTest)
-          body: SizedBox()
-        )
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      title: AppConfig.appName,
+      debugShowCheckedModeBanner: AppConfig.isDebug,
+      locale: languageService.locale,
+      theme: themeProvider.themeData,
+      builder: (context, child) {
+        return Material(
+          child: SafeArea(
+            child: Column(
+              children: [
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  clipBehavior: Clip.none,
+                  child: bannerService.currentBanner != null
+                      ? bannerService.currentBanner!
+                      : const SizedBox.shrink(),
+                ),
+                Expanded(child: child!),
+              ],
+            ),
+          ),
+        );
+      },
+      home: DirectionPad(onDirectionChanged: (a) {
+        print(a);
+      }),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        FlutterQuillLocalizations.delegate,
+      ],
     );
   }
 }

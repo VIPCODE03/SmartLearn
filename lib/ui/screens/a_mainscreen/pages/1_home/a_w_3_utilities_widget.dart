@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/core/router/app_router.dart';
 import 'package:smart_learn/services/floating_bubble_service.dart';
-import 'package:smart_learn/ui/screens/b_flashcard_manage_screen/a_flashcardsetmanage_screen.dart';
-
+import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import '../../../../../global.dart';
-import '../../../../widgets/bouncebutton_widget.dart';
-import '../../../b_utilities_screen/util_screen.dart';
 
 class HomeUtilities extends StatelessWidget {
   const HomeUtilities({super.key});
@@ -42,32 +40,32 @@ class HomeUtilities extends StatelessWidget {
                         icon: Icons.style,
                         label: 'Thêm thẻ',
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const FlashCardSetManageScreen()));
+                          appRouter.flashCard.goFlashCardSet(context);
                         }
                     ),
 
                     _MenuItem(
                         icon: Icons.calculate,
                         label: 'Máy tính',
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const UtilScreen.calculator()));
-                        }
+                        onTap: () => appRouter.calculator.goCalculatorScreen(context)
                     ),
 
                     _MenuItem(
                         icon: Icons.assistant,
                         label: 'Trợ lý',
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const UtilScreen.assistant()));
-                        }
+                        onTap: () => appRouter.assistant.goAssistantScreen(context)
                     ),
 
                     _MenuItem(
                         icon: Icons.translate,
                         label: 'Dịch thuật',
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const UtilScreen.translation()));
-                        }
+                        onTap: () => appRouter.translate.goTranslation(context)
+                    ),
+
+                    _MenuItem(
+                        icon: Icons.gamepad,
+                        label: 'Game',
+                        onTap: () => appRouter.game.goMathMatrix(context)
                     ),
 
                     Row(

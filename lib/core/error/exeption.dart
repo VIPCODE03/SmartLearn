@@ -25,3 +25,7 @@ class BadRequestException extends AppException {}
 class InvalidInputException extends AppException {
   const InvalidInputException(super.message);
 }
+
+class AIException extends AppException {
+  const AIException();
+}

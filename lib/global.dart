@@ -110,3 +110,18 @@ void hideFloatingBubble() {
 }
 
 final Map<String, Map<String, String>> translateds = {};
+
+InputDecoration inputDecoration({
+  required BuildContext context,
+  required String hintText,
+  Color? color
+}) => InputDecoration(
+  labelText: hintText,
+  labelStyle: const TextStyle(color: Colors.grey),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: color ?? primaryColor(context)),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: color?.withAlpha(50) ?? primaryColor(context).withAlpha(50)),
+  ),
+);

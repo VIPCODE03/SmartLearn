@@ -12,11 +12,11 @@ enum PressType {
   singleClick,
 }
 
-//--------------------Xác định vị trí ưu tiên để hiển thị menu popup so với widget con.
+//--------------------Xác định vị trí ưu tiên để hiển thị menu popup so với screens con.
 enum PreferredPosition {
-  /// Ưu tiên hiển thị menu ở phía trên widget con.
+  /// Ưu tiên hiển thị menu ở phía trên screens con.
   top,
-  /// Ưu tiên hiển thị menu ở phía dưới widget con.
+  /// Ưu tiên hiển thị menu ở phía dưới screens con.
   bottom,
 }
 
@@ -30,7 +30,7 @@ enum _MenuLayoutId {
   content,
 }
 
-//------------------Các vị trí có thể của menu popup so với widget con.
+//------------------Các vị trí có thể của menu popup so với screens con.
 enum _MenuPosition {
   /// Góc dưới bên trái.
   bottomLeft,
@@ -46,10 +46,6 @@ enum _MenuPosition {
   topRight,
 }
 
-/// Biến toàn cục để lưu trữ hình chữ nhật bao quanh menu khi nó được hiển thị.
-Rect _menuRect = Rect.zero;
-
-/// Widget tùy chỉnh để tạo menu popup khi người dùng tương tác với một widget con.
 class WdgPopupDialog extends StatefulWidget {
   const WdgPopupDialog({
     super.key,
@@ -72,7 +68,7 @@ class WdgPopupDialog extends StatefulWidget {
   final Widget child;
   /// Xác định kiểu tương tác (nhấn đơn hoặc nhấn giữ) để kích hoạt hiển thị menu.
   final PressType pressType;
-  /// Xác định xem có hiển thị mũi tên nhỏ trỏ vào widget con từ menu hay không.
+  /// Xác định xem có hiển thị mũi tên nhỏ trỏ vào screens con từ menu hay không.
   final bool showArrow;
   /// Màu popup.
   final Color color;
@@ -82,18 +78,18 @@ class WdgPopupDialog extends StatefulWidget {
   final Color barrierColor;
   /// Khoảng cách ngang giữa menu và cạnh của màn hình.
   final double horizontalMargin;
-  /// Khoảng cách dọc giữa menu và widget con (nếu có mũi tên) hoặc cạnh của màn hình.
+  /// Khoảng cách dọc giữa menu và screens con (nếu có mũi tên) hoặc cạnh của màn hình.
   final double verticalMargin;
   /// Kích thước của mũi tên menu.
   final double arrowSize;
   /// Bộ điều khiển tùy chỉnh để quản lý trạng thái hiển thị của menu. Nếu không được cung cấp, một bộ điều khiển mặc định sẽ được tạo.
   final PopupMenuController? controller;
-  /// Hàm builder trả về widget chứa nội dung của menu popup.
+  /// Hàm builder trả về screens chứa nội dung của menu popup.
   final Widget Function() menuBuilder;
-  /// Vị trí ưu tiên để hiển thị menu (trên hoặc dưới widget con). Nếu không được chỉ định, vị trí sẽ được tự động xác định.
+  /// Vị trí ưu tiên để hiển thị menu (trên hoặc dưới screens con). Nếu không được chỉ định, vị trí sẽ được tự động xác định.
   final PreferredPosition? position;
 
-  /// Xác định xem sự kiện chạm có được chuyển đến các widget bên dưới lớp phủ hay không.
+  /// Xác định xem sự kiện chạm có được chuyển đến các screens bên dưới lớp phủ hay không.
   /// Chỉ hoạt động khi [barrierColor] trong suốt.
   final bool enablePassEvent;
 
@@ -102,20 +98,15 @@ class WdgPopupDialog extends StatefulWidget {
 }
 
 class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProviderStateMixin {
-  /// Lưu trữ thông tin kích thước và vị trí của widget con.
-  RenderBox? _childBox;
-  /// Lưu trữ thông tin kích thước và vị trí của overlay context (nơi menu được hiển thị).
-  RenderBox? _parentBox;
-  /// Đối tượng quản lý việc hiển thị menu trong overlay.
-  OverlayEntry? _overlayEntry;
-  /// Bộ điều khiển để quản lý trạng thái hiển thị của menu. Có thể là bộ điều khiển được truyền vào hoặc một bộ điều khiển nội bộ.
+  // Bộ điều khiển
   PopupMenuController? _controller;
-  /// Controller Animation
+  RenderBox? _childBox;
+  RenderBox? _parentBox;
+  OverlayEntry? _overlayEntry;
   late AnimationController _animationController;
-  /// Giá trị animation cho scale
   late Animation<double> _scaleAnimation;
 
-  //----------------Hiển thị menu popup
+  //-  Show menu --------------------------------------------------------------
   _showMenu() {
     Widget arrow = ClipPath(
       clipper: _ArrowClipper(),
@@ -130,7 +121,7 @@ class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProvid
       builder: (context) {
         final anchorGlobalPosition = _childBox!.localToGlobal(Offset.zero);
         final anchorCenter = anchorGlobalPosition + _childBox!.size.center(Offset.zero);
-        // Tính toán vị trí bắt đầu và kết thúc animation
+        //- Tính toán vị trí bắt đầu và kết thúc animation
         final offset = Offset(
           anchorCenter.dx - _parentBox!.size.width / 2,
           anchorCenter.dy - _parentBox!.size.height / 2,
@@ -201,10 +192,6 @@ class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProvid
               ? HitTestBehavior.translucent
               : HitTestBehavior.opaque,
           onPointerDown: (PointerDownEvent event) {
-            Offset offset = event.localPosition;
-            if (_menuRect.contains(Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
-              return;
-            }
             _controller?.hideMenu();
           },
           child: widget.barrierColor == Colors.transparent
@@ -219,7 +206,7 @@ class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProvid
     }
   }
 
-  // Ẩn menu popup bằng cách gỡ bỏ OverlayEntry khỏi Overlay.
+  //-  Hide menu --------------------------------------------------------------
   _hideMenu() {
     if (_overlayEntry != null) {
       _animationController.reverse().then((_) {
@@ -230,7 +217,7 @@ class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProvid
     }
   }
 
-  // Cập nhật trạng thái hiển thị của menu dựa trên bộ điều khiển và gọi callback menuOnChange.
+  //- Cập nhật view ------------------------------------------------------------
   _updateView() {
     bool menuIsShowing = _controller?.menuIsShowing ?? false;
     if (menuIsShowing) {
@@ -277,11 +264,7 @@ class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProvid
   Widget build(BuildContext context) {
     var child = Material(
       color: Colors.transparent,
-      child: InkWell(
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
+      child: GestureDetector(
         child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12), child: widget.child),
         onTap: () {
           if (widget.pressType == PressType.singleClick) {
@@ -308,7 +291,7 @@ class _WdgPopupDialogState extends State<WdgPopupDialog> with SingleTickerProvid
   }
 }
 
-/// Delegate sắp xếp vị trí của menu và mũi tên dựa trên vị trí của widget con.
+/// [_MenuLayoutDelegate] xác định vị trí menu hiển thị và hướng icon mũi tên
 class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
   _MenuLayoutDelegate({
     required this.anchorSize,
@@ -317,11 +300,11 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     this.position,
   });
 
-  /// Kích thước của widget con.
+  /// Kích thước của screens con.
   final Size anchorSize;
-  /// Vị trí của widget con trên màn hình.
+  /// Vị trí của screens con trên màn hình.
   final Offset anchorOffset;
-  /// Khoảng cách dọc giữa menu và widget con.
+  /// Khoảng cách dọc giữa menu và screens con.
   final double verticalMargin;
   /// Vị trí ưu tiên để hiển thị menu.
   final PreferredPosition? position;
@@ -435,12 +418,6 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
       positionChild(_MenuLayoutId.content, contentOffset);
     }
 
-    _menuRect = Rect.fromLTWH(
-      contentOffset.dx,
-      contentOffset.dy,
-      contentSize.width,
-      contentSize.height,
-    );
     bool isBottom = false;
     if (_MenuPosition.values.indexOf(menuPosition) < 3) {
       isBottom = true;

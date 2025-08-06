@@ -2,20 +2,13 @@ package com.zent.smartlearn.smart_learn;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.zent.smartlearn.smart_learn.widget.FlashcardWidgetManage;
 import com.zent.smartlearn.smart_learn.widget.WidgetContants;
-
 import org.json.JSONObject;
-
 import java.util.Map;
-
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;

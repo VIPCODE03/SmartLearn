@@ -1,5 +1,5 @@
 
-class JsonUtil {
+class UTIJson {
   static String cleanRawJsonString(String raw) {
     String cleaned = raw.trim();
 

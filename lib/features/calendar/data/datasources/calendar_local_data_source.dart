@@ -1,49 +1,44 @@
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_learn/features/calendar/data/models/a_calendar_model.dart';
 
 abstract class LDSCalendar {
-  static const String _cachedCalendar = 'CACHED_CALENDAR';
-
   Future<void> add(MODCalendar calendar);
   Future<void> update(MODCalendar calendar);
   Future<void> delete(String id);
 
   Future<MODCalendar> getById(String id);
   Future<List<MODCalendar>> getAll();
-  Future<List<MODCalendar>> getByDate(DateTime date);
   Future<List<MODCalendar>> getByDateRange(DateTime start, DateTime end);
+  Future<List<MODCalendar>> getEventsOnDate(DateTime startDate);
 
   Future<List<MODCalendar>> search(String title);
 }
 
 
 class LDSCalendarImpl extends LDSCalendar {
-  final SharedPreferences sharedPreferences;
-  LDSCalendarImpl({required this.sharedPreferences});
+  static final List<MODCalendar> demo = [];
 
   @override
   Future<void> add(MODCalendar calendar) {
-    // TODO: implement add
-    throw UnimplementedError();
+    demo.add(calendar);
+    return Future.value();
+  }
+
+  @override
+  Future<void> update(MODCalendar calendar) {
+    demo.removeWhere((element) => element.id == calendar.id);
+    demo.add(calendar);
+    return Future.value();
   }
 
   @override
   Future<void> delete(String id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    demo.removeWhere((element) => element.id == id);
+    return Future.value();
   }
 
   @override
   Future<List<MODCalendar>> getAll() {
-    // TODO: implement getAll
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<MODCalendar>> getByDate(DateTime date) {
-    // TODO: implement getByDate
-    throw UnimplementedError();
+    return Future.value(demo);
   }
 
   @override
@@ -65,9 +60,8 @@ class LDSCalendarImpl extends LDSCalendar {
   }
 
   @override
-  Future<void> update(MODCalendar calendar) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<List<MODCalendar>> getEventsOnDate(DateTime startDate) {
+    return Future.value(demo);
   }
 
 }

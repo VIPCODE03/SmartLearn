@@ -71,8 +71,8 @@
 //
 //   void _toggleTheBubble() {
 //     // Quan trọng: Đảm bảo bạn sử dụng một context có Overlay phía trên nó.
-//     // context từ Scaffold.of(context) hoặc context từ builder của một widget
-//     // nằm trong cây widget của MaterialApp thường sẽ hoạt động.
+//     // context từ Scaffold.of(context) hoặc context từ builder của một screens
+//     // nằm trong cây screens của MaterialApp thường sẽ hoạt động.
 //     FloatingBubbleService.toggleBubble(
 //       context,
 //       child: StarMenu(
@@ -101,7 +101,7 @@
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text(widget.title),
+//         title: Text(screens.title),
 //         actions: [
 //           IconButton(
 //             icon: const Icon(Icons.visibility_off),
@@ -152,7 +152,7 @@
 //       ),
 //       body: const Center(
 //         child: Text(
-//           'This is a new screen. The bubble should still be visible and draggable.',
+//           'This is a new screens. The bubble should still be visible and draggable.',
 //           textAlign: TextAlign.center,
 //           style: TextStyle(fontSize: 18),
 //         ),

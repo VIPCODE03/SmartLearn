@@ -50,17 +50,6 @@ class PS extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           const Text("Chọn màu phụ:", style: TextStyle(fontSize: 16)),
-          Wrap(
-            children: ThemeProvider.secondaryColors.map((color) {
-              return GestureDetector(
-                onTap: () => themeProvider.updateTheme(themeProvider.primaryColor, color),
-                child: Container(
-                  width: 40, height: 40, margin: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                ),
-              );
-            }).toList(),
-          ),
           Wrap(children: [
             InkWell(
               onTap: () {

@@ -1,24 +1,19 @@
-
 import 'package:smart_learn/features/calendar/data/models/zz_cycle_model.dart';
-import 'package:smart_learn/features/calendar/data/models/zz_time_model.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
+import 'package:smart_learn/features/calendar/domain/entities/zz_cycle_entity.dart';
 
 import 'b_calendar_event_model.dart';
 
-abstract class MODCalendar extends ENTCalendar {
-
-  MODCalendar({
-    required super.id,
-    required super.title,
-    required super.startTime,
-    required super.endTime,
-    required super.startDate,
-    super.cycle,
-    super.endDate,
-    super.ignoredDates,
-    super.valueColor,
-  });
+mixin MODCalendarMixin {
+  String get id;
+  String get title;
+  DateTime get start;
+  DateTime get end;
+  ENTCycle? get cycle;
+  List<DateTime>? get ignoredDates;
+  int? get valueColor;
+  String get type;
 
   Map<String, dynamic> toMapBase() {
     return {
@@ -26,54 +21,62 @@ abstract class MODCalendar extends ENTCalendar {
       "id": id,
       "title": title,
       "cycle": (cycle as MODCycle?)?.toMap(),
-      "startTime": (startTime as MODTime).toMap(),
-      "endTime": (endTime as MODTime).toMap(),
-      "startDate": startDate.toIso8601String(),
-      "endDate": endDate?.toIso8601String(),
+      "start": start.toIso8601String(),
+      "end": end.toIso8601String(),
       "valueColor": valueColor,
       "ignoredDates": ignoredDates != null && ignoredDates!.isNotEmpty
           ? ignoredDates!.map((date) => date.toIso8601String()).toList()
           : null,
     };
   }
+}
+
+abstract class MODCalendar extends ENTCalendar {
+  MODCalendar({
+    required super.id,
+    required super.title,
+    required super.start,
+    required super.end,
+    super.cycle,
+    super.ignoredDates,
+    super.valueColor,
+  });
+
+  Map<String, dynamic> toMap();
 
   static Map<String, dynamic> fromMapBase(Map<String, dynamic> map) {
     return {
       'id': map['id'] as String,
       'title': map['title'] as String,
       'cycle': map['cycle'] != null ? MODCycle.fromMap(map['cycle']) : null,
-      'startTime': MODTime.fromMap(map['startTime']),
-      'endTime': MODTime.fromMap(map['endTime']),
-      'startDate': DateTime.parse(map['startDate'] as String),
-      'endDate': map['endDate'] != null ? DateTime.parse(map['endDate'] as String) : null,
+      'start': DateTime.parse(map['start'] as String),
+      'end': DateTime.parse(map['end'] as String),
       'valueColor': map['valueColor'] as int?,
       'ignoredDates': (map['ignoredDates'] as List<dynamic>?)?.map((dateString) => DateTime.parse(dateString as String)).toList(),
+      'childProperties': map['childProperties'] as Map<String, dynamic>?,
     };
   }
 
   factory MODCalendar.fromMap(Map<String, dynamic> map) {
     final type = map['type'] as String;
     switch (type) {
-      case 'CalendarEvent':
-        return MODCalendarEvent.fromMap(map) as MODCalendar;
-      case 'CalendarSubject':
-        return MODCalendarSucject.fromMap(map) as MODCalendar;
+      case 'MODCalendarEvent':
+        return MODCalendarEvent.fromMap(map);
+      case 'MODCalendarSucject':
+        return MODCalendarSucject.fromMap(map);
       default:
         throw Exception('Unknown calendar type: $type');
     }
   }
 
   factory MODCalendar.fromEntity(ENTCalendar entity) {
-    final type = entity.type;
-    switch (type) {
-      case 'CalendarEvent':
-        return MODCalendarEvent.fromEntity(entity as ENTCalendarEvent) as MODCalendar;
-      case 'CalendarSubject':
-        return MODCalendarSucject.fromEntity(entity as ENTCalendarSubject) as MODCalendar;
+    switch (entity) {
+      case ENTCalendarEvent _:
+        return MODCalendarEvent.fromEntity(entity);
+      case ENTCalendarSubject _:
+        return MODCalendarSucject.fromEntity(entity);
       default:
-        throw Exception('Unknown calendar type: $type');
+        throw Exception('Unknown calendar type: $entity');
     }
   }
-
-  Map<String, dynamic> toMap();
 }

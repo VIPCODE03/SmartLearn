@@ -23,6 +23,7 @@ class UCEAppFileCreate extends UseCase<ENTAppFile, AppFileCreateParams> {
       TypeFile.draw => ENTAppFileDraw(id: id, name: name, pathId: pathId, json: params.data, createAt: createAt),
       TypeFile.quiz => ENTAppFileQuiz(id: id, name: name, pathId: pathId, createAt: createAt),
       TypeFile.system => ENTAppFileSystem(id: id, name: name, pathId: pathId, filePath: params.data, createAt: createAt),
+      TypeFile.flashcard => ENTAppFileFlashCard(id: id, name: name, pathId: pathId, createAt: createAt),
     };
 
     return repository.createFile(newFile, foreign: params.link);

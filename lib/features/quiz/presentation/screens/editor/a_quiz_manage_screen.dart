@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:performer/performer_build.dart';
+import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_create_ai_params.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_get_params.dart';
@@ -10,7 +10,9 @@ import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_man
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/performer.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/state.dart';
 import 'package:smart_learn/global.dart';
+import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
 import 'package:smart_learn/ui/dialogs/dialog_textfiled.dart';
+import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/ui/widgets/loading_widget.dart';
 
 enum _TypeAdd {
@@ -22,7 +24,7 @@ class SCRQuizManage extends StatelessWidget {
   final String title;
 
   SCRQuizManage.byFile({super.key, required String fileId, required this.title})
-      : foreign = ForeignKeyParams(fileId: fileId);
+      : foreign = ForeignKeyParams.byFileId(fileId: fileId);
 
   @override
   Widget build(BuildContext context) {
@@ -46,20 +48,15 @@ class _QuizManageScaffold extends StatefulWidget {
   State<_QuizManageScaffold> createState() => _QuizManageScaffoldState();
 }
 
-class _QuizManageScaffoldState extends State<_QuizManageScaffold> {
-  final _key = GlobalKey<ExpandableFabState>();
+class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouterMixin {
 
-  void _addQuiz(_TypeAdd type, QuizManagePerformer performer) async {
-    _key.currentState?.toggle();
+  void _addQuiz(BuildContext context, _TypeAdd type, QuizManagePerformer performer) async {
 
     if (type == _TypeAdd.handmade) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => SCRQuizEditor(
-          performer: performer,
-          foreign: widget.foreign,
-        )),
-      );
+      pushSlideLeft(context, SCRQuizEditor(
+        performer: performer,
+        foreign: widget.foreign,
+      ));
     }
 
     else {
@@ -107,25 +104,93 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> {
             },
           ),
 
-          floatingActionButtonLocation: ExpandableFab.location,
-          floatingActionButton: ExpandableFab(
-            key: _key,
-            overlayStyle: const ExpandableFabOverlayStyle(
-              blur: 5,
-            ),
-            children: [
-              FloatingActionButton.small(
-                onPressed: () => _addQuiz(_TypeAdd.handmade, performer),
-                child: const Icon(Icons.edit_note_rounded),
-              ),
-              FloatingActionButton.small(
-                onPressed: () => _addQuiz(_TypeAdd.ai, performer),
-                child: const Icon(Icons.smart_toy_rounded),
-              ),
-            ],
-          ),
+          floatingActionButton: FloatingActionButton(
+              onPressed: () => _showSelectType(context, performer),
+              child: const Icon(Icons.add)
+          )
         );
       },
+    );
+  }
+
+  /// BOTTOMSHEET TẠO DỮ LIỆU --------------------------------------------------
+  void _showSelectType(BuildContext parentContext, QuizManagePerformer performer) {
+    showAppBottomSheet(
+        context: parentContext,
+        title: 'Quiz',
+        child: Column(
+          children: [
+            _buildOptionCard(
+              icon: Icons.edit,
+              color: Colors.blue,
+              title: 'Tạo thủ công',
+              subtitle: 'Tự nhập câu hỏi và đáp án',
+              onTap: () {
+                Navigator.pop(context);
+                _addQuiz(parentContext, _TypeAdd.handmade, performer);
+              },
+            ),
+            const SizedBox(height: 12),
+            _buildOptionCard(
+              icon: Icons.smart_toy,
+              color: Colors.purple,
+              title: 'Tạo bằng AI',
+              subtitle: 'AI tạo quiz dựa trên hướng dẫn',
+              onTap: () {
+                Navigator.pop(context);
+              _addQuiz(parentContext, _TypeAdd.ai, performer);
+              },
+            ),
+          ],
+        )
+    );
+  }
+
+  Widget _buildOptionCard({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return WdgBounceButton(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          border: Border.all(color: color, width: 1.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 14),
+                ),
+                const SizedBox(width: 8),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+
+            const SizedBox(height: 2),
+            Text(subtitle,
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700])
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

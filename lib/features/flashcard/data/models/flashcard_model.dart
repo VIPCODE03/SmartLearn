@@ -7,7 +7,8 @@ class MODFlashCard extends ENTFlashCard {
     required super.id,
     required super.flashCardSetId,
     required super.front,
-    required super.back
+    required super.back,
+    super.rememberLevel = ENTFlashCard.unknown,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +18,7 @@ class MODFlashCard extends ENTFlashCard {
       table.columnCardSetId: flashCardSetId,
       table.columnFront: front,
       table.columnBack: back,
+      table.columnRememberLevel: rememberLevel,
     };
   }
 
@@ -27,6 +29,7 @@ class MODFlashCard extends ENTFlashCard {
       flashCardSetId: map[table.columnCardSetId] as String,
       front: map[table.columnFront] as String,
       back: map[table.columnBack] as String,
+      rememberLevel: map[table.columnRememberLevel] as int,
     );
   }
 
@@ -34,6 +37,7 @@ class MODFlashCard extends ENTFlashCard {
       id: flashCard.id,
       flashCardSetId: flashCard.flashCardSetId,
       front: flashCard.front,
-      back: flashCard.back
+      back: flashCard.back,
+      rememberLevel: flashCard.rememberLevel
   );
 }

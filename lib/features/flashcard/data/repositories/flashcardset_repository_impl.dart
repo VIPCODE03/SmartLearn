@@ -22,6 +22,16 @@ class REPFlashCardSetImpl extends REPFlashCardSet {
   }
 
   @override
+  Future<Either<Failure, bool>> update(ENTFlashcardSet cardSet) async {
+    try {
+      final result = await _localDataSource.update(MODFlashCardSet.fromEntity(cardSet));
+      return Right(result);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> delete(String id) async {
     try {
       final result = await _localDataSource.delete(id);
@@ -52,9 +62,9 @@ class REPFlashCardSetImpl extends REPFlashCardSet {
   }
 
   @override
-  Future<Either<Failure, bool>> update(ENTFlashcardSet cardSet) async {
+  Future<Either<Failure, ENTFlashcardSet?>> getByExtenal({required FlashCardSetForeignParams foreignParams}) async {
     try {
-      final result = await _localDataSource.update(MODFlashCardSet.fromEntity(cardSet));
+      final result = await _localDataSource.getByExtenal(foreignParams: foreignParams);
       return Right(result);
     } catch (e) {
       return Left(CacheFailure());

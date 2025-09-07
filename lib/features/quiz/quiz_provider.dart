@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/focus/presentation/widgets/export/export_manage_focus.dart';
-import 'package:smart_learn/features/quiz/presentation/screens/editor/a_quiz_manage_screen.dart';
-import 'package:smart_learn/features/quiz/presentation/screens/play/a_quiz_screen.dart';
+import 'package:smart_learn/features/quiz/presentation/screens/quiz_extenal_screen.dart';
 
 abstract class IQuizWidget {
   Widget focusManage(FocusBuilder builder);
 }
 
 abstract class IQuizRouter {
-  void goQuizFileManage(BuildContext context, {required String title, required String fileId});
-
-  void goQuizPlayById(BuildContext context, {required String fileId});
+  void goQuizByFileId(BuildContext context, {required String fileId});
 }
 
 class _QuizWidget implements IQuizWidget {
@@ -29,13 +26,8 @@ class _QuizRouter extends IQuizRouter with AppRouterMixin {
   static _QuizRouter get instance => _singleton;
 
   @override
-  void goQuizFileManage(BuildContext context, {required String title, required String fileId}) {
-    pushSlideLeft<SCRQuizManage>(context, SCRQuizManage.byFile(title: title, fileId: fileId,));
-  }
-
-  @override
-  void goQuizPlayById(BuildContext context, {required String fileId}) {
-    pushScale<SCRQuizManage>(context, SCRQuizPlay.reviewByFileID(fileId: fileId));
+  void goQuizByFileId(BuildContext context, {required String fileId}) {
+    pushScale(context, SCRQuizExtenal.byFile(fileId: fileId));
   }
 }
 

@@ -11,7 +11,6 @@ void main() {
 
     setUp(() {
       rep = REPCalendarImpl(localDataSource: LDSCalendarImpl());
-      LDSCalendarImpl.demo.clear();
     });
 
     test('add should add calendar to the list', () async {

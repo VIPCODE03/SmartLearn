@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/presentation/widgets/calendar_daily_widget.dart';
 import 'package:smart_learn/global.dart';
@@ -15,7 +16,7 @@ class SCRCalendar extends StatefulWidget {
   State<SCRCalendar> createState() => _SCRCalendarState();
 }
 
-class _SCRCalendarState extends State<SCRCalendar> {
+class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
   late PageController _pageController;
   DateTime _selectedDate = DateTime.now();
 
@@ -50,12 +51,7 @@ class _SCRCalendarState extends State<SCRCalendar> {
   }
 
   void _pushEditorScreen(BuildContext context, {ENTCalendar? calendar}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SCRCalendarEditor(calendar: calendar),
-      ),
-    );
+    pushSlideLeft(context, SCRCalendarEditor(calendar: calendar));
   }
 
   @override
@@ -121,9 +117,8 @@ class _SCRCalendarState extends State<SCRCalendar> {
                             return GestureDetector(
                               onTap: () => _selectDay(day),
                               child: Container(
-                                  width: MediaQuery.of(context).size.width / 7.5,
-                                  margin:
-                                  const EdgeInsets.symmetric(horizontal: 2),
+                                  width: MediaQuery.of(context).size.width / 7.7,
+                                  margin: const EdgeInsets.symmetric(horizontal: 2),
                                   decoration: BoxDecoration(
                                     color: isSelected
                                         ? primaryColor(context)
@@ -197,6 +192,7 @@ class _SCRCalendarState extends State<SCRCalendar> {
     );
   }
 
+  ///-  Logic UI  --------------------------------------------------------------
   //--- Lấy ngày thứ 2 của tuần -----------------------------------------------
   DateTime _getMondayOfWeek(DateTime date) {
     final dayOfWeek = date.weekday;

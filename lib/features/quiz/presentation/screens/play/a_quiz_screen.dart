@@ -9,11 +9,11 @@ import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_man
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/state.dart';
 
 class SCRQuizPlay extends StatelessWidget {
-  final Widget quiz;
+  final Widget _quiz;
 
   SCRQuizPlay.reviewByFileID({super.key, required String fileId})
-      : quiz = _SCRQuizById(
-      foreign: ForeignKeyParams(fileId: fileId),
+      : _quiz = _SCRQuizById(
+      foreign: ForeignKeyParams.byFileId(fileId: fileId),
       builder: (quizzes) {
         return SCRQuizReview(quizs: quizzes);
       });
@@ -29,7 +29,7 @@ class SCRQuizPlay extends StatelessWidget {
           },
         ),
       ),
-      body: quiz,
+      body: _quiz,
     );
   }
 }
@@ -50,7 +50,12 @@ class _SCRQuizById extends StatelessWidget {
           builder: (context, per) {
             final state = per.current;
             if(state is QuizManageHasDataState) {
-              return builder(state.quizzes);
+              if(state.quizzes.isNotEmpty) {
+                return builder(state.quizzes);
+              }
+              else {
+                return const Center(child: Text('Không có dữ liệu'));
+              }
             }
             else {
               return const SizedBox.shrink();

@@ -1,5 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:smart_learn/core/database/tables/aihomework_table.dart';
+import 'package:smart_learn/core/database/tables/dataanalysis_table.dart';
+import 'package:smart_learn/core/database/tables/user_table.dart';
 import 'package:smart_learn/core/database/tables/assistant_table.dart';
 import 'package:smart_learn/core/database/tables/calendar_table.dart';
 import 'package:smart_learn/core/database/tables/file_table.dart';
@@ -23,6 +26,9 @@ class AppDatabase {
     FlashCardTable.instance,
     QuizTable.instance,
     SubjectTable.instance,
+    AIHomeWorkTable.instance,
+    UserTable.instance,
+    DataAnalysisTable.instance,
   ];
 
   Future<Database> get db async {
@@ -33,7 +39,7 @@ class AppDatabase {
   Future<Database> _initOnce() async {
     return await Future.sync(() async {
       if (_database != null) return _database!;
-      final path = join(await getDatabasesPath(), 'test2.db');
+      final path = join(await getDatabasesPath(), 'vvva.db');
       _database = await openDatabase(
         path,
         version: 3,

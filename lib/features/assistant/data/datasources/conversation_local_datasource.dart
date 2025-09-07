@@ -1,7 +1,6 @@
 
 import 'package:smart_learn/core/database/appdatabase.dart';
 import 'package:smart_learn/core/database/tables/assistant_table.dart';
-import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/features/assistant/data/models/conversation_model.dart';
 
 abstract class LDSConversation {

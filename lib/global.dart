@@ -10,6 +10,8 @@ late GlobalLanguage globalLanguage;
 
 Color primaryColor(BuildContext context) => Theme.of(context).primaryColor;
 
+Color iconColor(BuildContext context) => Theme.of(context).primaryColor.withAlpha(150);
+
 //---   Chuyển màn hình   ----------------------------------------------------
 void navigateToNextScreen(
     BuildContext context,

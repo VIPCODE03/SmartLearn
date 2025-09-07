@@ -54,4 +54,15 @@ class REPFlashCardImpl extends REPFlashCard {
       return Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> multiReset(List<String> ids) async {
+    try {
+      final result = await _ldsFlashCard.multiReset(ids);
+      return Right(result);
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPFlashCardImpl.multiReset');
+      return Left(CacheFailure());
+    }
+  }
 }

@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_learn/core/di/injection.dart';
+import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/presentation/screens/calendar_editor_screen.dart';
 import 'package:smart_learn/features/calendar/presentation/state_manages/daily_viewmodel.dart';
@@ -18,7 +18,7 @@ class WdgDailyCalendar extends StatefulWidget {
   State<WdgDailyCalendar> createState() => _WdgDailyCalendarState();
 }
 
-class _WdgDailyCalendarState extends State<WdgDailyCalendar> {
+class _WdgDailyCalendarState extends State<WdgDailyCalendar> with AppRouterMixin {
   static const double hourHeight = 60.0;
   static const double timeLabelWidth = 60.0;
   static const int totalHours = 24;
@@ -35,6 +35,12 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> {
     _isToday = UTIDateTime.isToday(_currentTime);
     _viewModel = VMLDaily(current: _currentTime, getCalendar: getIt());
     _startTimer();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _viewModel.current = _currentTime;
+      });
+    });
   }
 
   @override
@@ -141,7 +147,7 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> {
           height: hourHeight,
           decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(color: Colors.grey.shade800, width: 0.5),
+              bottom: BorderSide(color: Colors.grey.withAlpha(120), width: 0.5),
             ),
           ),
           child: Stack(
@@ -235,18 +241,21 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> {
       left: timeLabelWidth + left + 4,
       width: width - 8,
       height: height,
-      child: Opacity(
+      child: WdgBounceButton(
+        onTap: () => pushSlideLeft(context, SCRCalendarEditor(title: 'Chỉnh sửa', calendar: calendar)),
+        scaleFactor: 0.9,
+        child: Opacity(
         opacity: opacity,
         child: Container(
             decoration: BoxDecoration(
-              color: (calendar.valueColor != null ? Color(calendar.valueColor!) : primaryColor(context)).withAlpha(200),
+              color: (calendar.valueColor != null
+                  ? Color(calendar.valueColor!)
+                  : primaryColor(context)).withAlpha(200),
               borderRadius: BorderRadius.circular(4),
               border: Border.all(color: (calendar.valueColor != null ? Color(calendar.valueColor!) : Colors.deepPurple), width: 1),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
             alignment: Alignment.topLeft,
-            child: WdgBounceButton(
-            onTap: () => navigateToNextScreen(context, SCRCalendarEditor(title: 'Chỉnh sửa', calendar: calendar)),
             child: FittedBox(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,6 +399,7 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> {
   }
 }
 
+///-  ĐƯỜNG NÉT ĐỨT GIỮA CÁC GIỜ  ----------------------------------------------
 class _TimeLine extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -398,7 +408,7 @@ class _TimeLine extends CustomPainter {
     double x = 0;
 
     final paint = Paint()
-      ..color = Colors.grey.shade800
+      ..color = Colors.grey.withAlpha(100)
       ..strokeWidth = 0.5;
 
     while (x < size.width) {

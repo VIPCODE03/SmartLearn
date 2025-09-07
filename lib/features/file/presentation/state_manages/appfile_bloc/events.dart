@@ -34,3 +34,6 @@ class AppFileDeleteEvent extends AppFileEvent {
   final ENTAppFile file;
   const AppFileDeleteEvent({required this.file});
 }
+
+//- Khác  -
+class AppFileBackFolder extends AppFileEvent {}

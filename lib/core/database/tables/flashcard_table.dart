@@ -20,7 +20,7 @@ class FlashcardSetTable extends Table {
       $columnName     TEXT NOT NULL,
       $columnIsSelect INTEGER DEFAULT 0,
       
-      $columnFileId   TEXT,     
+      $columnFileId   TEXT UNIQUE,     
       FOREIGN KEY($columnFileId) REFERENCES ${FileTable.instance.tableName}(${FileTable.instance.columnId}) ON DELETE CASCADE
     );
   ''';
@@ -35,6 +35,7 @@ class FlashCardTable extends Table {
   String get columnCardSetId   => 'flashCardSetId';
   String get columnFront => 'front';
   String get columnBack  => 'back';
+  String get columnRememberLevel => 'rememberLevel';
 
   @override
   String get build => '''
@@ -43,6 +44,7 @@ class FlashCardTable extends Table {
       $columnCardSetId   TEXT NOT NULL,
       $columnFront TEXT NOT NULL,
       $columnBack  TEXT NOT NULL,
+      $columnRememberLevel INTEGER DEFAULT 0,
       
       FOREIGN KEY($columnCardSetId) REFERENCES ${FlashcardSetTable.instance.tableName}(${FlashcardSetTable.instance.columnId}) ON DELETE CASCADE
     );

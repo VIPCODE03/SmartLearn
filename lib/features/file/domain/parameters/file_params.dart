@@ -1,5 +1,6 @@
 
-class FileForeignParams {
+class FileExtenalValue {
   final String subjectId;
-  FileForeignParams({required this.subjectId});
+  final String partition;
+  FileExtenalValue({required this.subjectId, required this.partition});
 }

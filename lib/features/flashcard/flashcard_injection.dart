@@ -11,6 +11,7 @@ import 'package:smart_learn/features/flashcard/domain/repositories/flashcardset_
 import 'package:smart_learn/features/flashcard/domain/usecases/flashcard_usecase/flashcard_add_usecase.dart';
 import 'package:smart_learn/features/flashcard/domain/usecases/flashcard_usecase/flashcard_delete_usecase.dart';
 import 'package:smart_learn/features/flashcard/domain/usecases/flashcard_usecase/flashcard_get_usecase.dart';
+import 'package:smart_learn/features/flashcard/domain/usecases/flashcard_usecase/flashcard_multi_reset_usecase.dart';
 import 'package:smart_learn/features/flashcard/domain/usecases/flashcard_usecase/flashcard_update_usecase.dart';
 import 'package:smart_learn/features/flashcard/domain/usecases/flashcardset_usecase/flashcardset_add_usecase.dart';
 import 'package:smart_learn/features/flashcard/domain/usecases/flashcardset_usecase/flashcardset_delete_usecase.dart';
@@ -21,12 +22,14 @@ Future<void> initFlashCardDI(GetIt getIt) async {
   // 1. UseCases
   getIt.registerLazySingleton(() => UCEFlashCardAdd(flashCardRepository: getIt()));
   getIt.registerLazySingleton(() => UCEFlashCardUpdate(flashCardRepository: getIt()));
+  getIt.registerLazySingleton(() => UCEFlashCardMultiReset(getIt()));
   getIt.registerLazySingleton(() => UCEFlashCardDelete(flashCardRepository: getIt()));
   getIt.registerLazySingleton(() => UCEFlashCardGet(flashCardRepository: getIt()));
 
   getIt.registerLazySingleton(() => UCEFlashCardSetAdd(getIt()));
   getIt.registerLazySingleton(() => UCEFlashCardSetDelete(getIt()));
   getIt.registerLazySingleton(() => UCEFlashCardSetUpdate(getIt()));
+  getIt.registerLazySingleton(() => UCEFlashCardSetGetList(getIt()));
   getIt.registerLazySingleton(() => UCEFlashCardSetGet(getIt()));
 
 

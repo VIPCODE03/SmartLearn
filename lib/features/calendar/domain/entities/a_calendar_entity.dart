@@ -72,8 +72,7 @@ abstract class ENTCalendar {
         bool isAdd = false;
         if (cycle!.type == RecurrenceType.daily
             || cycle!.type == RecurrenceType.none
-            || cycle!.type == RecurrenceType.weekly &&
-                cycle!.daysOfWeek!.contains(current.weekday)
+            || (cycle!.type == RecurrenceType.weekly && cycle!.daysOfWeek!.contains(current.weekday))
         ) {
           times.add({
             'startTime': start1,
@@ -96,6 +95,7 @@ abstract class ENTCalendar {
     return times;
   }
 
+  //- Tách thành các datetime từ start -> end ----------------------------------
   List<Map<String, dynamic>> get splitDateTime {
     if(cycle == null) {
       if(isInDay) {

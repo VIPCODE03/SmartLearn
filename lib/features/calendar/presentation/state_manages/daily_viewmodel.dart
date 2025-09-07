@@ -1,18 +1,16 @@
-
 import 'package:flutter/cupertino.dart';
+import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
+import 'package:smart_learn/features/calendar/domain/parameters/calendar_params.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_get_usecase.dart';
 
 class VMLDaily extends ChangeNotifier {
   DateTime _current;
-  final UCECalendarGet _getCalendar;
+  final UCECalendarGet _get;
   VMLDaily({
     required DateTime current,
     required UCECalendarGet getCalendar,
-  }) : _getCalendar = getCalendar,
-        _current = current {
-    _loadEvents();
-  }
+  }): _get = getCalendar, _current = current;
 
   set current(DateTime value) {
     _current = value;
@@ -30,10 +28,10 @@ class VMLDaily extends ChangeNotifier {
   }
 
   Future<void> _loadEvents() async {
-    final result = await _getCalendar(CalendarGetParams.byDate(_current));
+    final result = await _get(PARCalendarGetAll());
     result.fold(
             (fail) {
-              debugPrint(fail.toString());
+              logO(fail);
               events = [];
             },
             (datas) {

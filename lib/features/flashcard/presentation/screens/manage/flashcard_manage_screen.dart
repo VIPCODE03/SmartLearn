@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_learn/data/models/flashcard/b_flash_card.dart';
 import 'package:smart_learn/features/flashcard/domain/entities/flashcard_entity.dart';
-import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_bloc/bloc.dart';
-import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_bloc/events.dart';
-import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_bloc/state.dart';
+import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_manage_bloc/bloc.dart';
+import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_manage_bloc/events.dart';
+import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_manage_bloc/state.dart';
 import 'package:smart_learn/global.dart';
 import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
 import 'package:smart_learn/ui/dialogs/scale_dialog.dart';
@@ -23,7 +22,7 @@ class SCRFlashCardManage extends StatefulWidget {
 }
 
 class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
-  final FlashCardBloc _flashCardBloc = FlashCardBloc();
+  final FlashCardManageBloc _flashCardBloc = FlashCardManageBloc();
 
   @override
   void initState() {
@@ -44,9 +43,9 @@ class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
         title: const Text('Quản lý Flashcard'),
       ),
 
-      body: BlocProvider<FlashCardBloc>.value(
+      body: BlocProvider<FlashCardManageBloc>.value(
         value: _flashCardBloc,
-        child: BlocBuilder<FlashCardBloc, FlashCardState>(builder: (context, state) {
+        child: BlocBuilder<FlashCardManageBloc, FlashCardState>(builder: (context, state) {
           if(state is FlashCardNoDataState) {
             if (state is FlashCardLoadingState) {
               return const Center(child: CircularProgressIndicator());
@@ -99,7 +98,7 @@ class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
     showAppConfirmBottomSheet(
         context: context,
         title: 'FlashCard',
-        onComfirm: () {
+        onConfirm: () {
           if (formKey.currentState!.validate()) {
             if(isAdd) {
               _flashCardBloc.add(AddFlashCardEvent(
@@ -149,7 +148,7 @@ class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
 class _ItemCard extends StatelessWidget {
   final ENTFlashCard flashcard;
   final int index;
-  final Function(Flashcard?) onChange;
+  final Function(ENTFlashCard?) onChange;
 
   const _ItemCard(this.flashcard, {required this.index, required this.onChange});
 

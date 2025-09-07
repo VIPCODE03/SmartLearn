@@ -1,37 +1,44 @@
-
 import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
 import 'package:smart_learn/core/error/failures.dart';
 import 'package:smart_learn/core/usecase.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
+import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/zz_cycle_entity.dart';
+import 'package:smart_learn/features/calendar/domain/parameters/calendar_params.dart';
 import 'package:smart_learn/features/calendar/domain/repositories/calendar_repository.dart';
 
 import '../../../../utils/datetime_util.dart';
+import '../parameters/cycle_params.dart';
 
-class CalendarCheckDuplicateParams extends Equatable {
-  final ENTCalendar calendar;
-  const CalendarCheckDuplicateParams({required this.calendar});
-
-  @override
-  List<Object?> get props => [calendar];
-}
-
-class UCECalendarCheckDuplicate extends UseCase<bool, CalendarCheckDuplicateParams> {
+class UCECalendarCheckDuplicate extends UseCase<bool, PARCalendarCheckDuplicate> {
   final REPCalendar repository;
   UCECalendarCheckDuplicate(this.repository);
 
   @override
-  Future<Either<Failure, bool>> call(CalendarCheckDuplicateParams params) async {
+  Future<Either<Failure, bool>> call(PARCalendarCheckDuplicate params) async {
+    ENTCycle? newCycle = switch(params.cycle) {
+      PARCycleDaily _ => ENTCycle.daily(),
+      PARCycleWeekly days => ENTCycle.weekly(days.daysOfWeek),
+      PARCycleNone _ => ENTCycle.none(),
+      null => null,
+      PARCycle() => throw UnimplementedError(),
+    };
+    final simulatorCalendar = ENTCalendarEvent(
+        id: params.id ?? '',
+        title: '',
+        start: params.start,
+        end: params.end,
+        cycle: newCycle
+    );
     try {
       final all = await repository.getAll();
       if(all.isRight()) {
         final List<ENTCalendar> allValue = all.getOrElse(() => []);
         for (ENTCalendar calendar in allValue) {
-          if (calendar.id == params.calendar.id) {
+          if (calendar.id == simulatorCalendar.id) {
             continue;
           }
-          if (_checkDuplicate(params.calendar, calendar)) {
+          if (_checkDuplicate(simulatorCalendar, calendar)) {
             return const Right(true);
           }
         }

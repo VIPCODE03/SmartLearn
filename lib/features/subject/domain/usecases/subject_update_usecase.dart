@@ -8,15 +8,17 @@ class SubjectUpdateParams {
   final ENTSubject subject;
   final String? name;
   final List<String>? tags;
-  final int? level;
+  final String? level;
   final List<double>? exercisesScores;
+  final DateTime? lastStudyDate;
 
   SubjectUpdateParams(
     this.subject, {
-    this.name,
-    this.tags,
-    this.level,
-    this.exercisesScores,
+        this.name,
+        this.tags,
+        this.level,
+        this.exercisesScores,
+        this.lastStudyDate,
   });
 }
 
@@ -26,15 +28,15 @@ class UCESubjectUpdate extends UseCase<ENTSubject, SubjectUpdateParams> {
 
   @override
   Future<Either<Failure, ENTSubject>> call(SubjectUpdateParams params) async {
-    final newSubject = ENTSubject(
+    final subjectUpdated = ENTSubject(
       id: params.subject.id,
       name: params.name ?? params.subject.name,
-      lastStudyDate: params.subject.lastStudyDate,
+      lastStudyDate: params.lastStudyDate ?? params.subject.lastStudyDate,
       tags: params.tags ?? params.subject.tags,
       level: params.level ?? params.subject.level,
       exercisesScores: params.exercisesScores ?? params.subject.exercisesScores,
     );
-    final result = await repository.update(newSubject);
-    return result.fold((failure) => Left(failure), (subject) => Right(newSubject));
+    final result = await repository.update(subjectUpdated);
+    return result.fold((failure) => Left(failure), (sucsses) => sucsses ? Right(subjectUpdated) : Left(CacheFailure()));
   }
 }

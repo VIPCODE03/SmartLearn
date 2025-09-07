@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:smart_learn/features/file/presentation/screens/appfile_screen.dart';
 
 abstract class IFileWidget {
-  Widget fileView({required String subjectId, required String pathRoot, required List<String> supportTypes});
+  Widget fileView({
+    required String subjectId,
+    required String partition,
+    required List<String> supportTypes,
+    Function(VoidCallback backFolder)? onBackFolder,
+    Function(bool isRoot)? onRootChanged,
+  });
 }
 
 abstract class IFileRouter {}
@@ -13,11 +19,14 @@ class _FileWidget implements IFileWidget {
   static _FileWidget get instance => _singleton;
 
   @override
-  Widget fileView({required String subjectId, required String pathRoot, required List<String> supportTypes})
+  Widget fileView({required String subjectId, required String partition, required List<String> supportTypes,
+    Function(VoidCallback backFolder)? onBackFolder, Function(bool isRoot)? onRootChanged})
   => SCRAppFile(
     subjectId: subjectId,
-    pathRoot: pathRoot,
+    partition: partition,
     supportTypes: supportTypes.map((e) => _mapToSupportType(e)).toList(),
+    onBackFolder: onBackFolder,
+    onRootChanged: onRootChanged,
   );
 
   SupportType _mapToSupportType(String e) {
@@ -32,6 +41,8 @@ class _FileWidget implements IFileWidget {
         return SupportType.quiz;
       case 'system':
         return SupportType.system;
+      case 'flashcard':
+        return SupportType.flashcard;
       default:
         throw Exception("Unsupported type: $e");
     }

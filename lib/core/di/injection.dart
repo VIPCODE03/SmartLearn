@@ -1,10 +1,12 @@
 import 'package:get_it/get_it.dart';
+import 'package:smart_learn/features/aihomework/aihomework_injection.dart';
 import 'package:smart_learn/features/assistant/assistant_injection.dart';
 import 'package:smart_learn/features/calendar/calendar_ijnection.dart';
 import 'package:smart_learn/features/file/appfile_injection.dart';
 import 'package:smart_learn/features/flashcard/flashcard_injection.dart';
 import 'package:smart_learn/features/quiz/quiz_injection.dart';
 import 'package:smart_learn/features/subject/subject_injection.dart';
+import 'package:smart_learn/features/user/user_injection.dart';
 import 'core_injection.dart';
 import '../../features/focus/focus_injection.dart';
 
@@ -13,6 +15,7 @@ final getIt = GetIt.instance;
 Future<void> initAppDI() async {
   await initCoreDI(getIt);
 
+  await initUserDI(getIt);
   await initFocusDI(getIt);
   await initCalendarDI(getIt);
   await initAssistantDI(getIt);
@@ -20,4 +23,5 @@ Future<void> initAppDI() async {
   await initSubjectDI(getIt);
   await initQuizDI(getIt);
   await initFlashCardDI(getIt);
+  await initAIHomeWorkDI(getIt);
 }

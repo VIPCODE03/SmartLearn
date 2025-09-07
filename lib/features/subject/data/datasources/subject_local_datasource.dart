@@ -21,6 +21,18 @@ class LDSSubjectImpl implements LDSSubject {
   }
 
   @override
+  Future<bool> update(MODSubject subject) async {
+    final db = await _database.db;
+    final result = await db.update(
+      _table.tableName,
+      subject.toMap(),
+      where: '${_table.columnId} = ?',
+      whereArgs: [subject.id]
+    );
+    return result > 0;
+  }
+
+  @override
   Future<bool> delete(String id) async {
     final db = await _database.db;
     final result = await db.delete(
@@ -36,16 +48,5 @@ class LDSSubjectImpl implements LDSSubject {
     final db = await _database.db;
     final result = await db.query(_table.tableName);
     return result.map((e) => MODSubject.fromMap(e)).toList();
-  }
-
-  @override
-  Future<bool> update(MODSubject subject) async {
-    final db = await _database.db;
-    final result = await db.update(
-      _table.tableName,
-      subject.toMap(),
-      where: '${_table.columnId} = ?',
-    );
-    return result > 0;
   }
 }

@@ -6,6 +6,8 @@ enum RecurrenceType {
 
 class ENTCycle {
   final RecurrenceType type;
+
+  /// Thứ trong tuần bắt đầu từ [1-7]
   final Set<int>? daysOfWeek;
 
   ENTCycle({
@@ -17,11 +19,11 @@ class ENTCycle {
   'Invalid Cycle configuration for type $type'
   );
 
-  ENTCycle.daily()
-      : this(type: RecurrenceType.daily);
+  ENTCycle.none() : this(type: RecurrenceType.none);
 
-  ENTCycle.weekly(Set<int> daysOfWeek)
-      : this(
+  ENTCycle.daily() : this(type: RecurrenceType.daily);
+
+  ENTCycle.weekly(Set<int> daysOfWeek) : this(
       type: RecurrenceType.weekly,
       daysOfWeek: daysOfWeek
   );

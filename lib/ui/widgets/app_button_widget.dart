@@ -14,7 +14,7 @@ class WdgBounceButton extends StatefulWidget {
     required this.child,
     required this.onTap,
     this.duration = const Duration(milliseconds: 100),
-    this.scaleFactor = 0.8,
+    this.scaleFactor = 0.9,
     this.onPanStart,
     this.onPanUpdate,
     this.onPanEnd,

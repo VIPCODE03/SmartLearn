@@ -6,5 +6,5 @@ abstract class QuizParams {
 
 class ForeignKeyParams {
   final String? fileId;
-  ForeignKeyParams({this.fileId});
+  ForeignKeyParams.byFileId({this.fileId});
 }

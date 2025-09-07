@@ -13,9 +13,8 @@ class REPSubjectImpl extends REPSubject {
   @override
   Future<Either<Failure, bool>> add(ENTSubject subject) async {
     try {
-      final model = MODSubject.fromEntity(subject);
-      await localDataSource.add(model);
-      return const Right(true);
+      final result = await localDataSource.add(MODSubject.fromEntity(subject));
+      return Right(result);
     } catch (e, s) {
       logError(e, stackTrace: s, context: 'REPSubjectImpl.add');
       return Left(CacheFailure());
@@ -23,10 +22,23 @@ class REPSubjectImpl extends REPSubject {
   }
 
   @override
+  Future<Either<Failure, bool>> update(ENTSubject subject) async {
+    try {
+      final result = await localDataSource.update(MODSubject.fromEntity(subject));
+      logO(result);
+      return Right(result);
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPSubjectImpl.update');
+      return Left(CacheFailure());
+    }
+  }
+
+
+  @override
   Future<Either<Failure, bool>> delete(String id) async {
     try {
-      await localDataSource.delete(id);
-      return const Right(true);
+      final result = await localDataSource.delete(id);
+      return Right(result);
     } catch (e, s) {
       logError(e, stackTrace: s, context: 'REPSubjectImpl.delete');
       return Left(CacheFailure());
@@ -43,17 +55,4 @@ class REPSubjectImpl extends REPSubject {
       return Left(CacheFailure());
     }
   }
-
-  @override
-  Future<Either<Failure, bool>> update(ENTSubject subject) async {
-    try {
-      final model = MODSubject.fromEntity(subject);
-      localDataSource.update(model);
-      return const Right(true);
-      } catch (e, s) {
-      logError(e, stackTrace: s, context: 'REPSubjectImpl.update');
-      return Left(CacheFailure());
-    }
-  }
-
 }

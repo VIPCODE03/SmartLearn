@@ -7,6 +7,7 @@ extension AppFileUI on ENTAppFile {
     ENTAppFileTxt    _ => Icons.description,
     ENTAppFileDraw   _ => Icons.draw,
     ENTAppFileQuiz  _ => Icons.quiz,
+    ENTAppFileFlashCard _ => Icons.style,
     _              => Icons.insert_drive_file,
   };
 
@@ -15,6 +16,7 @@ extension AppFileUI on ENTAppFile {
     ENTAppFileTxt    _ => Colors.blue,
     ENTAppFileDraw   _ => Colors.orange,
     ENTAppFileQuiz   _ => Colors.green,
+    ENTAppFileFlashCard _ => Colors.brown,
     _              => Colors.grey,
   };
 }

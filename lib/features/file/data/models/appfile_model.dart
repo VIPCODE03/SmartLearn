@@ -7,7 +7,7 @@ mixin MODAppFileMixin {
   String get type;
   String get id;
   String get name;
-  String get pathId;
+  String? get pathId;
   DateTime get createAt;
 
   Map<String, dynamic> toJsonBase() {
@@ -40,6 +40,7 @@ abstract class MODAppFile extends ENTAppFile {
       case 'draw': return MODAppFileDraw.fromJson(json);
       case 'quiz':  return MODAppFileQuiz.fromJson(json);
       case 'system': return MODAppFileSystem.fromJson(json);
+      case 'flashcard': return MODAppFileFlashCard.fromJson(json);
       default: throw Exception('Unknown AppFile type: ${json['type']}');
     }
   }
@@ -51,6 +52,7 @@ abstract class MODAppFile extends ENTAppFile {
       case ENTAppFileDraw _: return MODAppFileDraw.fromEntity(entity);
       case ENTAppFileQuiz _: return MODAppFileQuiz.fromEntity(entity);
       case ENTAppFileSystem _: return MODAppFileSystem.fromEntity(entity);
+      case ENTAppFileFlashCard _: return MODAppFileFlashCard.fromEntity(entity);
       default: throw Exception('Unknown AppFile type: ${entity.runtimeType}');
     }
   }
@@ -175,43 +177,6 @@ class MODAppFileDraw extends ENTAppFileDraw with MODAppFileMixin implements MODA
   }
 }
 
-class MODAppFileQuiz extends ENTAppFileQuiz with MODAppFileMixin implements MODAppFile {
-  const MODAppFileQuiz({
-    required super.id,
-    required super.name,
-    required super.pathId,
-    required super.createAt,
-  });
-
-  @override
-  String get type => 'quiz';
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      ...toJsonBase(),
-    };
-  }
-
-  factory MODAppFileQuiz.fromJson(Map<String, dynamic> json) {
-    return MODAppFileQuiz(
-        id: json[_table.columnId],
-        name: json[_table.columnName],
-        pathId: json[_table.columnPathId],
-        createAt: DateTime.parse(json[_table.columnCreated]),
-    );
-  }
-
-  factory MODAppFileQuiz.fromEntity(ENTAppFileQuiz entity) {
-    return MODAppFileQuiz(
-        id: entity.id,
-        name: entity.name,
-        pathId: entity.pathId,
-        createAt: entity.createAt,
-    );
-  }
-}
-
 class MODAppFileSystem extends ENTAppFileSystem with MODAppFileMixin implements MODAppFile {
   const MODAppFileSystem({
     required super.id,
@@ -252,3 +217,78 @@ class MODAppFileSystem extends ENTAppFileSystem with MODAppFileMixin implements 
     );
   }
 }
+
+class MODAppFileQuiz extends ENTAppFileQuiz with MODAppFileMixin implements MODAppFile {
+  const MODAppFileQuiz({
+    required super.id,
+    required super.name,
+    required super.pathId,
+    required super.createAt,
+  });
+
+  @override
+  String get type => 'quiz';
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      ...toJsonBase(),
+    };
+  }
+
+  factory MODAppFileQuiz.fromJson(Map<String, dynamic> json) {
+    return MODAppFileQuiz(
+      id: json[_table.columnId],
+      name: json[_table.columnName],
+      pathId: json[_table.columnPathId],
+      createAt: DateTime.parse(json[_table.columnCreated]),
+    );
+  }
+
+  factory MODAppFileQuiz.fromEntity(ENTAppFileQuiz entity) {
+    return MODAppFileQuiz(
+      id: entity.id,
+      name: entity.name,
+      pathId: entity.pathId,
+      createAt: entity.createAt,
+    );
+  }
+}
+
+class MODAppFileFlashCard extends ENTAppFileFlashCard with MODAppFileMixin implements MODAppFile {
+  const MODAppFileFlashCard({
+    required super.id,
+    required super.name,
+    required super.pathId,
+    required super.createAt,
+  });
+
+  @override
+  String get type => 'flashcard';
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      ...toJsonBase(),
+    };
+  }
+
+  factory MODAppFileFlashCard.fromJson(Map<String, dynamic> json) {
+    return MODAppFileFlashCard(
+      id: json[_table.columnId],
+      name: json[_table.columnName],
+      pathId: json[_table.columnPathId],
+      createAt: DateTime.parse(json[_table.columnCreated]),
+    );
+  }
+
+  factory MODAppFileFlashCard.fromEntity(ENTAppFileFlashCard entity) {
+    return MODAppFileFlashCard(
+      id: entity.id,
+      name: entity.name,
+      pathId: entity.pathId,
+      createAt: entity.createAt,
+    );
+  }
+}
+

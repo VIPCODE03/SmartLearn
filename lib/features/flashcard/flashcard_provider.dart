@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/features/flashcard/presentation/screens/flashcard_extenal_screen.dart';
+import 'package:smart_learn/features/flashcard/presentation/screens/flashcard_screen.dart';
 import 'package:smart_learn/features/flashcard/presentation/screens/manage/flashcardset_manage_screen.dart';
 
 abstract class IFlashCardWidget {}
 
 abstract class IFlashCardRouter {
   void goFlashCardSet(BuildContext context);
+  void goFlashCard(BuildContext context, String cardSetId);
+  void goFlashCardByFile(BuildContext context, String fileId);
 }
 
 class _FlashCardWidget implements IFlashCardWidget {
@@ -21,6 +25,14 @@ class _FlashCardRouter extends IFlashCardRouter with AppRouterMixin {
 
   @override
   void goFlashCardSet(BuildContext context) => pushScale(context, const SCRFlashCardSetManage());
+
+  @override
+  void goFlashCard(BuildContext context, String cardSetId) => pushScale(context, SCRFlashCard(cardSetId: cardSetId));
+
+  @override
+  void goFlashCardByFile(BuildContext context, String fileId) {
+    pushScale(context, SCRFlashCardExtenal.byFile(fileId: fileId));
+  }
 }
 
 class FlashCardProvider {

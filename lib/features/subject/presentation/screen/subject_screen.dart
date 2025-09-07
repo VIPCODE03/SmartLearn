@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/constants/education_levels.dart';
 import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/subject/domain/entities/subject_entity.dart';
+import 'package:smart_learn/features/subject/domain/usecases/subject_add_usecase.dart';
+import 'package:smart_learn/features/subject/domain/usecases/subject_update_usecase.dart';
 import 'package:smart_learn/features/subject/presentation/mappers/subject_mapper.dart';
 import 'package:smart_learn/features/subject/presentation/screen/subject_detail_screen.dart';
 import 'package:smart_learn/features/subject/presentation/state_manages/subject_performer/subject_action.dart';
 import 'package:smart_learn/features/subject/presentation/state_manages/subject_performer/subject_performer.dart';
 import 'package:smart_learn/features/subject/presentation/state_manages/subject_performer/subject_state.dart';
 import 'package:smart_learn/global.dart';
+import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
+import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/ui/widgets/loading_widget.dart';
 import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
+import 'package:smart_learn/utils/datetime_util.dart';
 
 class SCRSubject extends StatefulWidget {
   const SCRSubject({super.key});
@@ -193,12 +199,72 @@ class _SCRSubjectState extends State<SCRSubject> {
             ),
             floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  conductor.add(AddSubject('name', 1));
-                }
+                  _showAddSubject(context, (name, level) {
+                    conductor.add(AddSubject(SubjectAddParams(name: name, level: level)));
+                  });
+                },
+              child: const Icon(Icons.add),
             ),
           );
         }
       }),
+    );
+  }
+
+  ///-  BOTTOM SHEET THÊM MÔN HỌC ----------------------------------------------
+  void _showAddSubject(BuildContext context, Function(String name, String level) onAdd) {
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController nameController = TextEditingController();
+    String? levelSelected;
+
+    showAppConfirmBottomSheet(
+      onConfirm: () {
+        if (formKey.currentState!.validate()) {
+          onAdd(nameController.text.trim(), levelSelected!);
+          Navigator.pop(context);
+        }
+      },
+      context: context,
+      title: 'Thêm môn học',
+      child: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+
+            TextFormField(
+              controller: nameController,
+              maxLines: 1,
+              decoration: inputDecoration(context: context, hintText: 'Tên môn học'),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Vui lòng nhập tên môn học';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 10),
+
+            DropdownButtonFormField<String>(
+              decoration: inputDecoration(context: context, hintText: 'Chọn lớp'),
+              items: educationLevels.map((level) {
+                return DropdownMenuItem<String>(value: level, child: Text(level));
+              }).toList(),
+              onChanged: (level) {
+                levelSelected = level;
+              },
+              validator: (value) {
+                if (value == null) {
+                  return 'Vui lòng chọn lớp';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -241,9 +307,10 @@ class _SubjectItem extends StatelessWidget with AppRouterMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return WdgBounceButton(
         onTap: () {
           pushSlideLeft(context, SCRSubjectDetail(subject: subject));
+          PerformerProvider.of<SubjectPerformer>(context).add(UpdateSubject(SubjectUpdateParams(subject, lastStudyDate: DateTime.now())));
         },
         child: Container(
             constraints: BoxConstraints(
@@ -273,14 +340,21 @@ class _SubjectItem extends StatelessWidget with AppRouterMixin {
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)
                 ),
 
+                const SizedBox(height: 5),
+
+                Text(
+                    subject.level,
+                ),
+
                 const SizedBox(height: 15),
 
-                Text('${globalLanguage.lastStudyDate}: ${subject.lastStudyDate}',
+                Text('${globalLanguage.lastStudyDate}: ${UTIDateTime.getFormatyyyyMMddHHmm(subject.lastStudyDate)}',
                     style: const TextStyle(color: Colors.grey)),
 
-                Text(subject.evaluateName,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: subject.evaluateColor)
-                ),
+                if(subject.evaluateName != '')
+                  Text(subject.evaluateName,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: subject.evaluateColor)
+                  ),
               ],
             )
         )

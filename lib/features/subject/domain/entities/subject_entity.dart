@@ -3,7 +3,7 @@ class ENTSubject {
   final String name;
   final DateTime lastStudyDate;
   final List<String> tags;
-  final int level;
+  final String level;
   final List<double> exercisesScores;
 
   const ENTSubject({

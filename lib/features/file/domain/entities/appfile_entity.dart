@@ -1,10 +1,9 @@
-
 import 'package:equatable/equatable.dart';
 
 abstract class ENTAppFile extends Equatable {
   final String id;
   final String name;
-  final String pathId;
+  final String? pathId;
   final DateTime createAt;
 
   const ENTAppFile({
@@ -49,6 +48,17 @@ class ENTAppFileDraw extends ENTAppFile {
   });
 }
 
+class ENTAppFileSystem extends ENTAppFile {
+  final String filePath;
+  const ENTAppFileSystem({
+    required super.id,
+    required super.name,
+    required super.pathId,
+    required super.createAt,
+    required this.filePath,
+  });
+}
+
 class ENTAppFileQuiz extends ENTAppFile {
   const ENTAppFileQuiz({
     required super.id,
@@ -58,13 +68,11 @@ class ENTAppFileQuiz extends ENTAppFile {
   });
 }
 
-class ENTAppFileSystem extends ENTAppFile {
-  final String filePath;
-  const ENTAppFileSystem({
+class ENTAppFileFlashCard extends ENTAppFile {
+  const ENTAppFileFlashCard({
     required super.id,
     required super.name,
     required super.pathId,
     required super.createAt,
-    required this.filePath,
   });
 }

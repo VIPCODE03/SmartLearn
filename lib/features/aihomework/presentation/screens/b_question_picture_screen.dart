@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -62,19 +64,25 @@ class _SCRAICameraState extends State<SCRAICamera> {
     _croppedFile = await _cameraService.crop(path);
   }
 
-  void _next(BuildContext context) {
+  void _next(BuildContext context) async {
     if(_croppedFile != null) {
-      navigateToNextScreen(
-          context,
-          SCRAIInstruction(data: _croppedFile),
-          offsetBegin: const Offset(0, 0),
-          onScreenPop: (pop) async {
-            await _crop(_filePath);
-            if (context.mounted && _croppedFile != null) {
-              _next(context);
+      final file = File(_croppedFile!.path);
+      final imageBytes = await file.readAsBytes();
+      if(context.mounted) {
+        navigateToNextScreen(
+            context,
+            SCRAIInstruction(
+                textQuestion: '',
+                image: imageBytes),
+            offsetBegin: const Offset(0, 0),
+            onScreenPop: (pop) async {
+              await _crop(_filePath);
+              if (context.mounted && _croppedFile != null) {
+                _next(context);
+              }
             }
-          }
-      );
+        );
+      }
     }
   }
 

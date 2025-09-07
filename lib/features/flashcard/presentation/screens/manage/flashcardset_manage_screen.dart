@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/flashcard/domain/entities/flashcardset_entity.dart';
 import 'package:smart_learn/features/flashcard/domain/parameters/flashcardsetpramas/foreign_params.dart';
+import 'package:smart_learn/features/flashcard/presentation/screens/flashcard_screen.dart';
 import 'package:smart_learn/features/flashcard/presentation/screens/manage/flashcard_manage_screen.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcardset_performer/action.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcardset_performer/performer.dart';
@@ -19,7 +21,7 @@ class SCRFlashCardSetManage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PerformerProvider<FlashcardSetPerformer>.create(
       create: (_) => FlashcardSetPerformer()
-        ..add(FlashCardSetLoadAll(FlashCardSetGetAllParams(FlashCardSetForeignParams()))),
+        ..add(FlashCardSetLoadAll(FlashCardSetGetAllParams(FlashCardSetForeignParams.none()))),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Flashcard Set Manage'),
@@ -56,7 +58,7 @@ class SCRFlashCardSetManage extends StatelessWidget {
                   context: context,
                   onDataChanged: (name) {
                     performer.add(FlashCardSetAdd(FlashCardSetAddParams(
-                        FlashCardSetForeignParams(),
+                        FlashCardSetForeignParams.none(),
                         name: name))
                     );
                   },
@@ -73,7 +75,7 @@ class SCRFlashCardSetManage extends StatelessWidget {
   }
 }
 
-class _ItemCardSet extends StatelessWidget {
+class _ItemCardSet extends StatelessWidget with AppRouterMixin {
   final ENTFlashcardSet cardSet;
   final FlashcardSetPerformer performer;
   const _ItemCardSet({required this.cardSet, required this.performer});
@@ -87,12 +89,9 @@ class _ItemCardSet extends StatelessWidget {
         );
       },
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SCRFlashCardManage(
-            cardSetId: cardSet.id,
-          )),
-        );
+        pushSlideLeft(context, SCRFlashCardManage(
+          cardSetId: cardSet.id,
+        ));
       },
       child: Container(
           height: 200,
@@ -154,6 +153,13 @@ class _ItemCardSet extends StatelessWidget {
                     ),
 
                     WdgBounceButton(
+                        child: const Icon(Icons.play_arrow_outlined),
+                        onTap: () {
+                          pushScale(context, SCRFlashCard(cardSetId: cardSet.id));
+                        }
+                    ),
+
+                    WdgBounceButton(
                         onTap: () {
                           _showEditCardSheet(context: context, cardSet: cardSet, onDataChanged: (newName) {
                             performer.add(FlashCardSetUpdate(FlashCardSetUpdateParams(
@@ -184,7 +190,7 @@ void _showEditCardSheet({
   showAppConfirmBottomSheet(
     context: context,
     title: 'FlashCardSet',
-    onComfirm: () {
+    onConfirm: () {
       if (formKey.currentState?.validate() ?? false) {
         onDataChanged(nameController.text);
         Navigator.pop(context);

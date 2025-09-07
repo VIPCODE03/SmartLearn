@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:smart_learn/core/database/tables/calendar_table.dart';
 import 'package:smart_learn/features/calendar/data/models/zz_cycle_model.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/zz_cycle_entity.dart';
 
 import 'b_calendar_event_model.dart';
+
+CalendarTable get _table => CalendarTable.instance;
 
 mixin MODCalendarMixin {
   String get id;
@@ -17,16 +22,16 @@ mixin MODCalendarMixin {
 
   Map<String, dynamic> toMapBase() {
     return {
-      "type": type,
-      "id": id,
-      "title": title,
-      "cycle": (cycle as MODCycle?)?.toMap(),
-      "start": start.toIso8601String(),
-      "end": end.toIso8601String(),
-      "valueColor": valueColor,
-      "ignoredDates": ignoredDates != null && ignoredDates!.isNotEmpty
-          ? ignoredDates!.map((date) => date.toIso8601String()).toList()
+      _table.columnId: id,
+      _table.columnTitle: title,
+      _table.columnCycle: cycle != null ? jsonEncode(MODCycle.fromEntity(cycle!).toMap()) : null,
+      _table.columnStart: start.toIso8601String(),
+      _table.columnEnd: end.toIso8601String(),
+      _table.columnValueColor: valueColor,
+      _table.columnIgnoredDates: ignoredDates != null && ignoredDates!.isNotEmpty
+          ? jsonEncode(ignoredDates!.map((date) => date.toIso8601String()).toList())
           : null,
+      _table.columnType: type,
     };
   }
 }
@@ -46,19 +51,23 @@ abstract class MODCalendar extends ENTCalendar {
 
   static Map<String, dynamic> fromMapBase(Map<String, dynamic> map) {
     return {
-      'id': map['id'] as String,
-      'title': map['title'] as String,
-      'cycle': map['cycle'] != null ? MODCycle.fromMap(map['cycle']) : null,
-      'start': DateTime.parse(map['start'] as String),
-      'end': DateTime.parse(map['end'] as String),
-      'valueColor': map['valueColor'] as int?,
-      'ignoredDates': (map['ignoredDates'] as List<dynamic>?)?.map((dateString) => DateTime.parse(dateString as String)).toList(),
-      'childProperties': map['childProperties'] as Map<String, dynamic>?,
+      _table.columnId: map[_table.columnId] as String,
+      _table.columnTitle: map[_table.columnTitle] as String,
+      _table.columnCycle: map[_table.columnCycle] != null
+          ? MODCycle.fromMap(jsonDecode(map[_table.columnCycle]) as Map<String, dynamic>)
+          : null,
+      _table.columnStart: DateTime.parse(map[_table.columnStart] as String),
+      _table.columnEnd: DateTime.parse(map[_table.columnEnd] as String),
+      _table.columnValueColor: map[_table.columnValueColor] as int?,
+      _table.columnIgnoredDates: map[_table.columnIgnoredDates] != null 
+          ? (jsonDecode(map[_table.columnIgnoredDates]) as List<dynamic>).map((e) => DateTime.parse(e as String)).toList()
+          : null,
+      _table.columnType: map[_table.columnType] as String,
     };
   }
 
   factory MODCalendar.fromMap(Map<String, dynamic> map) {
-    final type = map['type'] as String;
+    final type = map[_table.columnType] as String;
     switch (type) {
       case 'MODCalendarEvent':
         return MODCalendarEvent.fromMap(map);

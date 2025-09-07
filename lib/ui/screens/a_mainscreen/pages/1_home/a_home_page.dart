@@ -15,6 +15,7 @@ class HomePage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20),
       children: const [
         HomeAppBar(),
+        SizedBox(height: 30),
 
         HomeAI(),
         SizedBox(height: 30),

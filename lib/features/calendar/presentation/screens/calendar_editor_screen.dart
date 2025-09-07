@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
+import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
+import 'package:smart_learn/features/calendar/domain/parameters/calendar_params.dart';
+import 'package:smart_learn/features/calendar/domain/parameters/cycle_params.dart';
 import 'package:smart_learn/features/calendar/presentation/state_manages/editor_viewmodel.dart';
 import 'package:smart_learn/ui/dialogs/scale_dialog.dart';
 import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/ui/widgets/divider_widget.dart';
 import 'package:smart_learn/ui/widgets/loading_widget.dart';
 import 'package:smart_learn/utils/datetime_util.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../../../../global.dart';
 
@@ -29,93 +33,115 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
   DateTime? _end;
   String? _cycle;
   final Set<int> _selectedWeekdays = {};
-
-  BuidCalendarParams buildCalendar() {
-    return BuidCalendarParams(
-      type: _selectedType,
-      id: widget.calendar?.id,
-      title: _titleController.text,
-      start: _start!,
-      end: _end!,
-      cycle: _cycle,
-      weekdays: _selectedWeekdays,
-    );
-  }
+  int? _valueColor;
 
   @override
   void initState() {
     super.initState();
-    _viewModel = VMLCalendarEditor(
-        useCaseUpdate: getIt(),
-        useCaseCheckDuplicate: getIt()
-    );
+    _viewModel = VMLCalendarEditor(getIt(), getIt(), getIt());
 
     if(widget.calendar != null) {
-      _titleController.text = widget.calendar!.title;
-      _start = widget.calendar!.start;
-      _end = widget.calendar!.end;
-      _cycle = widget.calendar!.cycle?.type.name;
+      _loadCalendar(widget.calendar!);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              expandedHeight: 100.0,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: const EdgeInsetsDirectional.only(start: 72.0, bottom: 16.0),
-                centerTitle: false,
-                title: Text(
-                  widget.title ?? 'Trình chỉnh sửa Lịch',
-                ),
-                collapseMode: CollapseMode.pin,
-              ),
-              actions: [
-                IconButton(
-                    icon: const Icon(Icons.check),
-                    onPressed: () {
-                      final check = _viewModel.checkDuplicate(params: buildCalendar());
-                      _showDialogConfirm(context, check, (ok) {
-                        if(ok) {
-                          _viewModel.addOrUpdate(params: buildCalendar());
-                          Navigator.of(context).pop();
-                        }
-                      });
-                    })
-              ],
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverHeaderDelegate(
-                minHeight: 60.0,
-                maxHeight: 60.0,
-                child: _buildSelectType(),
-              ),
-            ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.design_services),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
 
-            SliverToBoxAdapter(
-              child: _buildSetup(context)
-            ),
-          ],
+        title: Text(widget.title ?? 'Trình chỉnh sửa Lịch'),
+
+        actionsPadding: const EdgeInsets.only(right: 16),
+        actions: [
+          WdgBounceButton(
+            onTap: _onSave,
+            child: const Icon(Icons.check),
+          ),
+        ],
+      ),
+      body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            children: [
+              SizedBox(height: 60, child: _buildSelectType()),
+              Expanded(child: SingleChildScrollView(
+                  child: _buildSetup(context)
+              )),
+            ],
         ),
       )
     );
   }
 
-  ///-  Items chọn kiểu  --------------------------------------------------------
+  //- Tải dữ liệu calendar -----------------------------------------------------
+  void _loadCalendar(ENTCalendar calendar) {
+    if(calendar is ENTCalendarEvent) {
+      _selectedType = 0;
+    }
+    else if(calendar is ENTCalendarSubject) {
+      _selectedType = 1;
+    }
+    _titleController.text = calendar.title;
+    _start = calendar.start;
+    _end = calendar.end;
+    _cycle = calendar.cycle?.type.name;
+    _selectedWeekdays.addAll(calendar.cycle?.daysOfWeek ?? {});
+    _valueColor = calendar.valueColor;
+  }
+
+  //- Tạo chu kỳ  --------------------------------------------------------------
+  PARCycle? _createCycleParams() {
+    switch(_cycle) {
+      case 'none':
+        return PARCycleNone();
+      case 'daily':
+        return PARCycleDaily();
+      case 'weekly':
+        return PARCycleWeekly(_selectedWeekdays);
+      default:
+        return null;
+    }
+  }
+
+  //- Hành động lưu ------------------------------------------------------------
+  void _onSave() {
+    final check = _viewModel.checkDuplicate(params: PARCalendarCheckDuplicate(
+        id: widget.calendar?.id,
+        start: _start!,
+        end: _end!,
+        cycle: _createCycleParams()
+    ));
+    _showDialogConfirm(context, check, (ok) {
+      if (ok) {
+        if(widget.calendar == null) {
+          final params = _selectedType == 0
+              ? PARCalendarEventAdd(title: _titleController.text, start: _start!, end: _end!, valueColor: _valueColor, desc: 'abc')
+              : PARCalendarSubjectAdd(title: _titleController.text, start: _start!, end: _end!, valueColor: _valueColor, subjectId: 'abc');
+          _viewModel.add(params: params);
+        }
+        else {
+          final PARCalendarUpdate params = _selectedType == 0
+              ? PARCalendarEventUpdate(widget.calendar as ENTCalendarEvent,
+              title: _titleController.text, start: _start!, end: _end!,cycle: _createCycleParams(), valueColor: _valueColor,
+              desc: 'abc')
+              : PARCalendarSubjectUpdate(widget.calendar as ENTCalendarSubject,
+              title: _titleController.text, start: _start!, end: _end!, cycle: _createCycleParams(), valueColor: _valueColor,
+              subjectId: 'abc');
+          _viewModel.update(params: params);
+        }
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
+  ///-  ITEMS CHỌN LOẠI  -------------------------------------------------------
   Widget _buildSelectType() {
     return SizedBox(
       height: 60.0,
@@ -130,7 +156,6 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
     );
   }
 
-  ///-  Item chọn kiểu  --------------------------------------------------------
   Widget _buildItemType(String name, IconData icon, int index) {
     final isSelected = _selectedType == index;
     return Container(
@@ -153,8 +178,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
     );
   }
 
-  ///-  Phần setup lịch --------------------------------------------------------
-  ///---------------------------------------------------------------------------
+  ///-  SETUP LỊCH -------------------------------------------------------------
   Widget _buildSetup(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -200,7 +224,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
         /// --- Chọn chu kỳ --------------------------------------------------
         DropdownButtonFormField<String>(
           decoration: inputDecoration(context: context, hintText: 'Chu kỳ'),
-          value: _cycle,
+          value: _cycle ?? 'none',
           items: const [
             DropdownMenuItem(value: 'none', child: Text('Không lặp')),
             DropdownMenuItem(value: 'daily', child: Text('Lặp hàng ngày')),
@@ -219,7 +243,12 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
             spacing: 8.0,
             children: _buildWeekdayChips(),
           )
-        ]
+        ],
+
+        ///-  CHỌN MÀU  --------------------------------------------------------
+        _buildColorPicker(context, (color) => setState(() {
+          _valueColor = color.toARGB32();
+        }))
       ],
     );
   }
@@ -237,16 +266,16 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
 
     return days.map((day) {
       final index = days.indexOf(day);
-      final isSelected = _selectedWeekdays.contains(index);
+      final isSelected = _selectedWeekdays.contains(index + 1);
       return FilterChip(
         label: Text(day['label']!),
         selected: isSelected,
         onSelected: (selected) {
           setState(() {
             if (selected) {
-              _selectedWeekdays.add(index);
+              _selectedWeekdays.add(index + 1);
             } else {
-              _selectedWeekdays.remove(index);
+              _selectedWeekdays.remove(index + 1);
             }
           });
         },
@@ -305,38 +334,33 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
       ),
     );
   }
-}
 
-///-  Header chọn kiểu  --------------------------------------------------------
-class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final double minHeight;
-  final double maxHeight;
-  final Widget child;
-
-  _SliverHeaderDelegate({
-    required this.minHeight,
-    required this.maxHeight,
-    required this.child,
-  });
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Material(
-      child: child,
+  Widget _buildColorPicker(BuildContext context, Function(Color color) onSelect) {
+    return ListTile(
+      leading: Icon(Icons.color_lens, color: _valueColor != null ? Color(_valueColor!) : Colors.grey),
+      title: const Text(
+        'Chọn màu',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return WdgScaleDialog(
+              child: SingleChildScrollView(
+                child: BlockPicker(
+                  pickerColor: Color(_valueColor ?? primaryColor(context).toARGB32()),
+                  onColorChanged: (Color color) {
+                    onSelect(color);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
-  }
-
-  @override
-  bool shouldRebuild(covariant _SliverHeaderDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight ||
-        child != oldDelegate.child;
   }
 }
 
@@ -353,71 +377,126 @@ void _showDialogConfirm(
         border: true,
         shadow: true,
         barrierDismissible: false,
-        child: FutureBuilder<bool>(
-          future: check,
-          builder: (context, snapshot) {
-            String statusText = 'Đang kiểm tra lịch...';
-            Widget? action;
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: FutureBuilder<bool>(
+            future: check,
+            builder: (context, snapshot) {
+              String statusText = 'Đang kiểm tra lịch...';
+              Widget? action;
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const WdgLoading(),
+                    const SizedBox(height: 16),
+                    Text(statusText),
+                  ],
+                );
+              }
+
+              if (snapshot.hasError) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.error, color: Colors.red),
+
+                    const SizedBox(height: 8),
+
+                    const Text('Thời gian bắt đầu phải trước thời gian kết thúc'),
+
+                    const SizedBox(height: 30),
+
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: WdgBounceButton(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Text('OK', style: TextStyle(color: primaryColor(context)),),
+                      ),
+                    )
+                  ],
+                );
+              }
+
+              if (snapshot.hasData) {
+                final bool hasConflict = snapshot.data!;
+                statusText = hasConflict
+                    ? 'Có lịch bị trùng!'
+                    : 'Không có lịch trùng.';
+
+                action = Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    WdgBounceButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'Hủy',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 32),
+
+                    WdgBounceButton(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        onSave(true);
+                      },
+                      child: Text(
+                        'OK',
+                        style: TextStyle(
+                          color: primaryColor(context),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const WdgLoading(),
-                  const SizedBox(height: 16),
-                  Text(statusText),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        snapshot.hasData && snapshot.data!
+                            ? Icons.warning_amber_rounded
+                            : Icons.check_circle_rounded,
+                        color: snapshot.hasData && snapshot.data! ? Colors.amber : Colors.green,
+                        size: 28,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        statusText,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: snapshot.hasData && snapshot.data! ? Colors.amber : Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  if (action != null)
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: action,
+                    )
                 ],
               );
-            }
-
-            if (snapshot.hasError) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.error, color: Colors.red),
-                  const SizedBox(height: 8),
-                  Text('Đã xảy ra lỗi: ${snapshot.error}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Đóng'),
-                  ),
-                ],
-              );
-            }
-
-            if (snapshot.hasData) {
-              final bool hasConflict = snapshot.data!;
-              statusText = hasConflict ? 'Có lịch bị trùng!' : 'Không có lịch trùng.';
-
-              action = WdgBounceButton(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  onSave(true);
-                },
-                child: Text(hasConflict ? 'Vẫn thêm' : 'OK',
-                    style: TextStyle(color: primaryColor(context), fontWeight: FontWeight.w700)
-                ),
-              );
-            }
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  statusText,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: snapshot.hasData && snapshot.data! ? Colors.red : Colors.green,
-                  ),
-                ),
-                const SizedBox(height: 30),
-                if (action != null) action
-              ],
-            );
-          },
-        ),
+            },
+          ),
+        )
       );
     },
   );

@@ -12,6 +12,7 @@ class FileTable extends Table {
   String get columnPathId    => 'pathId';
   String get columnCreated   => 'createdAt';
   String get columnType      => 'type';
+  String get columnPartition => 'partition';
 
   String get columnContent   => 'content';     // txt
   String get columnJson      => 'json';        // draw
@@ -25,9 +26,10 @@ class FileTable extends Table {
     CREATE TABLE $tableName (
       $columnId        TEXT PRIMARY KEY,
       $columnName      TEXT NOT NULL,
-      $columnPathId    TEXT NOT NULL,
+      $columnPathId    TEXT,
       $columnCreated   TEXT NOT NULL,
       $columnType      TEXT NOT NULL,     
+      $columnPartition TEXT NOT NULL,
 
       $columnContent   TEXT,
       $columnJson      TEXT,

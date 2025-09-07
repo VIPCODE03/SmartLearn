@@ -5,8 +5,16 @@ mixin AppRouterMixin {
     return Navigator.of(context).push<T>(_buildRoute<T>(page, AxisDirection.left));
   }
 
+  Future<T?> pushSlideRight<T>(BuildContext context, Widget page) {
+    return Navigator.of(context).push<T>(_buildRoute<T>(page, AxisDirection.right));
+  }
+
   Future<T?> pushSlideUp<T>(BuildContext context, Widget page) {
     return Navigator.of(context).push<T>(_buildRoute<T>(page, AxisDirection.up));
+  }
+
+  Future<T?> pushSlideDown<T>(BuildContext context, Widget page) {
+    return Navigator.of(context).push<T>(_buildRoute<T>(page, AxisDirection.down));
   }
 
   Future<T?> pushFade<T>(BuildContext context, Widget page) {

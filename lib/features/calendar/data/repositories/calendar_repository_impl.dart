@@ -1,6 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
+import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/features/calendar/data/datasources/calendar_local_data_source.dart';
 import 'package:smart_learn/features/calendar/data/models/a_calendar_model.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
@@ -11,33 +12,33 @@ class REPCalendarImpl implements REPCalendar {
   REPCalendarImpl({required this.localDataSource});
 
   @override
-  Future<Either<Failure, void>> add(ENTCalendar calendar) async {
+  Future<Either<Failure, bool>> add(ENTCalendar calendar) async {
     try {
       final model = MODCalendar.fromEntity(calendar);
-      await localDataSource.add(model);
-      return const Right(null);
-    } catch (e) {
+      return Right(await localDataSource.add(model));
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.add');
       return Left(CacheFailure());
     }
   }
 
   @override
-  Future<Either<Failure, void>> update(ENTCalendar calendar) async {
+  Future<Either<Failure, bool>> update(ENTCalendar calendar) async {
     try {
       final model = MODCalendar.fromEntity(calendar);
-      await localDataSource.update(model);
-      return const Right(null);
-    } catch (e) {
+      return Right(await localDataSource.update(model));
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.update');
       return Left(CacheFailure());
     }
   }
 
   @override
-  Future<Either<Failure, void>> delete(String id) async {
+  Future<Either<Failure, bool>> delete(String id) async {
     try {
-      await localDataSource.delete(id);
-      return const Right(null);
-    } catch (e) {
+      return Right(await localDataSource.delete(id));
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.delete');
       return Left(CacheFailure());
     }
   }
@@ -47,7 +48,8 @@ class REPCalendarImpl implements REPCalendar {
     try {
       final models = await localDataSource.getAll();
       return Right(models);
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.getAll');
       return Left(CacheFailure());
     }
   }
@@ -57,7 +59,8 @@ class REPCalendarImpl implements REPCalendar {
     try {
       final models = await localDataSource.getByDateRange(start, end);
       return Right(models);
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.getByDateRange');
       return Left(CacheFailure());
     }
   }
@@ -67,7 +70,8 @@ class REPCalendarImpl implements REPCalendar {
     try {
       final model = await localDataSource.getById(id);
       return Right([model]);
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.getById');
       return Left(CacheFailure());
     }
   }
@@ -77,7 +81,8 @@ class REPCalendarImpl implements REPCalendar {
     try {
       final models = await localDataSource.search(title);
       return Right(models);
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.search');
       return Left(CacheFailure());
     }
   }
@@ -87,7 +92,8 @@ class REPCalendarImpl implements REPCalendar {
     try {
       final models = await localDataSource.getEventsOnDate(date);
       return Right(models);
-    } catch (e) {
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPCalendarImpl.getEventsOnDate');
       return Left(CacheFailure());
     }
   }

@@ -1,7 +1,9 @@
 import 'package:smart_learn/core/database/tables/table.dart';
 
 class CalendarTable extends Table {
-  static CalendarTable get instance => CalendarTable();
+  static CalendarTable get instance => _instance;
+  static final CalendarTable _instance = CalendarTable._();
+  CalendarTable._();
 
   @override
   String get tableName => 'calendar';

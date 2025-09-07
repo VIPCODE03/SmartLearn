@@ -16,10 +16,10 @@ class SubjectTable extends Table {
   String get build => '''
     CREATE TABLE $tableName (
       $columnId      TEXT PRIMARY KEY,
-      $columnName    TEXT,
+      $columnName    TEXT NOT NULL,
       $columnLastStudyDate  TEXT,
       $columnTags  TEXT,
-      $columnLevel  INTEGER,
+      $columnLevel  TEXT NOT NULL,
       $columnExercisesScores  TEXT
       );
     ''';

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_learn/config/app_config.dart';
+import 'package:smart_learn/core/router/app_router.dart';
 import 'package:smart_learn/providers/theme_provider.dart';
 import 'package:smart_learn/services/banner_service.dart';
 import 'package:smart_learn/services/language_service.dart';
@@ -87,7 +88,7 @@ class _SmartLearnState extends State<SmartLearn> {
 
   void _navigateTo(Uri uri) {
     if (uri.host == 'edit') {
-      // navigatorKey.currentState?.push(MaterialPageRoute(builder: (_) => const FlashCardSetManageScreen()));
+      appRouter.flashCard.goFlashCardSet(context);
     }
   }
 

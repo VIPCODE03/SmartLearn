@@ -11,12 +11,19 @@ class FlashCardUpdateParams {
   final ENTFlashCard flashCard;
   final String? front;
   final String? back;
+  final int? rememberLevel;
 
   FlashCardUpdateParams(this.flashCard,
       {
         this.front,
-        this.back
+        this.back,
+        this.rememberLevel
       });
+}
+
+class FlashCardMultiResetParams {
+  final List<ENTFlashCard> cards;
+  FlashCardMultiResetParams(this.cards);
 }
 
 class FlashCardDeleteParams {

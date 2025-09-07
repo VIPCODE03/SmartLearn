@@ -1,10 +1,12 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:performer/main.dart';
-import 'package:smart_learn/performers/action_unit/gemini_action.dart';
-import 'package:smart_learn/performers/performer/gemini_performer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/core/di/injection.dart';
+import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/bloc.dart';
+import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/event.dart';
+import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/state.dart';
+import 'package:smart_learn/features/aihomework/presentation/widgets/question_widget.dart';
 import 'package:smart_learn/performers/data_state/gemini_state.dart';
 import 'package:smart_learn/ui/widgets/divider_widget.dart';
 import 'package:smart_learn/ui/widgets/loading_item_widget.dart';
@@ -13,15 +15,24 @@ import 'package:smart_learn/utils/json_util.dart';
 import '../../../../global.dart';
 
 class SCRExerciseSolution extends StatelessWidget {
-  final dynamic data;
-  final String topic;
-  final String instruct;
+  final String textQuestion;
+  final Uint8List? image;
+  final String? instruct;
+  final String? answer;
 
   const SCRExerciseSolution({
     super.key,
-    this.data,
-    required this.topic,
-    required this.instruct,
+    required this.textQuestion,
+    this.image,
+    this.instruct,
+  }) : answer = null;
+
+  const SCRExerciseSolution.fromHistory({
+    super.key,
+    required this.textQuestion,
+    this.image,
+    this.instruct,
+    required this.answer,
   });
 
   @override
@@ -37,46 +48,7 @@ class SCRExerciseSolution extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            Hero(
-              tag: 'question',
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                constraints: const BoxConstraints(maxHeight: 200),
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor(context).withAlpha(20),
-                      blurRadius: 6,
-                      spreadRadius: 1,
-                      offset: const Offset(0, 0.5),
-                    ),
-                  ],
-                ),
-                child: Builder(
-                  builder: (context) {
-                    if (data is String) {
-                      return Material(
-                        type: MaterialType.transparency,
-                        child: SingleChildScrollView(child: Text(data)),
-                      );
-                    } else if (data is CroppedFile) {
-                      return Image.file(
-                        File((data as CroppedFile).path),
-                        fit: BoxFit.contain,
-                      );
-                    } else {
-                      return Material(
-                        type: MaterialType.transparency,
-                        child: Text(globalLanguage.error),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
+            WIDQuestionAI(textQuestion: textQuestion, imageQuestion: image),
 
             const SizedBox(height: 10),
 
@@ -95,13 +67,15 @@ class SCRExerciseSolution extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Expanded(
-              child: PerformerProvider<GeminiPerformer>.create(
-                  create: (_) => GeminiPerformer()..add(AskAction(topic: topic, instruct: instruct, question: data)),
-                  child: PerformerBuilder<GeminiPerformer>(
-                    builder: (context, performer) {
-                      final state = performer.current;
-
-                      if (state is GeminiProgressState) {
+              child: BlocProvider<ASKAIBloc>(
+                  create: (context) => ASKAIBloc(addHistory: getIt())..add(
+                      answer == null
+                          ? ASKAI(textQuestion: textQuestion, imageBytes: image, instruct: instruct)
+                          : LoadFromHistory(answer!)
+                  ),
+                  child: BlocBuilder<ASKAIBloc, ASKAIState>(
+                    builder: (context, state) {
+                      if (state is ASKAIAnswering) {
                         return ListView.builder(
                             itemCount: 3,
                             itemBuilder: (context, index) {
@@ -119,11 +93,11 @@ class SCRExerciseSolution extends StatelessWidget {
                         );
                       }
 
-                      if (state is GeminiDoneState) {
+                      if (state is ASKAIAnswer) {
                         return SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: WdgTextAIFormat(textJson: UTIJson.cleanRawJsonString(state.answers.text!)),
+                              child: WdgTextAIFormat(textJson: UTIJson.cleanRawJsonString(state.answer)),
                             )
                         );
                       }

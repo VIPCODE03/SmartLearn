@@ -13,6 +13,10 @@ class UTIDateTime {
     return "${time.hour < 10 ? '0' : ''}${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}";
   }
 
+  static String getFormatyyyyMMddHHmm(DateTime time) {
+    return "${time.year}-${time.month < 10 ? '0' : ''}${time.month}-${time.day < 10 ? '0' : ''}${time.day} ${time.hour < 10 ? '0' : ''}${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}";
+  }
+
   static int getWeekNumber(DateTime date) {
     return date.weekOfYear;
   }

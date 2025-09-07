@@ -11,4 +11,6 @@ abstract class REPFlashCardSet {
 
   Future<Either<Failure, List<ENTFlashcardSet>>> getAll({required FlashCardSetForeignParams foreignParams});
   Future<Either<Failure, ENTFlashcardSet?>> get(String id);
+  Future<Either<Failure, ENTFlashcardSet?>> getByExtenal({required FlashCardSetForeignParams foreignParams});
+
 }

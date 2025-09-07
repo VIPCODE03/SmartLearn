@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/core/error/log.dart';
+import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
 import 'package:smart_learn/features/assistant/domain/entities/converstation_entity.dart';
 import 'package:smart_learn/features/assistant/domain/parameters/conversation_params.dart';
 import 'package:smart_learn/features/assistant/domain/parameters/mess_params.dart';
@@ -323,7 +324,7 @@ class _WIDListMessageState extends State<_WIDListMessage> {
               return _buildMessageItem(contents[index]);
             },
           )
-              : const Center(child: _Greeting(name: 'Triệu'));
+              : Center(child: appWidget.user.userInfo((name, age, email, bio, grade, hobbies) => _Greeting(name: name)));
         });
   }
 }

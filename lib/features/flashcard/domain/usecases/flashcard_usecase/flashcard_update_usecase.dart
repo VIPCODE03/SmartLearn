@@ -17,6 +17,7 @@ class UCEFlashCardUpdate extends UseCase<ENTFlashCard, FlashCardUpdateParams> {
       front: params.front ?? params.flashCard.front,
       back: params.back ?? params.flashCard.back,
       flashCardSetId: params.flashCard.flashCardSetId,
+      rememberLevel: params.rememberLevel ?? params.flashCard.rememberLevel
     );
 
     final result = await flashCardRepository.update(newFlashCard);

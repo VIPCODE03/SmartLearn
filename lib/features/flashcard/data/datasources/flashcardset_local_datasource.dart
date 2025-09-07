@@ -1,9 +1,7 @@
-
 import 'package:smart_learn/core/database/appdatabase.dart';
 import 'package:smart_learn/core/database/tables/flashcard_table.dart';
 import 'package:smart_learn/features/flashcard/data/models/flashcardset_model.dart';
 import 'package:smart_learn/features/flashcard/domain/parameters/flashcardsetpramas/foreign_params.dart';
-import 'package:sqflite/sqflite.dart';
 
 abstract class LDSFlashCardSet {
   Future<bool> add(MODFlashCardSet flashcardSet, {required FlashCardSetForeignParams foreignParams});
@@ -12,6 +10,7 @@ abstract class LDSFlashCardSet {
 
   Future<List<MODFlashCardSet>> getAll({required FlashCardSetForeignParams foreignParams});
   Future<MODFlashCardSet?> get(String id);
+  Future<MODFlashCardSet?> getByExtenal({required FlashCardSetForeignParams foreignParams});
 }
 
 class LDSFlashCardSetImpl extends LDSFlashCardSet {
@@ -23,8 +22,10 @@ class LDSFlashCardSetImpl extends LDSFlashCardSet {
     final db = await _database.db;
     final result = await db.insert(
       _table.tableName,
-      flashcardSet.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.ignore,
+      {
+        ...flashcardSet.toMap(),
+        _table.columnFileId: foreignParams.fileId,
+      },
     );
     return result > 0;
   }
@@ -70,5 +71,21 @@ class LDSFlashCardSetImpl extends LDSFlashCardSet {
     );
     if (result.isEmpty) return null;
     return MODFlashCardSet.fromMap(result.first);
+  }
+
+  @override
+  Future<MODFlashCardSet?> getByExtenal({required FlashCardSetForeignParams foreignParams}) async {
+    final db = await _database.db;
+    if(foreignParams.fileId != null) {
+      final result = await db.query(
+        _table.tableName,
+        where: '${_table.columnFileId} = ?',
+        whereArgs: [foreignParams.fileId],
+        limit: 1,
+      );
+      if (result.isEmpty) return null;
+      return MODFlashCardSet.fromMap(result.first);
+    }
+    return null;
   }
 }

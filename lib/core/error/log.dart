@@ -24,3 +24,11 @@ logDev(String log, {String? context}) {
         '\n${context != null ? '[$context]' : ''}');
   }
 }
+
+logO(Object? opject, {String? context}) {
+  if (kDebugMode) {
+    final now = DateTime.now();
+    print('🐛 [${now.toIso8601String()}] ➤ $opject'
+        '\n${context != null ? '[$context]' : ''}');
+  }
+}

@@ -1,22 +1,27 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
+import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/features/aihomework/presentation/widgets/question_widget.dart';
 
 import '../../../../../global.dart';
 import 'd_exercise_solution_screen.dart';
 
 class SCRAIInstruction extends StatefulWidget {
-  final dynamic data;
+  final String textQuestion;
+  final Uint8List? image;
 
-  const SCRAIInstruction({super.key, required this.data});
+  const SCRAIInstruction({
+    super.key,
+    required this.textQuestion,
+    this.image
+  });
 
   @override
   State<SCRAIInstruction> createState() => _SCRAIInstructionState();
 }
 
-class _SCRAIInstructionState extends State<SCRAIInstruction> {
-  String topic = '';
+class _SCRAIInstructionState extends State<SCRAIInstruction> with AppRouterMixin {
   final _textController = TextEditingController();
 
   @override
@@ -35,7 +40,11 @@ class _SCRAIInstructionState extends State<SCRAIInstruction> {
               onTap: () {
                 navigateToNextScreen(
                     context,
-                    SCRExerciseSolution(topic: topic, instruct: _textController.text, data: widget.data)
+                    SCRExerciseSolution(
+                      instruct: _textController.text,
+                      textQuestion: widget.textQuestion,
+                      image: widget.image,
+                    )
                 );
               },
               child: Text(globalLanguage.next,
@@ -52,50 +61,7 @@ class _SCRAIInstructionState extends State<SCRAIInstruction> {
         child: ListView(
           children: [
             ///-  Câu hỏi -------------------------------------------------------
-            Hero(
-              tag: 'question',
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                constraints: const BoxConstraints(maxHeight: 200),
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor(context).withAlpha(20),
-                      blurRadius: 6,
-                      spreadRadius: 1,
-                      offset: const Offset(0, 0.5),
-                    ),
-                  ],
-                ),
-                child: Builder(
-                  builder: (context) {
-                    if (widget.data is String) {
-                      ///📝 Text ---------------------------------------------------------------
-                      return Material(
-                        type: MaterialType.transparency,
-                        child: SingleChildScrollView(
-                          child: Text(widget.data),
-                        ),
-                      );
-                    } else if (widget.data is CroppedFile) {
-                      /// Image -----------------------------------------------------------------
-                      return Image.file(
-                        File((widget.data as CroppedFile).path),
-                        fit: BoxFit.contain,
-                      );
-                    } else {
-                      return const Material(
-                        type: MaterialType.transparency,
-                        child: Text('Error'),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
+            WIDQuestionAI(textQuestion: widget.textQuestion, imageQuestion: widget.image),
 
             ///-  Chọn môn học  --------------------------------------------------
             const Align(alignment: Alignment.center,

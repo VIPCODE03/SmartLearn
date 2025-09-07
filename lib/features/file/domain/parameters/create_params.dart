@@ -1,11 +1,11 @@
 import 'package:smart_learn/features/file/domain/parameters/file_params.dart';
 
 enum TypeFile {
-  folder, txt, draw, quiz, system
+  folder, txt, draw, quiz, system, flashcard
 }
 
 class AppFileCreateParams {
-  final FileForeignParams link;
+  final FileExtenalValue link;
   final String name;
   final String pathId;
   final TypeFile type;
@@ -16,4 +16,6 @@ class AppFileCreateParams {
   const AppFileCreateParams.draw(this.link, {required this.name, required this.pathId, String? json}) : type = TypeFile.draw, data = json;
   const AppFileCreateParams.quiz(this.link, {required this.name, required this.pathId}) : type = TypeFile.quiz, data = null;
   const AppFileCreateParams.system(this.link, {required this.name, required this.pathId, required String filePath}) : type = TypeFile.system, data = filePath;
+  const AppFileCreateParams.flashcard(this.link, {required this.name, required this.pathId}) : type = TypeFile.flashcard, data = null;
+
 }

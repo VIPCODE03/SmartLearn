@@ -1,6 +1,8 @@
-
+import 'package:smart_learn/core/database/tables/calendar_table.dart';
 import 'package:smart_learn/features/calendar/data/models/a_calendar_model.dart';
 import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
+
+CalendarTable get _table => CalendarTable.instance;
 
 class MODCalendarEvent extends ENTCalendarEvent with MODCalendarMixin implements MODCalendar {
   MODCalendarEvent({
@@ -18,21 +20,21 @@ class MODCalendarEvent extends ENTCalendarEvent with MODCalendarMixin implements
   Map<String, dynamic> toMap() {
     return {
       ...toMapBase(),
-      'childPropertiesMap': description,
+      _table.columnChildProperties: description,
     };
   }
 
   factory MODCalendarEvent.fromMap(Map<String, dynamic> map) {
     final mapBase = MODCalendar.fromMapBase(map);
     return MODCalendarEvent(
-        id: mapBase['id'],
-        title: mapBase['title'],
-        description: map['childPropertiesMap'] as String?,
-        cycle: mapBase['cycle'],
-        start: mapBase['start'],
-        end: mapBase['end'],
-        valueColor: mapBase['valueColor'],
-        ignoredDates: mapBase['ignoredDates'],
+        id: mapBase[_table.columnId],
+        title: mapBase[_table.columnTitle],
+        description: map[_table.columnChildProperties] as String?,
+        cycle: mapBase[_table.columnCycle],
+        start: mapBase[_table.columnStart],
+        end: mapBase[_table.columnEnd],
+        valueColor: mapBase[_table.columnValueColor],
+        ignoredDates: mapBase[_table.columnIgnoredDates],
       );
   }
 
@@ -69,21 +71,21 @@ class MODCalendarSucject extends ENTCalendarSubject with MODCalendarMixin implem
   Map<String, dynamic> toMap() {
     return {
       ...toMapBase(),
-      'subjectId': subjectId,
+      _table.columnChildProperties: subjectId,
     };
   }
 
   factory MODCalendarSucject.fromMap(Map<String, dynamic> map) {
     final mapBase = MODCalendar.fromMapBase(map);
     return MODCalendarSucject(
-      id: mapBase['id'],
-      title: mapBase['title'],
-      subjectId: map['subjectId'] as String,
-      cycle: mapBase['cycle'],
-      start: mapBase['start'],
-      end: mapBase['end'],
-      valueColor: mapBase['valueColor'],
-      ignoredDates: mapBase['ignoredDates'],
+      id: mapBase[_table.columnId],
+      title: mapBase[_table.columnTitle],
+      subjectId: map[_table.columnChildProperties] as String,
+      cycle: mapBase[_table.columnCycle],
+      start: mapBase[_table.columnStart],
+      end: mapBase[_table.columnEnd],
+      valueColor: mapBase[_table.columnValueColor],
+      ignoredDates: mapBase[_table.columnIgnoredDates],
     );
   }
 

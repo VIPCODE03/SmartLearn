@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:smart_learn/features/games/math_matrix/game_math_screen.dart';
+import 'package:smart_learn/features/game/games/math_matrix/game_math_screen.dart';
 
 void main() {
   runApp(const MyApp());

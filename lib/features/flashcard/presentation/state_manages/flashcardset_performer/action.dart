@@ -12,7 +12,7 @@ abstract class FlashCardManageAction extends ActionUnit<FlashcardSetState> {
   final UCEFlashCardSetAdd add;
   final UCEFlashCardSetUpdate update;
   final UCEFlashCardSetDelete delete;
-  final UCEFlashCardSetGet get;
+  final UCEFlashCardSetGetList get;
   FlashCardManageAction()
       : add = getIt(),
         update = getIt(),

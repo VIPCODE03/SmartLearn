@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/features/file/domain/entities/appfile_entity.dart';
 import 'package:smart_learn/features/file/domain/parameters/delete_params.dart';
+import 'package:smart_learn/features/file/domain/parameters/file_params.dart';
+import 'package:smart_learn/features/file/domain/parameters/load_params.dart';
 import 'package:smart_learn/features/file/domain/usecases/appfile_create_usecase.dart';
 import 'package:smart_learn/features/file/domain/usecases/appfile_delete_usecase.dart';
 import 'package:smart_learn/features/file/domain/usecases/appfile_load_usecase.dart';
@@ -15,6 +16,8 @@ import 'package:smart_learn/services/storage_service.dart';
 class AppFileBloc extends Bloc<AppFileEvent, AppFileState> {
   final List<Map<String, String>> stackFolder = [];
   String get currentPathID => stackFolder.last['pathId'] ?? '';
+  bool get isRoot => stackFolder.length == 1;
+  FileExtenalValue? fileExtenal;
 
   final UCEAppFileCreate create;
   final UCEAppFileDelete delete;
@@ -31,6 +34,7 @@ class AppFileBloc extends Bloc<AppFileEvent, AppFileState> {
     on<AppFileCreateEvent>(_onCreate);
     on<AppFileUpdateEvent>(_onUpdate);
     on<AppFileDeleteEvent>(_onDelete);
+    on<AppFileBackFolder>(_onBackFolder);
   }
 
   void _updateStack(String pathID, String nameFolder) {
@@ -47,6 +51,7 @@ class AppFileBloc extends Bloc<AppFileEvent, AppFileState> {
   }
 
   void _onLoad(AppFileLoadEvent event, Emitter<AppFileState> emit) async {
+    fileExtenal ??= event.params.link;
     _updateStack(event.params.pathId, event.nameFolder);
     emit(const AppFileLoading());
     final result = await load(event.params);
@@ -101,9 +106,24 @@ class AppFileBloc extends Bloc<AppFileEvent, AppFileState> {
 
               final file = event.file;
               if(file is ENTAppFileSystem) {
-                LocalStorageService.deleteFile(file.filePath);
+                AppStorageService.deleteFile(file.filePath);
               }
             },
+      );
+    }
+  }
+
+  void _onBackFolder(AppFileBackFolder event, Emitter<AppFileState> emit) async {
+    if(stackFolder.length > 1 && fileExtenal != null) {
+      stackFolder.removeLast();
+      emit(const AppFileLoading());
+      final result = await load(AppFileLoadParams(
+          fileExtenal!,
+          pathId: currentPathID
+      ));
+      result.fold(
+            (failure) => emit(const AppFileLoadError('Đã xảy ra lỗi')),
+            (files) => emit(AppFileLoaded(files, stackFolder: stackFolder)),
       );
     }
   }

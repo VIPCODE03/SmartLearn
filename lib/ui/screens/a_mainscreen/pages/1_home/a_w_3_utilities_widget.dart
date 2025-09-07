@@ -65,7 +65,7 @@ class HomeUtilities extends StatelessWidget {
                     _MenuItem(
                         icon: Icons.gamepad,
                         label: 'Game',
-                        onTap: () => appRouter.game.goMathMatrix(context)
+                        onTap: () => appRouter.game.goGameScreen(context)
                     ),
 
                     Row(
@@ -125,7 +125,7 @@ class _MenuItem extends StatelessWidget {
             Icon(
               icon,
               size: 32,
-              color: primaryColor(context).withAlpha(150),
+              color: iconColor(context),
             ),
 
             const SizedBox(height: 8),

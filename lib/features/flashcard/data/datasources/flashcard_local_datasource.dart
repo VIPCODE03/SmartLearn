@@ -1,11 +1,11 @@
 import 'package:smart_learn/core/database/appdatabase.dart';
 import 'package:smart_learn/core/database/tables/flashcard_table.dart';
 import 'package:smart_learn/features/flashcard/data/models/flashcard_model.dart';
-import 'package:sqflite/sqflite.dart';
 
 abstract class LDSFlashCard {
   Future<bool> add(MODFlashCard flashCard);
   Future<bool> update(MODFlashCard flashCard);
+  Future<bool> multiReset(List<String> ids);
   Future<bool> delete(String id);
   Future<List<MODFlashCard>> getByCardSetId(String cardSetId);
 }
@@ -20,7 +20,6 @@ class LDSFlashCardImpl extends LDSFlashCard {
     final result = await db.insert(
       _table.tableName,
       flashCard.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.ignore,
     );
     return result > 0;
   }
@@ -36,6 +35,23 @@ class LDSFlashCardImpl extends LDSFlashCard {
     );
     return result > 0;
   }
+
+  @override
+  Future<bool> multiReset(List<String> ids) async {
+    final db = await _database.db;
+
+    final placeholders = List.filled(ids.length, '?').join(',');
+
+    final result = await db.update(
+      _table.tableName,
+      {_table.columnRememberLevel: -1},
+      where: '${_table.columnId} IN ($placeholders)',
+      whereArgs: ids,
+    );
+
+    return result > 0;
+  }
+
 
   @override
   Future<bool> delete(String id) async {

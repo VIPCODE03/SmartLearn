@@ -1,7 +1,26 @@
+import 'dart:ui';
+
+import 'package:flame/flame.dart';
 import 'package:flutter/services.dart';
 
 class UTIAssets {
   static const path = _AssetsPath();
+
+  static final Map<String, Image> _imageCache = {};
+  static Future<Image> gameLoadImage(String path) async {
+    if (_imageCache.containsKey(path)) {
+      return _imageCache[path]!;
+    }
+
+    try {
+      Flame.images.prefix = '';
+      final image = await Flame.images.load(path);
+      _imageCache[path] = image;
+      return image;
+    } catch (e) {
+      throw Exception("UtilAssets: Error load image: $path\nError: $e");
+    }
+  }
 
   static Future<String> loadString(String path) async {
     try {
@@ -22,6 +41,19 @@ class _AssetsPath {
   final icons = const _IconAssets();
 
   final train = const _TrainAssets();
+
+  final game = const _GameAssets();
+}
+
+class _GameAssets {
+  const _GameAssets();
+
+  final maze = const _Maze();
+}
+
+class _Maze {
+  const _Maze();
+  final String mazeMap = "assets/game/maze/maze_map.png";
 }
 
 // 📂 Language files
@@ -37,7 +69,7 @@ class _ImageAssets {
   const _ImageAssets();
 
   final String logo = "assets/images/logo.png";
-  final String backgroundAI = "assets/images/background_ai.png";
+  final String bgUser = "assets/images/bg_user.png";
   final String loadingGif = "assets/images/loading.gif";
 }
 
@@ -57,4 +89,5 @@ class _TrainAssets {
   final String quiz = "assets/train/quiz";
   final String translate = "assets/train/translate";
   final String testJson = "assets/train/test_json";
+  final String analysis = "assets/train/personalization";
 }

@@ -42,7 +42,7 @@ class ViLanguage extends GlobalLanguage {
   String get solution => 'Lời giải';
 
   @override
-  String get lastStudyDate => 'Ngày học cuối';
+  String get lastStudyDate => 'Lần học cuối';
 
   @override
   String get good => 'Tốt';

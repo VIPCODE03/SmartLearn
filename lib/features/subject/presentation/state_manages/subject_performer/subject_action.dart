@@ -40,14 +40,13 @@ class LoadAllSubject extends SubjectAction {
 }
 
 class AddSubject extends SubjectAction {
-  final String name;
-  final int level;
-  AddSubject(this.name, this.level);
+  final SubjectAddParams params;
+  AddSubject(this.params);
 
   @override
   Stream<SubjectState> execute(SubjectState current) async* {
     yield current.copyWith(state: StateData.updating);
-    final result = await add(SubjectAddParams(name: name, level: level));
+    final result = await add(params);
     ENTSubject? newSubject;
     result.fold(
             (failure) => newSubject = null,
@@ -64,6 +63,33 @@ class AddSubject extends SubjectAction {
         state: StateData.updated,
       );
     }
+  }
+}
+
+class UpdateSubject extends SubjectAction {
+  final SubjectUpdateParams params;
+  UpdateSubject(this.params);
+
+  @override
+  Stream<SubjectState> execute(SubjectState current) async* {
+    yield current.copyWith(state: StateData.updating);
+    final result = await update(params);
+    final updatedSubjects = List<ENTSubject>.from(current.subjects);
+    final updatedSubjectsFiltered = List<ENTSubject>.from(current.subjectsFilted);
+    result.fold(
+            (a) {},
+            (b) {
+              final indexUpdate = updatedSubjects.indexWhere((element) => element.id == params.subject.id);
+              updatedSubjects[indexUpdate] = params.subject;
+              final indexUpdateFiltered = updatedSubjectsFiltered.indexWhere((element) => element.id == params.subject.id);
+              updatedSubjectsFiltered[indexUpdateFiltered] = params.subject;
+            }
+    );
+    yield current.copyWith(
+      subjects: updatedSubjects,
+      subjectsFilted: updatedSubjectsFiltered,
+      state: StateData.updated,
+    );
   }
 }
 

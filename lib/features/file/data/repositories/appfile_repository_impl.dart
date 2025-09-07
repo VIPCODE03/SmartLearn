@@ -13,9 +13,9 @@ class REPAppFileImpl extends REPAppFile {
   REPAppFileImpl(this._local);
 
   @override
-  Future<Either<Failure, ENTAppFile>> createFile(ENTAppFile file, {required FileForeignParams foreign}) async {
+  Future<Either<Failure, ENTAppFile>> createFile(ENTAppFile file, {required FileExtenalValue foreign}) async {
     try {
-      final result = await _local.createFile(MODAppFile.fromEntity(file), foreign: foreign);
+      final result = await _local.createFile(MODAppFile.fromEntity(file), extenalValue: foreign);
       return Right(result);
     }
     catch (e, s) {
@@ -73,9 +73,9 @@ class REPAppFileImpl extends REPAppFile {
   }
 
   @override
-  Future<Either<Failure, List<ENTAppFile>>> getFiles(String pathId, {required FileForeignParams foreign}) async {
+  Future<Either<Failure, List<ENTAppFile>>> getFiles(String pathId, {required FileExtenalValue foreign}) async {
     try {
-      final result = await _local.getFiles(pathId, foreign: foreign);
+      final result = await _local.getFiles(pathId, extenalValue: foreign);
       return Right(result);
     }
     catch (e, s) {
@@ -85,9 +85,9 @@ class REPAppFileImpl extends REPAppFile {
   }
 
   @override
-  Future<Either<Failure, ENTAppFile?>> getFileByPathName(String pathId, String name, {required FileForeignParams foreign}) async {
+  Future<Either<Failure, ENTAppFile?>> getFileByPathName(String pathId, String name, {required FileExtenalValue foreign}) async {
     try {
-      final result = await _local.getFileByPathName(pathId, name, foreign: foreign);
+      final result = await _local.getFileByPathName(pathId, name, extenalValue: foreign);
       return Right(result);
     }
     catch (e, s) {

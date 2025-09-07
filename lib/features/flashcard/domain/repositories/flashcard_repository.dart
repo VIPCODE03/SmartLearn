@@ -6,6 +6,7 @@ import 'package:smart_learn/features/flashcard/domain/entities/flashcard_entity.
 abstract class REPFlashCard {
   Future<Either<Failure, bool>> add(ENTFlashCard flashCard);
   Future<Either<Failure, bool>> update(ENTFlashCard flashCard);
+  Future<Either<Failure, bool>> multiReset(List<String> ids);
   Future<Either<Failure, bool>> delete(String id);
 
   Future<Either<Failure, List<ENTFlashCard>>> getByCardSetId(String cardSetId);

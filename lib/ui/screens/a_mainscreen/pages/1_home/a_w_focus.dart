@@ -61,7 +61,7 @@ class HomeFocusStatus extends StatelessWidget {
                         children: [
                           Column(
                             children: [
-                              Icon(Icons.access_time, size: 32, color: color),
+                              Icon(Icons.access_time, size: 32, color: iconColor(context)),
                               const SizedBox(height: 6),
                               Text(TimeFormatterUtil.fomathhmm(getTotal())),
                             ],

@@ -22,4 +22,11 @@ class MODCycle extends ENTCycle {
           .toSet(),
     );
   }
+
+  factory MODCycle.fromEntity(ENTCycle entity) {
+    return MODCycle(
+      type: entity.type,
+      daysOfWeek: entity.daysOfWeek,
+    );
+  }
 }

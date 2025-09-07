@@ -1,3 +1,4 @@
+
 import 'package:smart_learn/features/aihomework/aihomework_provider.dart';
 import 'package:smart_learn/features/assistant/assistant_provider.dart';
 import 'package:smart_learn/features/calculator/calculator_provider.dart';
@@ -5,10 +6,11 @@ import 'package:smart_learn/features/calendar/calendar_provider.dart';
 import 'package:smart_learn/features/file/file_provider.dart';
 import 'package:smart_learn/features/flashcard/flashcard_provider.dart';
 import 'package:smart_learn/features/focus/focus_provider.dart';
-import 'package:smart_learn/features/games/game_provider.dart';
+import 'package:smart_learn/features/game/game_provider.dart';
 import 'package:smart_learn/features/quiz/quiz_provider.dart';
 import 'package:smart_learn/features/subject/subject_provider.dart';
 import 'package:smart_learn/features/translate/translate_provider.dart';
+import 'package:smart_learn/features/user/user_provider.dart';
 
 final appWidget = AppWidget.instance;
 
@@ -28,4 +30,5 @@ class AppWidget {
   IAiHomeWorkWidget get aiHomework => AiHomeWorkProvider.instance.widget;
   IFlashCardWidget get flashCard => FlashCardProvider.instance.widget;
   IGameWidget get game => GameProvider.instance.widget;
+  IUserWidget get user => UserProvider.instance.widget;
 }

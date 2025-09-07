@@ -7,6 +7,7 @@ void showAppBottomSheet({
   required String title,
   Widget? action,
   double? height,
+  Color? backgroundColor,
   required Widget child,
 }) {
   showModalBottomSheet(
@@ -16,10 +17,8 @@ void showAppBottomSheet({
     builder: (context) {
       return Container(
         decoration: BoxDecoration(
-            color: Colors.grey.withAlpha(50),
-            border: Border.all(
-                color: primaryColor(context)
-            )
+            color: backgroundColor ?? Theme.of(context).cardColor,
+            border: Border.all(color: primaryColor(context))
         ),
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom, top: 20,
@@ -42,7 +41,14 @@ void showAppBottomSheet({
 
             const SizedBox(height: 16),
 
-            child,
+            Container(
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height / 2.5
+              ),
+              child: SingleChildScrollView(
+                child: child,
+              ),
+            ),
 
             const SizedBox(height: 25)
           ],
@@ -56,14 +62,14 @@ void showAppConfirmBottomSheet({
   required BuildContext context,
   double? height,
   required String title,
-  required VoidCallback onComfirm,
+  required VoidCallback onConfirm,
   required Widget child,
 }) {
   showAppBottomSheet(
       context: context,
       title: title,
       action: WdgBounceButton(
-          onTap: onComfirm,
+          onTap: onConfirm,
           child: Icon(Icons.check, color: primaryColor(context))
       ),
       child: child

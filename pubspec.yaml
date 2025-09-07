@@ -67,6 +67,9 @@ dependencies:
   week_of_year: ^2.2.0
   diacritic: ^0.1.6 #xóa dấu kí tự
   path_provider: ^2.1.5
+  flutter_colorpicker: ^1.1.0
+  confetti: ^0.7.0
+
 
   #-----------------------------
   sqflite: ^2.4.2
@@ -76,6 +79,7 @@ dependencies:
   uuid: ^4.5.1
 
   flame: ^1.30.1 #game
+  google_fonts: ^6.3.0
 
   zent_gemini:
     git:
@@ -117,6 +121,7 @@ flutter:
       - assets/languages/
       - assets/images/
       - assets/train/
+      - assets/game/maze/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

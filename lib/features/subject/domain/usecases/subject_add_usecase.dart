@@ -7,7 +7,7 @@ import 'package:smart_learn/utils/generate_id_util.dart';
 
 class SubjectAddParams {
   final String name;
-  final int level;
+  final String level;
 
   SubjectAddParams({required this.name, required this.level});
 }

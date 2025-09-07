@@ -1,27 +1,63 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/core/router/app_router_mixin.dart';
 import 'package:smart_learn/features/quiz/domain/entities/c_quiz_result_entity.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_action.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_performer.dart';
 import 'package:smart_learn/global.dart';
+import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/ui/widgets/circular_progressbar_widget.dart';
 import 'd_check_quiz.dart';
 
-class SCRQuizResult extends StatelessWidget {
+class SCRQuizResult extends StatefulWidget {
   final ENTQuizResult quizResult;
-
   const SCRQuizResult({super.key, required this.quizResult});
 
   @override
+  State<StatefulWidget> createState() => _SCRQuizResultState();
+}
+
+class _SCRQuizResultState extends State<SCRQuizResult> {
+  late final ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _confettiController.play();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        /// THÔNG TIN -----------------------------------------------------------
+        Column(
           children: [
             _WdgHead(),
-
-            Expanded(child: _QuizResultCard(quizResult: quizResult)),
-
-            _WdgFootAction(quizResult),
+            Expanded(child: _QuizResultCard(quizResult: widget.quizResult)),
+            _WIDFootAction(widget.quizResult),
           ],
+        ),
+
+        /// BẮN PHÁO HOA  ----------------------------------------------------
+        ConfettiWidget(
+          confettiController: _confettiController,
+          blastDirectionality: BlastDirectionality.explosive,
+          shouldLoop: false,
+          colors: const [Colors.green, Colors.blue, Colors.pink, Colors.orange, Colors.purple, Colors.yellow, Colors.red],
+        ),
+      ],
     );
   }
 }
@@ -30,90 +66,38 @@ class SCRQuizResult extends StatelessWidget {
 class _WdgHead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: _WaveClipper(),
-      child: Container(
-        padding: const EdgeInsets.only(top: 50.0, bottom: 60.0),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [primaryColor(context).withAlpha(50), primaryColor(context).withAlpha(50)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Container(
+      padding: const EdgeInsets.only(top: 50.0, bottom: 60.0),
+      width: double.infinity,
+      child: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.check_circle_outline,
+            size: 80.0,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: primaryColor(context).withAlpha(15),
-              spreadRadius: 2,
-              blurRadius: 7,
-              offset: const Offset(0, 3),
+          SizedBox(height: 10.0),
+          Text(
+            "Hoàn Thành Xuất Sắc!",
+            style: TextStyle(
+              fontSize: 28.0,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
             ),
-          ],
-        ),
-        child: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              size: 80.0,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 5.0),
+          Text(
+            "Chúc mừng bạn đã hoàn thành bài tập!",
+            style: TextStyle(
+              fontSize: 16.0,
             ),
-            SizedBox(height: 10.0),
-            Text(
-              "Hoàn Thành Xuất Sắc!",
-              style: TextStyle(
-                fontSize: 28.0,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 5.0),
-            Text(
-              "Chúc mừng bạn đã hoàn thành bài tập!",
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
-}
-
-class _WaveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final Path path = Path();
-
-    path.lineTo(0.0, size.height);
-
-    var firstControlPoint = Offset(size.width / 4, size.height - 30);
-    var firstEndPoint = Offset(size.width / 2, size.height - 50);
-    path.quadraticBezierTo(
-      firstControlPoint.dx,
-      firstControlPoint.dy,
-      firstEndPoint.dx,
-      firstEndPoint.dy,
-    );
-
-    var secondControlPoint = Offset(size.width * 3 / 4, size.height - 10);
-    var secondEndPoint = Offset(size.width, size.height - 30);
-    path.quadraticBezierTo(
-      secondControlPoint.dx,
-      secondControlPoint.dy,
-      secondEndPoint.dx,
-      secondEndPoint.dy,
-    );
-
-    path.lineTo(size.width, 0.0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 ///-  Phần kết quả  ---------------------------------------------------------
@@ -196,10 +180,10 @@ class _QuizResultCard extends StatelessWidget {
 }
 
 ///-  Phần hành động  ------------------------------------------------------
-class _WdgFootAction extends StatelessWidget {
+class _WIDFootAction extends StatelessWidget with AppRouterMixin {
   final ENTQuizResult quizResult;
 
-  const _WdgFootAction(this.quizResult);
+  const _WIDFootAction(this.quizResult);
 
   @override
   Widget build(BuildContext context) {
@@ -209,75 +193,78 @@ class _WdgFootAction extends StatelessWidget {
         children: [
           Row(children: [
             Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SCRQuizCheck(
-                          quizs: quizResult.quizs,
-                          userAnswers: quizResult.userAnswers)
-                  ));
-                },
-                icon: const Icon(Icons.history_edu, size: 28),
-                label: const Text(
-                  'Xem Lại Bài Làm',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: primaryColor(context).withAlpha(150),
-                  side: const BorderSide(color: Colors.grey, width: 2),
-                  minimumSize: const Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
+                child: _buildButton('Làm lại', Icons.refresh, primaryColor(context), () {
+                  PerformerProvider.of<QuizReviewPerformer>(context).add(StartQuiz(quizResult.quizs));
+                })
             ),
+
             const SizedBox(width: 15),
 
             Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  PerformerProvider.of<QuizReviewPerformer>(context).add(StartQuiz(quizResult.quizs));
-                },
-                icon: const Icon(Icons.refresh, size: 28),
-                label: const Text(
-                  'Làm Lại Bài Tập',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: primaryColor(context).withAlpha(150),
-                  side: const BorderSide(color: Colors.grey, width: 2),
-                  minimumSize: const Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
-            )
+              child: _buildButton('Xem lại', Icons.history_edu, primaryColor(context), () {
+                pushSlideLeft(context, SCRQuizCheck(
+                    quizs: quizResult.quizs,
+                    userAnswers: quizResult.userAnswers)
+                );
+              })
+            ),
           ]),
 
           const SizedBox(height: 15),
 
-          ElevatedButton(
-            onPressed: () {
+          WdgBounceButton(
+            onTap: () {
               Navigator.of(context).pop();
             },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: primaryColor(context).withAlpha(200),
-              minimumSize: const Size(double.infinity, 60),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: primaryColor(context).withValues(alpha: 0.4),
               ),
-              elevation: 8,
-            ),
-            child: const Text(
-              'Hoàn Thành',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+              child: const Text(
+                'Hoàn Thành',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            )
           ),
         ],
       ),
     );
   }
+
+  Widget _buildButton(String text, IconData icon, Color color, VoidCallback onTap) {
+    return WdgBounceButton(
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withAlpha(15),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3),
+                ),
+              ]
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 24, color: color),
+              const SizedBox(width: 5),
+              Text(
+                text,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: color),
+              ),
+            ],
+          ),
+        )
+    );
+  }
 }
+

@@ -5,10 +5,11 @@ import 'package:smart_learn/features/calendar/calendar_provider.dart';
 import 'package:smart_learn/features/file/file_provider.dart';
 import 'package:smart_learn/features/flashcard/flashcard_provider.dart';
 import 'package:smart_learn/features/focus/focus_provider.dart';
-import 'package:smart_learn/features/games/game_provider.dart';
+import 'package:smart_learn/features/game/game_provider.dart';
 import 'package:smart_learn/features/quiz/quiz_provider.dart';
 import 'package:smart_learn/features/subject/subject_provider.dart';
 import 'package:smart_learn/features/translate/translate_provider.dart';
+import 'package:smart_learn/features/user/user_provider.dart';
 
 final appRouter = AppRouter.instance;
 
@@ -28,4 +29,5 @@ class AppRouter {
   IAiHomeWorkRouter get aiHomework => AiHomeWorkProvider.instance.router;
   IFlashCardRouter get flashCard => FlashCardProvider.instance.router;
   IGameRouter get game => GameProvider.instance.router;
+  IUserRouter get user => UserProvider.instance.router;
 }

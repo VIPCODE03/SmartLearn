@@ -4,8 +4,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smart_learn/core/error/log.dart';
 
-class LocalStorageService {
+class AppStorageService {
 
+  // Lưu bytes và trả về đường dẫn  -----------------------------------------
   static Future<String> saveByte(
       Uint8List bytes,
       {
@@ -32,7 +33,7 @@ class LocalStorageService {
     return file.path;
   }
 
-
+  // Chọn file và lưu sau đó trả về đường dẫn  ---------------------------------
   static Future<String?> pickAndSaveAnyFileToAppDir({String? folderName}) async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -67,6 +68,7 @@ class LocalStorageService {
     return null;
   }
 
+  //- 🗑 Xóa file  --------------------------------------------------------------
   static Future<bool> deleteFile(String path) async {
     try {
       final file = File(path);
@@ -79,8 +81,8 @@ class LocalStorageService {
         logDev('Không tìm thấy file để xóa: $path');
         return false;
       }
-    } catch (e) {
-      logDev('Lỗi khi xóa file: $e');
+    } catch (e, s) {
+      logError('Lỗi khi xóa file: $e', stackTrace: s, context: 'LocalStorageService - deleteFile');
       return false;
     }
   }

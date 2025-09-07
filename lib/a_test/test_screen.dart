@@ -10,7 +10,7 @@ import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/features/assistant/presentation/screens/assistant_screen.dart';
 import 'package:smart_learn/features/file/presentation/screens/appfile_screen.dart';
 import 'package:smart_learn/features/flashcard/presentation/screens/manage/flashcardset_manage_screen.dart';
-import 'package:smart_learn/features/games/maze/presentation/widgets/direction_pad.dart';
+import 'package:smart_learn/features/game/games/maze/presentation/widgets/direction_pad.dart';
 import 'package:smart_learn/global.dart';
 import 'package:smart_learn/providers/theme_provider.dart';
 import 'package:smart_learn/services/banner_service.dart';

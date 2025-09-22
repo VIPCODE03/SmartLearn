@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:performer/main.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/focus/domain/usecases/a_add_time_focus.dart';
 import 'package:smart_learn/features/focus/domain/usecases/get_focus.dart';
 
-import '../../../../../services/banner_service.dart';
+import '../../../../../app/services/banner_service.dart';
 import '../../../domain/entities/weekly_focus_entity.dart';
 import '../../widgets/focus_banner_widget.dart';
 import 'focus_datastate.dart';
@@ -58,7 +58,7 @@ class StartFocus extends FocusAction {
     Duration elapsed = current.elapsed;
     FocusState state = current;
 
-    BannerService().showBanner(const GlobalFocusTimerBar());
+    AppBannerService().showBanner(const GlobalFocusTimerBar());
     yield FocusingState(elapsed: elapsed, weeklyFocus: current.weeklyFocus);
 
     FocusAction._timer = Timer.periodic(const Duration(seconds: 1), (_) async {
@@ -73,7 +73,7 @@ class StartFocus extends FocusAction {
         addResult.fold(
                 (failure) {
                   _stopTimer();
-                  BannerService().removeBanner();
+                  AppBannerService().removeBanner();
                     emit(FocusInitiated(
                         elapsed: elapsed,
                         weeklyFocus: state.weeklyFocus,
@@ -93,7 +93,7 @@ class StopFocus extends FocusAction {
   Stream<FocusState> execute(FocusState current) async* {
     if (current is FocusingState) {
       _stopTimer();
-      BannerService().removeBanner();
+      AppBannerService().removeBanner();
       yield FocusInitiated(elapsed: Duration.zero, weeklyFocus: current.weeklyFocus);
     }
   }

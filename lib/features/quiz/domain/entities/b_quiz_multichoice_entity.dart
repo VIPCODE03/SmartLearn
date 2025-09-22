@@ -7,11 +7,11 @@ class ENTQuizMultiChoice extends ENTQuiz {
     required super.id,
     required super.question,
     required this.correctAnswer,
-    required super.answers,
+    required super.options,
   });
 
   @override
-  String get tag => 'multichoice';
+  String get tag => 'MultiChoiceQuiz';
 
   @override
   bool check(dynamic answerUser) {

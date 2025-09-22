@@ -39,4 +39,8 @@ class VMLDaily extends ChangeNotifier {
             }
     );
   }
+
+  void dataChanged() {
+    _loadEvents();
+  }
 }

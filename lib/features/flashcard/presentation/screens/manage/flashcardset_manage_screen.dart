@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/flashcard/domain/entities/flashcardset_entity.dart';
 import 'package:smart_learn/features/flashcard/domain/parameters/flashcardsetpramas/foreign_params.dart';
 import 'package:smart_learn/features/flashcard/presentation/screens/flashcard_screen.dart';
@@ -8,11 +9,10 @@ import 'package:smart_learn/features/flashcard/presentation/screens/manage/flash
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcardset_performer/action.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcardset_performer/performer.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcardset_performer/state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
-import 'package:smart_learn/ui/widgets/textfeild_widget.dart';
+import 'package:smart_learn/app/ui/dialogs/app_bottom_sheet.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
 
 class SCRFlashCardSetManage extends StatelessWidget {
   const SCRFlashCardSetManage({super.key});
@@ -105,7 +105,7 @@ class _ItemCardSet extends StatelessWidget with AppRouterMixin {
               ),
             boxShadow: [
               BoxShadow(
-                color: primaryColor(context).withAlpha(10),
+                color: context.style.color.primaryColor.withAlpha(10),
                 spreadRadius: 2,
                 blurRadius: 5,
                 offset: const Offset(0, 3),

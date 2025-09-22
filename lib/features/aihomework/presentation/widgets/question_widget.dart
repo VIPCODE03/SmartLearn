@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-
-import '../../../../global.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 
 class WIDQuestionAI extends StatelessWidget {
   final String textQuestion;
@@ -22,7 +21,7 @@ class WIDQuestionAI extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: primaryColor(context).withAlpha(20),
+                color: context.style.color.primaryColor.withAlpha(20),
                 blurRadius: 6,
                 spreadRadius: 1,
                 offset: const Offset(0, 0.5),

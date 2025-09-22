@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_multichoice_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_onechoice_entity.dart';
@@ -18,14 +18,14 @@ class UCEQuizSetUpdate extends UseCase<ENTQuiz, QuizUpdateParams> {
         id: params.quiz.id,
         question: params.question ?? params.quiz.question,
         correctAnswer: params.correctAnswer ?? params.quiz.correctAnswer,
-        answers: params.answers ?? params.quiz.answers,
+        options: params.answers ?? params.quiz.options,
       ),
 
       QuizMultiChoiceUpdateParams _ => ENTQuizMultiChoice(
         id: params.quiz.id,
         question: params.question ?? params.quiz.question,
         correctAnswer: params.correctAnswer ?? params.quiz.correctAnswer,
-        answers: params.answers ?? params.quiz.answers,
+        options: params.answers ?? params.quiz.options,
       ),
 
       QuizUpdateParams<ENTQuiz>() => throw UnimplementedError(),

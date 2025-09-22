@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/translate/domain/entities/language_entity.dart';
 import 'package:smart_learn/features/translate/presentation/screens/translated_screen.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/textfeild_widget.dart';
-import '../../../../../global.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
 
 class SCRTranslation extends StatefulWidget {
   const SCRTranslation({super.key});
@@ -49,7 +49,8 @@ class _SCRTranslationState extends State<SCRTranslation> {
 
                 Expanded(
                     child: Center(child: WdgBounceButton(
-                        child: Text(_targetLanguage.name, style: TextStyle(color: primaryColor(context), fontSize: 18, fontWeight: FontWeight.w500)),
+                        child: Text(_targetLanguage.name,
+                            style: TextStyle(color: context.style.color.primaryColor, fontSize: 18, fontWeight: FontWeight.w500)),
                         onTap: () {
                           _showBottomSheetSelectLanguage(context, _targetLanguage, (i) {
                             setState(() {
@@ -103,7 +104,7 @@ class _SCRTranslationState extends State<SCRTranslation> {
             ));
           }
         },
-        backgroundColor: primaryColor(context),
+        backgroundColor: context.style.color.primaryColor,
         foregroundColor: Colors.white,
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -147,7 +148,7 @@ void _showBottomSheetSelectLanguage(BuildContext context, ENTLanguage current, F
                       hintText: 'Tìm kiếm',
                       onChanged: (value) {
                         setState(() {
-                          search = value ?? '';
+                          search = value;
                         });
                       },
                     ),

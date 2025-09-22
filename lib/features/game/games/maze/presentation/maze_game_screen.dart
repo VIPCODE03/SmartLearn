@@ -2,12 +2,12 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 import 'package:smart_learn/features/game/games/maze/flame/game.dart';
 import 'package:smart_learn/features/game/games/maze/presentation/widgets/direction_pad.dart';
 import 'package:smart_learn/features/game/shared/widgets/button_widget.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
 
 class SCRMazeGame extends StatelessWidget with AppRouterMixin {
   const SCRMazeGame({super.key});
@@ -27,7 +27,7 @@ class SCRMazeGame extends StatelessWidget with AppRouterMixin {
               Text('Mê cung', style: GoogleFonts.pressStart2p(
                 textStyle: TextStyle(
                     fontSize: 35,
-                    color: primaryColor(context)
+                    color: context.style.color.primaryColor
                 ),
               )),
 

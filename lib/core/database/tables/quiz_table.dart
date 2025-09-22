@@ -7,7 +7,7 @@ class QuizTable extends Table {
   String get tableName      => 'quiztable';
   String get columnId       => 'id';
   String get columnQuestion => 'question';
-  String get columnAnswers  => 'answers';
+  String get columnOptions  => 'options';
   String get columnTag      => 'tag';
 
   //- Các thuộc tính con  -
@@ -21,7 +21,7 @@ class QuizTable extends Table {
     CREATE TABLE $tableName (
       $columnId       TEXT PRIMARY KEY,
       $columnQuestion TEXT NOT NULL,
-      $columnAnswers  TEXT NOT NULL,
+      $columnOptions  TEXT NOT NULL,
       $columnTag      TEXT NOT NULL,
       $columnChildProperties TEXT,
       

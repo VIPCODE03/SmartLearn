@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/dialogs/dialog_textfiled.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
@@ -10,20 +12,33 @@ import 'package:smart_learn/features/assistant/domain/parameters/conversation_pa
 import 'package:smart_learn/features/assistant/domain/parameters/mess_params.dart';
 import 'package:smart_learn/features/assistant/presentation/state_manages/assistantconversation_viewmodel.dart';
 import 'package:smart_learn/features/assistant/presentation/state_manages/assistantmess_viewmodel.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/services/camera_service.dart';
-import 'package:smart_learn/ui/dialogs/dialog_textfiled.dart';
-import 'package:smart_learn/ui/dialogs/popup_dialog/popup_dialog.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
+import 'package:smart_learn/app/services/camera_service.dart';
+import 'package:smart_learn/app/ui/dialogs/popup_dialog/popup_dialog.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/popup_menu_widget.dart';
 import '../../domain/entities/content_entity.dart';
 
 class SCRAssistant extends StatefulWidget {
   final ScrollController? externalScrollController;
 
+  final String? prompt;
+  final String? instruct;
+  final Function(String json)? onCreated;
+
   const SCRAssistant({
     super.key,
     this.externalScrollController,
+    this.prompt,
+    this.instruct,
+    this.onCreated
+  });
+
+  const SCRAssistant.create({
+    super.key,
+    this.externalScrollController,
+    required this.prompt,
+    required this.instruct,
+    required this.onCreated
   });
 
   @override
@@ -31,6 +46,7 @@ class SCRAssistant extends StatefulWidget {
 }
 
 class _SCRAssistantState extends State<SCRAssistant> {
+  bool get _isTemp => widget.onCreated != null;
 
   void _showDialogEditName(BuildContext context, ENTConversation conversation, VMLAssistantConversation viewmodel) async {
     final newName = await showInputDialog(context: context, title: 'Đổi tên');
@@ -115,14 +131,15 @@ class _SCRAssistantState extends State<SCRAssistant> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => VMLAssistantMessage(getIt(), getIt())),
+          ChangeNotifierProvider(create: (_) => VMLAssistantMessage(getIt(), getIt(), isTemp: _isTemp)),
           ChangeNotifierProvider(create: (_) => VMLAssistantConversation(getIt(), getIt(), getIt(), getIt())),
         ],
         child: Consumer<VMLAssistantConversation>(
           builder: (context, conversationViewmodel, child) {
-            if(conversationViewmodel.currentConversation != null) {
+            if (conversationViewmodel.currentConversation != null) {
               context.read<VMLAssistantMessage>().loadMessage(MessGetParams(
-                  MessForeignParams(conversationViewmodel.currentConversation!.id))
+                  MessForeignParams(
+                      conversationViewmodel.currentConversation!.id))
               );
             }
 
@@ -135,42 +152,47 @@ class _SCRAssistantState extends State<SCRAssistant> {
                     icon: const Icon(Icons.design_services)
                 ),
                 title: const Text("Trợ lý"),
-                actions: [
-                  WdgBounceButton(
-                    child: const Icon(Icons.chat_bubble_outline),
-                    onTap: () {
-                      conversationViewmodel.newConversation();
-                    },
-                  ),
+                actions: _isTemp
+                    ? []
+                    : [
+                        WdgBounceButton(
+                          child: const Icon(Icons.chat_bubble_outline),
+                          onTap: () {
+                            conversationViewmodel.newConversation();
+                          },
+                        ),
 
-                  const SizedBox(width: 20),
+                        const SizedBox(width: 20),
 
-                  Builder(
-                    builder: (context) => WdgBounceButton(
-                      child: const Icon(Icons.history),
-                      onTap: () {
-                        Scaffold.of(context).openEndDrawer();
-                      },
-                    ),
-                  ),
+                        Builder(
+                          builder: (context) => WdgBounceButton(
+                            child: const Icon(Icons.history),
+                            onTap: () {
+                              Scaffold.of(context).openEndDrawer();
+                            },
+                          ),
+                        ),
 
-                  const SizedBox(width: 20),
-                ],
+                        const SizedBox(width: 20),
+                      ],
               ),
 
               ///-  Drawer list cuộc trò chuyện  ------------------------------------------------
-              endDrawer: _buildDrawer(conversationViewmodel),
+              endDrawer: _isTemp ? null : _buildDrawer(conversationViewmodel),
 
               ///-  Body tin nhắn và nhập ------------------------------------------
               body: Padding(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
                   children: [
+                    if(_isTemp)
+                      const Text('Đoạn chat tạm thời', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
+
                     Expanded(
-                      child: _WIDListMessage(externalScrollController: widget.externalScrollController),
+                      child: _WIDListMessage(externalScrollController: widget.externalScrollController, isTemp: _isTemp, onCreated: widget.onCreated),
                     ),
 
-                    _WIDInputContainer(context.read<VMLAssistantMessage>()),
+                    _WIDInputContainer(context.read<VMLAssistantMessage>(), widget.instruct, _isTemp),
                   ]
                 )
               )
@@ -185,7 +207,15 @@ class _SCRAssistantState extends State<SCRAssistant> {
 ///---  Mục danh sách tin nhắn  ------------------------------------------------
 class _WIDListMessage extends StatefulWidget {
   final ScrollController? externalScrollController;
-  const _WIDListMessage({this.externalScrollController});
+  final bool isTemp;
+  final Function(String json)? onCreated;
+
+  const _WIDListMessage({
+    this.externalScrollController,
+    required this.isTemp,
+    this.onCreated
+  });
+
   @override
   State<_WIDListMessage> createState() => _WIDListMessageState();
 }
@@ -264,6 +294,30 @@ class _WIDListMessageState extends State<_WIDListMessage> {
     } else if (content is ENTContentQuiz) {
       contentWidget = const SizedBox();
 
+    } else if(content is ENTContentCreate) {
+      final text = content.text;
+
+      contentWidget = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          _buildContentText(text, isUser: isUser),
+          const SizedBox(height: 10),
+          WdgBounceButton(
+            onTap: () => widget.onCreated?.call(text),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 36),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: context.style.color.primaryColor
+                )
+              ),
+              child: const Text('Tạo', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          )
+        ],
+      );
     } else if (content is ENTContentTyping) {
       contentWidget = _Typing(text: content.text);
 
@@ -290,7 +344,7 @@ class _WIDListMessageState extends State<_WIDListMessage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
       decoration: BoxDecoration(
-        color: isUser ? primaryColor(context).withAlpha(150) : null,
+        color: isUser ? context.style.color.primaryColor.withAlpha(150) : null,
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Text(text, style: const TextStyle(fontSize: 16.0)),
@@ -317,6 +371,7 @@ class _WIDListMessageState extends State<_WIDListMessage> {
           _scrollToBottom();
           final contents = messViewModel.messages;
           return contents.isNotEmpty
+          /// Danh sách --------------------------------------------------------
               ? ListView.builder(
             controller: _scrollController,
             itemCount: contents.length,
@@ -324,7 +379,10 @@ class _WIDListMessageState extends State<_WIDListMessage> {
               return _buildMessageItem(contents[index]);
             },
           )
-              : Center(child: appWidget.user.userInfo((name, age, email, bio, grade, hobbies) => _Greeting(name: name)));
+          /// Danh sách rỗng  --------------------------------------------------
+              : !widget.isTemp
+                ? Center(child: appWidget.user.userInfo((name, age, email, bio, grade, hobbies) => _Greeting(name: name)))
+                : const SizedBox();
         });
   }
 }
@@ -332,7 +390,9 @@ class _WIDListMessageState extends State<_WIDListMessage> {
 ///---  Khu vực nhập liệu  -----------------------------------------------------
 class _WIDInputContainer extends StatefulWidget {
   final VMLAssistantMessage messageViewmodel;
-  const _WIDInputContainer(this.messageViewmodel);
+  final String? instruct;
+  final bool isTemp;
+  const _WIDInputContainer(this.messageViewmodel, this.instruct, this.isTemp);
 
   @override
   State<_WIDInputContainer> createState() => _WIDInputContainerState();
@@ -367,9 +427,9 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
   }
 
   //------------------  Gửi tin nhắn  ---------------------------
-  void _send(String text, VMLAssistantMessage messageViewmodel) {
+  void _send(String text, VMLAssistantMessage messageViewmodel, VMLAssistantConversation conversationViewmodel) {
     _textController.clear();
-    messageViewmodel.sendMessage(text, image: _image);
+    messageViewmodel.sendMessage(text, instruct: widget.instruct, image: _image, conversationViewmodel: conversationViewmodel);
     _image = null;
   }
 
@@ -383,7 +443,7 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
             padding: const EdgeInsets.all(8),
             child: WdgBounceButton(
               onTap: () async {
-                _image = await CameraService().pickImageBytesFromGallery();
+                _image = await AppCameraService().pickImageBytesFromGallery();
                 if(context.mounted) {
                   setState(() {});
                 }
@@ -400,7 +460,7 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: primaryColor(context).withAlpha(25)),
+                      color: context.style.color.primaryColor.withAlpha(25)),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,7 +518,7 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
                         ? () {}
                         : () {
                       final newMessUser = _textController.text.trim();
-                      _send(newMessUser, widget.messageViewmodel);
+                      _send(newMessUser, widget.messageViewmodel, context.read<VMLAssistantConversation>());
                     },
                     child: Container(
                       margin: const EdgeInsets.all(8),
@@ -467,7 +527,7 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
                           borderRadius: BorderRadius.circular(50),
                           color: isEnting || !_hasText
                               ? Colors.grey
-                              : primaryColor(context).withAlpha(100)),
+                              : context.style.color.primaryColor.withAlpha(100)),
                       child: const Icon(Icons.send_rounded),
                     ));
               })
@@ -478,7 +538,7 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
   }
 }
 
-///---  Text chào đoạn chat mới -------------------------------------------------
+///---  Text chào đoạn chat mới ------------------------------------------------
 class _Greeting extends StatefulWidget {
   final String name;
 
@@ -545,7 +605,7 @@ class _GreetingState extends State<_Greeting> with SingleTickerProviderStateMixi
   }
 }
 
-///---  Text hiển thị trạng thái đang nhập  ----------------------------------------------
+///---  Text hiển thị trạng thái đang nhập  ------------------------------------
 class _Typing extends StatefulWidget {
   final String text;
 
@@ -557,8 +617,7 @@ class _Typing extends StatefulWidget {
   State<_Typing> createState() => _TypingState();
 }
 
-class _TypingState extends State<_Typing>
-    with SingleTickerProviderStateMixin {
+class _TypingState extends State<_Typing> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
@@ -578,6 +637,7 @@ class _TypingState extends State<_Typing>
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = context.style.color.primaryColor;
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -589,8 +649,8 @@ class _TypingState extends State<_Typing>
               stops: const [0.0, 0.2, 0.8, 1.0],
               colors: [
                 Colors.transparent,
-                primaryColor(context).withAlpha(80),
-                primaryColor(context).withAlpha(200),
+                primaryColor.withAlpha(80),
+                primaryColor.withAlpha(200),
                 Colors.transparent,
               ],
               transform: _SlidingGradientTransform(
@@ -619,4 +679,3 @@ class _SlidingGradientTransform extends GradientTransform {
     return Matrix4.translationValues(bounds.width * slidePercent, 0.0, 0.0);
   }
 }
-

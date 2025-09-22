@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_multichoice_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_onechoice_entity.dart';
@@ -7,10 +8,9 @@ import 'package:smart_learn/features/quiz/domain/parameters/quiz_params.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_update_params.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/action.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/performer.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/snackbars/app_snackbar.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/textfeild_widget.dart';
+import 'package:smart_learn/app/ui/snackbars/app_snackbar.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
 
 enum TypeQuiz {
   choice,
@@ -53,7 +53,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
         _questionController.text = quiz.question;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _choiceEditorKey.currentState?.loadData({
-            'answers': quiz.answers,
+            'answers': quiz.options,
             'correct': quiz.correctAnswer,
           });
         });
@@ -63,7 +63,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
         _questionController.text = quiz.question;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _multiChoiceEditorKey.currentState?.loadData({
-            'answers': quiz.answers,
+            'answers': quiz.options,
             'correct': quiz.correctAnswer,
           });
         });
@@ -140,7 +140,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
             WdgTextFeildCustom(
                 controller: _questionController,
                 hintText:  'Câu hỏi',
-                color:  primaryColor(context)
+                color:  context.style.color.primaryColor
             ),
             const SizedBox(height: 12),
             Expanded(
@@ -211,7 +211,7 @@ class _WdgChoiceState extends State<_WdgChoice> {
 
   @override
   Widget build(BuildContext context) {
-    final color = primaryColor(context);
+    final color = context.style.color.primaryColor;
 
     return Column(
       children: [
@@ -233,7 +233,7 @@ class _WdgChoiceState extends State<_WdgChoice> {
                         child: WdgTextFeildCustom(
                             controller: _controllers[index],
                             hintText: 'Đáp án ${index + 1}',
-                            color: primaryColor(context),
+                            color: color,
                         )
                     ),
                     IconButton(
@@ -335,14 +335,14 @@ class _WdgMultiChoiceState extends State<_WdgMultiChoice> {
                           }
                         });
                       },
-                      activeColor: primaryColor(context),
+                      activeColor: context.style.color.primaryColor,
                       checkColor: Colors.white,
                     ),
                     Expanded(
                       child: WdgTextFeildCustom(
                           controller: _controllers[index],
                           hintText: 'Đáp án ${index + 1}',
-                          color: primaryColor(context),
+                          color: context.style.color.primaryColor,
                       )
                     ),
                     IconButton(
@@ -368,7 +368,7 @@ Widget _addButton(BuildContext context, VoidCallback onTap) {
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: primaryColor(context),
+        color: context.style.color.primaryColor,
         borderRadius: BorderRadius.circular(24),
       ),
       child: const Row(

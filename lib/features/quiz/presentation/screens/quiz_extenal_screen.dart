@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/features/quiz/presentation/screens/editor/a_quiz_manage_screen.dart';
 import 'package:smart_learn/features/quiz/presentation/screens/play/a_quiz_screen.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 
 class SCRQuizExtenal extends StatelessWidget with AppRouterMixin {
   final String? fileId;
@@ -12,16 +12,18 @@ class SCRQuizExtenal extends StatelessWidget with AppRouterMixin {
   
   @override
   Widget build(BuildContext context) {
+    final primaryColor = context.style.color.primaryColor;
+
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: primaryColor(context).withValues(alpha: 0.4),
+          backgroundColor: primaryColor.withValues(alpha: 0.4),
           leading: IconButton(
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.design_services)
           ),
         ),
         body: CustomPaint(
-          painter: _QuizBackgroundPainter(color: primaryColor(context)),
+          painter: _QuizBackgroundPainter(color: primaryColor),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

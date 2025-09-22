@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/assets/app_assets.dart';
 import 'package:smart_learn/features/game/games/maze/domain/logics/maze_generate.dart';
 import 'package:smart_learn/features/game/games/maze/flame/components/components.dart';
 import 'package:smart_learn/features/game/games/maze/presentation/widgets/direction_pad.dart';
-import 'package:smart_learn/utils/assets_util.dart';
 
 class MazeGame extends FlameGame {
   late COMMazeWorld _mazeWorld;
@@ -57,7 +57,7 @@ class MazeGame extends FlameGame {
     _maze = logic.mazeGenerate();
 
     //- Load ảnh game
-    final image = await UTIAssets.gameLoadImage(UTIAssets.path.game.maze.mazeMap);
+    final image = await AppAssets.gameLoadImage(AppAssets.path.game.maze.mazeMap);
     _spriteSheet = SpriteSheet(
       image: image,
       srcSize: Vector2(16, 16),

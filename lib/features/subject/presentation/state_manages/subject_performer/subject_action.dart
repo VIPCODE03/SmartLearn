@@ -27,12 +27,11 @@ class LoadAllSubject extends SubjectAction {
     yield current.copyWith(state: StateData.loading);
     await Future.delayed(const Duration(seconds: 1));
     final result = await get(SubjectGetParamsAll());
-    if (result.isLeft()) {
-    } else {
+    if (result.isRight()) {
       final datas = result.getOrElse(() => []);
       yield current.copyWith(
         subjects: datas,
-        subjectsFilted: datas,
+        subjectsFilted: datas.where((element) => element.isHide == false).toList(),
         state: StateData.loaded,
       );
     }
@@ -78,11 +77,11 @@ class UpdateSubject extends SubjectAction {
     final updatedSubjectsFiltered = List<ENTSubject>.from(current.subjectsFilted);
     result.fold(
             (a) {},
-            (b) {
+            (subjectUpdated) {
               final indexUpdate = updatedSubjects.indexWhere((element) => element.id == params.subject.id);
-              updatedSubjects[indexUpdate] = params.subject;
+              updatedSubjects[indexUpdate] = subjectUpdated;
               final indexUpdateFiltered = updatedSubjectsFiltered.indexWhere((element) => element.id == params.subject.id);
-              updatedSubjectsFiltered[indexUpdateFiltered] = params.subject;
+              updatedSubjectsFiltered[indexUpdateFiltered] = subjectUpdated;
             }
     );
     yield current.copyWith(
@@ -197,16 +196,8 @@ class _FilterSubject extends SubjectAction {
     }
     else {
       List<ENTSubject> subjectFiltered = current.subjects.where((subject) {
-        if (filterBy == FilterSubjectBy.good) {
-          return subject.averageCore >= 8.2;
-        } else if (filterBy == FilterSubjectBy.quiteGood) {
-          double average = subject.averageCore;
-          return average >= 6.5 && average < 8.2;
-        } else if (filterBy == FilterSubjectBy.average) {
-          double average = subject.averageCore;
-          return average >= 4 && average < 6.5;
-        } else if (filterBy == FilterSubjectBy.poor) {
-          return subject.averageCore < 4;
+        if (filterBy == FilterSubjectBy.isHide) {
+          return subject.isHide == true;
         }
         return true;
       }).toList();

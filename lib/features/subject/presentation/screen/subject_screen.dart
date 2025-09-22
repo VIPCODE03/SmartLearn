@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
-import 'package:smart_learn/constants/education_levels.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
+import 'package:smart_learn/features/subject/constants/education_levels.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/subject/domain/entities/subject_entity.dart';
 import 'package:smart_learn/features/subject/domain/usecases/subject_add_usecase.dart';
 import 'package:smart_learn/features/subject/domain/usecases/subject_update_usecase.dart';
-import 'package:smart_learn/features/subject/presentation/mappers/subject_mapper.dart';
 import 'package:smart_learn/features/subject/presentation/screen/subject_detail_screen.dart';
 import 'package:smart_learn/features/subject/presentation/state_manages/subject_performer/subject_action.dart';
 import 'package:smart_learn/features/subject/presentation/state_manages/subject_performer/subject_performer.dart';
 import 'package:smart_learn/features/subject/presentation/state_manages/subject_performer/subject_state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
-import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
+import 'package:smart_learn/app/ui/dialogs/app_bottom_sheet.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/popup_menu_widget.dart';
 import 'package:smart_learn/utils/datetime_util.dart';
 
 class SCRSubject extends StatefulWidget {
@@ -77,21 +78,9 @@ class _SCRSubjectState extends State<SCRSubject> {
                     ///-  Lọc --------------------------------------------------------
                     WdgPopupMenu(
                       items: [
-                        MenuItem(globalLanguage.good, null, () {
-                          conductor.add(ProcessSubject(filterBy: FilterSubjectBy.good));
-                          _filter = globalLanguage.good;
-                        }),
-                        MenuItem(globalLanguage.quiteGood, null, () {
-                          conductor.add(ProcessSubject(filterBy: FilterSubjectBy.quiteGood));
-                          _filter = globalLanguage.quiteGood;
-                        }),
-                        MenuItem(globalLanguage.average, null, () {
-                          conductor.add(ProcessSubject(filterBy: FilterSubjectBy.average));
-                          _filter = globalLanguage.average;
-                        }),
-                        MenuItem(globalLanguage.poor, null, () {
-                          conductor.add(ProcessSubject(filterBy: FilterSubjectBy.poor));
-                          _filter = globalLanguage.poor;
+                        MenuItem(globalLanguage.isHide, null, () {
+                          conductor.add(ProcessSubject(filterBy: FilterSubjectBy.isHide));
+                          _filter = globalLanguage.isHide;
                         }),
                       ],
                       child: const Icon(Icons.filter_alt),
@@ -104,7 +93,7 @@ class _SCRSubjectState extends State<SCRSubject> {
                           height: 50,
                           child: TextField(
                             controller: _searchController,
-                            cursorColor: primaryColor(context),
+                            cursorColor: context.style.color.primaryColor,
                             decoration: InputDecoration(
                               hintText: globalLanguage.search,
                               contentPadding: const EdgeInsets.all(16),
@@ -114,7 +103,7 @@ class _SCRSubjectState extends State<SCRSubject> {
                               focusedBorder: UnderlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(
-                                    color: primaryColor(context).withAlpha(50)),
+                                    color: context.style.color.primaryColor.withAlpha(50)),
                               ),
                               suffixIcon: _searchController.text.isNotEmpty ?
                               IconButton(
@@ -272,9 +261,9 @@ class _SCRSubjectState extends State<SCRSubject> {
     return Container(
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
-            color: primaryColor(context).withAlpha(25),
+            color: context.style.color.primaryColor.withAlpha(25),
             border: Border.all(
-                color: primaryColor(context).withAlpha(100)),
+                color: context.style.color.primaryColor.withAlpha(100)),
             borderRadius: BorderRadius.circular(8)
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -309,8 +298,9 @@ class _SubjectItem extends StatelessWidget with AppRouterMixin {
   Widget build(BuildContext context) {
     return WdgBounceButton(
         onTap: () {
-          pushSlideLeft(context, SCRSubjectDetail(subject: subject));
-          PerformerProvider.of<SubjectPerformer>(context).add(UpdateSubject(SubjectUpdateParams(subject, lastStudyDate: DateTime.now())));
+          final performer = PerformerProvider.of<SubjectPerformer>(context);
+          pushSlideLeft(context, SCRSubjectDetail(subject: subject, performer: performer));
+          performer.add(UpdateSubject(SubjectUpdateParams(subject, lastStudyDate: DateTime.now())));
         },
         child: Container(
             constraints: BoxConstraints(
@@ -320,13 +310,13 @@ class _SubjectItem extends StatelessWidget with AppRouterMixin {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: primaryColor(context).withAlpha(100),
+                    color: context.style.color.primaryColor.withAlpha(100),
                     width: 1.5
                 ),
                 boxShadow: [
                   BoxShadow(
                       spreadRadius: 4,
-                      color: primaryColor(context).withAlpha(5),
+                      color: context.style.color.primaryColor.withAlpha(5),
                       offset: const Offset(0, 2)
                   )
                 ]
@@ -350,11 +340,6 @@ class _SubjectItem extends StatelessWidget with AppRouterMixin {
 
                 Text('${globalLanguage.lastStudyDate}: ${UTIDateTime.getFormatyyyyMMddHHmm(subject.lastStudyDate)}',
                     style: const TextStyle(color: Colors.grey)),
-
-                if(subject.evaluateName != '')
-                  Text(subject.evaluateName,
-                      style: TextStyle(fontWeight: FontWeight.bold, color: subject.evaluateColor)
-                  ),
               ],
             )
         )

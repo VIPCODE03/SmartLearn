@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:smart_learn/config/gemini_config.dart';
+import 'package:smart_learn/app/assets/app_assets.dart';
+import 'package:smart_learn/app/config/gemini_config.dart';
 import 'package:smart_learn/features/aihomework/domain/parameters/aihomework_history_params.dart';
 import 'package:smart_learn/features/aihomework/domain/usecases/aihomework_history_add_usecase.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/event.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/state.dart';
-import 'package:smart_learn/services/storage_service.dart';
-import 'package:smart_learn/utils/assets_util.dart';
+import 'package:smart_learn/app/services/storage_service.dart';
 import 'package:zent_gemini/gemini_config.dart';
 import 'package:zent_gemini/gemini_models.dart';
 import 'package:zent_gemini/gemini_service.dart';
@@ -20,8 +20,8 @@ class ASKAIBloc extends Bloc<ASKAIEvent, ASKAIState> {
 
   void _onASKAI(ASKAI event, Emitter<ASKAIState> emit) async {
     emit(ASKAIAnswering());
-    String intructFormat = await UTIAssets.loadString(UTIAssets.path.train.format);
-    String intructMission = await UTIAssets.loadString(UTIAssets.path.train.mission);
+    String intructFormat = await AppAssets.loadString(AppAssets.path.train.format);
+    String intructMission = await AppAssets.loadString(AppAssets.path.train.mission);
 
     final gemAI = GeminiAI(GeminiConfig(
       apiKey: GeminiAIConfig.apiKey,

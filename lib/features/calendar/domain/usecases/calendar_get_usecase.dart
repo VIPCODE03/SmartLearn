@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/calendar/domain/parameters/calendar_params.dart';
 
 import '../entities/a_calendar_entity.dart';

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
-import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
 import 'package:smart_learn/features/calendar/presentation/widgets/calendar_daily_widget.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/divider_widget.dart';
 
 import 'calendar_editor_screen.dart';
 
@@ -50,12 +49,17 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
     });
   }
 
-  void _pushEditorScreen(BuildContext context, {ENTCalendar? calendar}) {
-    pushSlideLeft(context, SCRCalendarEditor(calendar: calendar));
+  void _pushEditorScreen(BuildContext context) {
+    pushSlideLeft(context, SCRCalendarEditor(onSave: () {
+      setState(() {});
+      })
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Scaffold(
         body: SafeArea(
           child: Column(children: [
@@ -69,7 +73,7 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
                     Expanded(
                       child: Text(
                           DateFormat('EEEE, dd MMMM yyyy', 'vi_VN').format(_selectedDate),
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: primaryColor(context))),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color.primaryColor)),
                     ),
 
                     WdgBounceButton(
@@ -83,7 +87,7 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
                       child: Text(
                         'Hôm nay',
                         style: TextStyle(
-                            color: primaryColor(context), fontSize: 16),
+                            color: color.primaryColor, fontSize: 16),
                       ),
                     ),
                   ]),
@@ -121,14 +125,14 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
                                   margin: const EdgeInsets.symmetric(horizontal: 2),
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? primaryColor(context)
+                                        ? color.primaryColor
                                         : isToday
-                                        ? primaryColor(context).withAlpha(60)
+                                        ? color.primaryColor.withAlpha(60)
                                         : Colors.grey[100],
                                     borderRadius: BorderRadius.circular(12),
                                     border: isToday && !isSelected
                                         ? Border.all(
-                                        color: primaryColor(context).withAlpha(150),
+                                        color: color.primaryColor.withAlpha(150),
                                         width: 1)
                                         : null,
                                   ),

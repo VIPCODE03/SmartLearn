@@ -10,4 +10,5 @@ abstract class REPFlashCard {
   Future<Either<Failure, bool>> delete(String id);
 
   Future<Either<Failure, List<ENTFlashCard>>> getByCardSetId(String cardSetId);
+  Future<Either<Failure, List<ENTFlashCard>>> getWithAI(String instruct, String cardSetId);
 }

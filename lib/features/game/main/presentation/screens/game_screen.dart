@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/game/games/math_matrix/game_math_screen.dart';
 import 'package:smart_learn/features/game/games/maze/presentation/maze_game_screen.dart';
 import 'package:smart_learn/features/game/shared/widgets/button_widget.dart';

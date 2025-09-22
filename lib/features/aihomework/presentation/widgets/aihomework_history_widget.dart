@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_item_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/aihomework/domain/parameters/aihomework_history_params.dart';
 import 'package:smart_learn/features/aihomework/presentation/screens/d_exercise_solution_screen.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/history_bloc/bloc.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/history_bloc/event.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/history_bloc/state.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_item_widget.dart';
 
 typedef HistoryBuilder = Widget Function(
 

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/calendar/presentation/screens/calendar_screen.dart';
 
 abstract class ICalendarWidget {

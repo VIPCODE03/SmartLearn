@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/focus/domain/entities/weekly_focus_entity.dart';
 import 'package:week_of_year/date_week_extensions.dart';
 

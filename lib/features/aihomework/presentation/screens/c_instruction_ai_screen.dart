@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/aihomework/presentation/widgets/question_widget.dart';
-
-import '../../../../../global.dart';
 import 'd_exercise_solution_screen.dart';
 
 class SCRAIInstruction extends StatefulWidget {
@@ -26,6 +26,7 @@ class _SCRAIInstructionState extends State<SCRAIInstruction> with AppRouterMixin
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = context.style.color.primaryColor;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -38,7 +39,7 @@ class _SCRAIInstructionState extends State<SCRAIInstruction> with AppRouterMixin
           Padding(padding: const EdgeInsets.only(right: 20),
             child: InkWell(
               onTap: () {
-                navigateToNextScreen(
+                pushSlideLeft(
                     context,
                     SCRExerciseSolution(
                       instruct: _textController.text,
@@ -51,7 +52,7 @@ class _SCRAIInstructionState extends State<SCRAIInstruction> with AppRouterMixin
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: primaryColor(context)),
+                    color: primaryColor),
               ),
             )
           )
@@ -107,7 +108,7 @@ class _SCRAIInstructionState extends State<SCRAIInstruction> with AppRouterMixin
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryColor(context).withAlpha(20),
+                    color: primaryColor.withAlpha(20),
                     blurRadius: 6,
                     spreadRadius: 1,
                     offset: const Offset(0, 0.5),
@@ -155,6 +156,7 @@ class _HorizontalItemBarState extends State<_HorizontalItemBar> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = context.style.color.primaryColor;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       height: 80,
@@ -163,13 +165,13 @@ class _HorizontalItemBarState extends State<_HorizontalItemBar> {
         children: [
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: primaryColor(context), width: 0.5),
+              border: Border.all(color: primaryColor, width: 0.5),
               borderRadius: BorderRadius.circular(24),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
             child: Center(
               child: Text(widget.itemList[indexSelected], 
-                style: TextStyle(color: primaryColor(context), fontWeight: FontWeight.bold),
+                style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
               ),
             ),
           ),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/features/user/domain/entities/user_entity.dart';
 import 'package:smart_learn/features/user/domain/parameters/user_params.dart';
 import 'package:smart_learn/features/user/presentation/state_manages/user_bloc/bloc.dart';
 import 'package:smart_learn/features/user/presentation/state_manages/user_bloc/event.dart';
 import 'package:smart_learn/features/user/presentation/state_manages/user_bloc/state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/divider_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 
 class SCRUser extends StatefulWidget {
   const SCRUser({super.key});
@@ -22,7 +22,7 @@ class _SCRUserState extends State<SCRUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryColor(context).withAlpha(200),
+        backgroundColor: context.style.color.primaryColor.withAlpha(200),
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.design_services)
@@ -73,7 +73,7 @@ class UserProfileScreen extends StatelessWidget {
                 width: double.infinity,
                 child: CustomPaint(
                   painter: _HeaderBackground(
-                    baseColor: primaryColor(context),
+                    baseColor: context.style.color.primaryColor,
                   ),
                 ),
               ),
@@ -210,7 +210,7 @@ class _Item extends StatelessWidget {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: primaryColor(context).withAlpha(25)
+                            color: context.style.color.primaryColor.withAlpha(25)
                         ),
                         child: Text(
                           value,

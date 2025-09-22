@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/game/games/math_matrix/domain/entities/matrixsquare_entity.dart';
 import 'package:smart_learn/features/game/games/math_matrix/domain/logics/mathmaxtrix_generate_dfs.dart';
 import 'package:smart_learn/features/game/shared/widgets/button_widget.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 
 class SCRGameMathMatrix extends StatelessWidget with AppRouterMixin {
   const SCRGameMathMatrix({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -18,7 +20,7 @@ class SCRGameMathMatrix extends StatelessWidget with AppRouterMixin {
             Text('Math Matrix', style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.bold,
-              color: primaryColor(context),
+              color: color.primaryColor,
             )),
 
             const SizedBox(height: 20),
@@ -94,6 +96,8 @@ class _SCRGameMathMatrixState extends State<_SCRGameMathMatrix> {
   
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Scaffold(
       body: _map == null
           ? const Center(child: WdgLoading())
@@ -135,9 +139,9 @@ class _SCRGameMathMatrixState extends State<_SCRGameMathMatrix> {
                           child: Container(
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: entity.isHide ? primaryColor(context).withAlpha(100) : primaryColor(context).withAlpha(50),
+                                color: entity.isHide ? color.primaryColor.withAlpha(100) : color.primaryColor.withAlpha(50),
                                 border: isSelected ? Border.all(
-                                  color: primaryColor(context),
+                                  color: color.primaryColor,
                                   width: 2,
                                 ) : null,
                               ),
@@ -183,7 +187,7 @@ class _SCRGameMathMatrixState extends State<_SCRGameMathMatrix> {
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? Colors.grey.withAlpha(5)
-                                : primaryColor(context).withAlpha(150),
+                                : color.primaryColor.withAlpha(150),
                           ),
                           child: GestureDetector(
                             onTap: () {

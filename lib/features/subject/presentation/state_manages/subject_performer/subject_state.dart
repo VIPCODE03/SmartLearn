@@ -35,5 +35,5 @@ class SubjectState extends DataState {
 }
 
 enum StateData {init, loading, loaded, updating, updated, error}
-enum FilterSubjectBy {none, good, quiteGood, average, poor}
+enum FilterSubjectBy {none, isHide}
 enum SortType {none, byName, byLastStudyDate }

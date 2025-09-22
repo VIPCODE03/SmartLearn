@@ -1,13 +1,13 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/quiz/domain/entities/c_quiz_result_entity.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_action.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_performer.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/circular_progressbar_widget.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/circular_progressbar_widget.dart';
 import 'd_check_quiz.dart';
 
 class SCRQuizResult extends StatefulWidget {
@@ -187,13 +187,15 @@ class _WIDFootAction extends StatelessWidget with AppRouterMixin {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
         children: [
           Row(children: [
             Expanded(
-                child: _buildButton('Làm lại', Icons.refresh, primaryColor(context), () {
+                child: _buildButton('Làm lại', Icons.refresh, color.primaryColor, () {
                   PerformerProvider.of<QuizReviewPerformer>(context).add(StartQuiz(quizResult.quizs));
                 })
             ),
@@ -201,7 +203,7 @@ class _WIDFootAction extends StatelessWidget with AppRouterMixin {
             const SizedBox(width: 15),
 
             Expanded(
-              child: _buildButton('Xem lại', Icons.history_edu, primaryColor(context), () {
+              child: _buildButton('Xem lại', Icons.history_edu, color.primaryColor, () {
                 pushSlideLeft(context, SCRQuizCheck(
                     quizs: quizResult.quizs,
                     userAnswers: quizResult.userAnswers)
@@ -221,7 +223,7 @@ class _WIDFootAction extends StatelessWidget with AppRouterMixin {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: primaryColor(context).withValues(alpha: 0.4),
+                color: color.primaryColor.withValues(alpha: 0.4),
               ),
               child: const Text(
                 'Hoàn Thành',

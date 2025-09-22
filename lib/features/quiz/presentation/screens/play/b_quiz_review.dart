@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/dialogs/popup_dialog/controller.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/popup_menu_widget.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/presentation/screens/play/quizs/a_quiz_widget.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_action.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_performer.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quiz_play_performer/quizplay_state.dart';
 
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/dialogs/popup_dialog/controller.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
-import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
 import 'c_quiz_result_screen.dart';
 
 class SCRQuizReview extends StatefulWidget {
@@ -25,26 +27,10 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
   int currentIndex = 0;
   final PopupMenuController controller = PopupMenuController();
 
-  //--- Chuyển quiz ---------------------------------
-  void next() {
-    if (currentIndex < widget.quizs.length - 1) {
-      setState(() {
-        currentIndex++;
-      });
-    }
-  }
-
-  //--- Quay lại -------------------------------------
-  void previous() {
-    if (currentIndex > 0) {
-      setState(() {
-        currentIndex--;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return PerformerProvider<QuizReviewPerformer>.create(
       create: (_) => QuizReviewPerformer()..add(StartQuiz(widget.quizs)),
       child: PerformerBuilder<QuizReviewPerformer>(
@@ -61,8 +47,7 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Opacity(opacity: state.isCompleted ? 1 : 0.3,
-                        child: GestureDetector(
+                      WdgBounceButton(
                           onTap: () {
                             if(state.isCompleted) {
                               currentIndex = 0;
@@ -72,13 +57,12 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                           child: Padding(
                             padding: const EdgeInsets.all(6),
                             child: Text('Hoàn thành',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: primaryColor(context))
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: state.isCompleted ? color.primaryColor : Colors.grey.withValues(alpha: 0.3))
                             ),
                           )
-                        ),
                       ),
 
                       const SizedBox(width: 12),
@@ -109,21 +93,21 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                                       borderRadius: BorderRadius.circular(6),
                                       border: Border.all(
                                         color: isCurrent
-                                            ? primaryColor(context)
+                                            ? color.primaryColor
                                             : isAnswered
                                             ? Colors.yellow
                                             : Colors.grey,
                                         width: 2,
                                       ),
                                       color: isCurrent
-                                          ? primaryColor(context).withAlpha(10)
+                                          ? color.primaryColor.withAlpha(10)
                                           : Colors.transparent,
                                     ),
                                     child: Text('${index + 1}',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: isCurrent
-                                            ? primaryColor(context)
+                                            ? color.primaryColor
                                             : isAnswered
                                             ? Colors.orange
                                             : Colors.grey,
@@ -182,7 +166,7 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: currentIndex == 0
                                 ? Colors.grey.shade400
-                                : primaryColor(context).withAlpha(100),
+                                : color.primaryColor.withAlpha(100),
                             foregroundColor: Colors.white,
                           ),
                         ),
@@ -196,7 +180,7 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: currentIndex == widget.quizs.length - 1
                                     ? Colors.grey.shade400
-                                    : primaryColor(context).withAlpha(100),
+                                    : color.primaryColor.withAlpha(100),
                             foregroundColor: Colors.white,
                           ),
                         ),
@@ -217,4 +201,23 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
       ),
     );
   }
+
+  //--- Chuyển quiz ---------------------------------
+  void next() {
+    if (currentIndex < widget.quizs.length - 1) {
+      setState(() {
+        currentIndex++;
+      });
+    }
+  }
+
+  //--- Quay lại -------------------------------------
+  void previous() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+      });
+    }
+  }
+
 }

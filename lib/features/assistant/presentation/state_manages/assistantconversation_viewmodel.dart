@@ -17,7 +17,7 @@ class VMLAssistantConversation extends ChangeNotifier {
       this._add,
       this._update,
       this._delete,
-      this._get
+      this._get,
       ) {
     _init();
   }
@@ -74,7 +74,12 @@ class VMLAssistantConversation extends ChangeNotifier {
             (conversationUpdated) {
               _conversations.removeWhere((conversation) => conversation.id == conversationUpdated.id);
               _conversations.add(conversationUpdated);
-              notifyListeners();
+              if(currentConversation?.id == conversationUpdated.id) {
+                currentConversation = conversationUpdated;
+              }
+              else {
+                notifyListeners();
+              }
         });
   }
 

@@ -45,14 +45,14 @@ ví dụ json:
 {
   "tag": "OneChoiceQuiz",
   "question": "What is the capital of France?",
-  "answers": ["Paris", "London", "Berlin", "Madrid"],
-  "correctAnswer": "Paris"
+  "options": ["Paris", "London", "Berlin", "Madrid"],
+  "childProperties": "Paris" //đáp án đúng kiểu String
 }
 {
   "tag": "MultiChoiceQuiz",
   "question": "Which of the following are fruits?",
-  "answers": ["Apple", "Carrot", "Banana", "Potato"],
-  "correctAnswer": ["Apple", "Banana"]
+  "options": ["Apple", "Carrot", "Banana", "Potato"],
+  "childProperties": ["Apple", "Banana"] //đáp án đúng kiểu List<String>
 }
 
 Và nhiệm vụ của bạn là tạo bài tập cho môn học dựa trên nguồn của user gửi như tài liệu, ảnh, giống bài tập cũ... hoặc hướng dẫn tạo bài quiz về 1 thứ

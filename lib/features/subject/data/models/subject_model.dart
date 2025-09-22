@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:smart_learn/core/database/tables/subject_table.dart';
 import 'package:smart_learn/features/subject/domain/entities/subject_entity.dart';
 
@@ -10,9 +8,8 @@ class MODSubject extends ENTSubject {
     required super.id,
     required super.name,
     required super.lastStudyDate,
-    required super.tags,
     required super.level,
-    required super.exercisesScores
+    required super.isHide,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,9 +17,8 @@ class MODSubject extends ENTSubject {
       _table.columnId: id,
       _table.columnName: name,
       _table.columnLastStudyDate: lastStudyDate.toIso8601String(),
-      _table.columnTags: jsonEncode(tags),
       _table.columnLevel: level,
-      _table.columnExercisesScores: jsonEncode(exercisesScores),
+      _table.columnIsHide: isHide ? 1 : 0,
     };
   }
 
@@ -31,9 +27,8 @@ class MODSubject extends ENTSubject {
       id: map[_table.columnId],
       name: map[_table.columnName],
       lastStudyDate: DateTime.parse(map[_table.columnLastStudyDate]),
-      tags: List<String>.from(jsonDecode(map[_table.columnTags])),
       level: map[_table.columnLevel],
-      exercisesScores: List<double>.from(jsonDecode(map[_table.columnExercisesScores])),
+      isHide: map[_table.columnIsHide] == 1,
     );
   }
 
@@ -42,9 +37,8 @@ class MODSubject extends ENTSubject {
       id: entity.id,
       name: entity.name,
       lastStudyDate: entity.lastStudyDate,
-      tags: entity.tags,
       level: entity.level,
-      exercisesScores: entity.exercisesScores,
+      isHide: entity.isHide,
     );
   }
 }

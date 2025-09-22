@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/focus/presentation/widgets/export/export_manage_focus.dart';
 import 'package:smart_learn/features/quiz/presentation/screens/quiz_extenal_screen.dart';
 

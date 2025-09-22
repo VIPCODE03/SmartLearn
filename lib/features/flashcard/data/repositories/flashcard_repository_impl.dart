@@ -2,6 +2,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
 import 'package:smart_learn/core/error/log.dart';
+import 'package:smart_learn/features/flashcard/data/datasources/flashcard_ai_datasource.dart';
 import 'package:smart_learn/features/flashcard/data/datasources/flashcard_local_datasource.dart';
 import 'package:smart_learn/features/flashcard/data/models/flashcard_model.dart';
 import 'package:smart_learn/features/flashcard/domain/entities/flashcard_entity.dart';
@@ -9,7 +10,8 @@ import 'package:smart_learn/features/flashcard/domain/repositories/flashcard_rep
 
 class REPFlashCardImpl extends REPFlashCard {
   final LDSFlashCard _ldsFlashCard;
-  REPFlashCardImpl(this._ldsFlashCard);
+  final ADSFlashcard _adsFlashcard;
+  REPFlashCardImpl(this._ldsFlashCard, this._adsFlashcard);
 
   @override
   Future<Either<Failure, bool>> add(ENTFlashCard flashCard) async {
@@ -62,6 +64,17 @@ class REPFlashCardImpl extends REPFlashCard {
       return Right(result);
     } catch (e, s) {
       logError(e, stackTrace: s, context: 'REPFlashCardImpl.multiReset');
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ENTFlashCard>>> getWithAI(String instruct, String cardSetId) async {
+    try {
+      final result = await _adsFlashcard.getFlashCard(instruct, cardSetId);
+      return Right(result);
+    } catch (e, s) {
+      logError(e, stackTrace: s, context: 'REPFlashCardImpl.getWithAI');
       return Left(CacheFailure());
     }
   }

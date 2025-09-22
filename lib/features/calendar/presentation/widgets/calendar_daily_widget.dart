@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/presentation/screens/calendar_editor_screen.dart';
 import 'package:smart_learn/features/calendar/presentation/state_manages/daily_viewmodel.dart';
 import 'dart:async';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/utils/datetime_util.dart';
 
 class WdgDailyCalendar extends StatefulWidget {
@@ -34,13 +34,8 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> with AppRouterMixin
     _currentTime = widget.date;
     _isToday = UTIDateTime.isToday(_currentTime);
     _viewModel = VMLDaily(current: _currentTime, getCalendar: getIt());
+    _viewModel.current = _currentTime;
     _startTimer();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _viewModel.current = _currentTime;
-      });
-    });
   }
 
   @override
@@ -91,51 +86,53 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> with AppRouterMixin
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<VMLDaily>.value(
       value: _viewModel,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: totalHours * hourHeight,
-            child: Stack(
-              children: [
-                /// Thanh thời gian ----------------------------------
-                _buildTimeLines(),
+      child: Consumer<VMLDaily>(builder: (context, vm, _) {
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              height: totalHours * hourHeight,
+              child: Stack(
+                children: [
+                  /// Thanh thời gian ----------------------------------
+                  _buildTimeLines(),
 
-                /// Các sự kiện --------------------------------------
-                ..._buildPositionedEvents(context),
+                  /// Các sự kiện --------------------------------------
+                  ..._buildPositionedEvents(context),
 
-                /// Thanh thời gian hiện tại màu đỏ -----------------
-                if(_isToday)
-                  Positioned(
-                  top: _currentTimeOffset(),
-                  left: timeLabelWidth,
-                  right: 0,
-                  child: Container(
-                    height: 1,
-                    color: Colors.red,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: -5,
-                          top: -4,
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 1.5),
+                  /// Thanh thời gian hiện tại màu đỏ -----------------
+                  if(_isToday)
+                    Positioned(
+                      top: _currentTimeOffset(),
+                      left: timeLabelWidth,
+                      right: 0,
+                      child: Container(
+                        height: 1,
+                        color: Colors.red,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              left: -5,
+                              top: -4,
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 1.5),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      })
     );
   }
 
@@ -242,7 +239,9 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> with AppRouterMixin
       width: width - 8,
       height: height,
       child: WdgBounceButton(
-        onTap: () => pushSlideLeft(context, SCRCalendarEditor(title: 'Chỉnh sửa', calendar: calendar)),
+        onTap: () => pushFade(context, SCRCalendarEditor(title: 'Chỉnh sửa', calendar: calendar, onSave: () {
+          _viewModel.dataChanged();
+        },)),
         scaleFactor: 0.9,
         child: Opacity(
         opacity: opacity,
@@ -250,7 +249,7 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> with AppRouterMixin
             decoration: BoxDecoration(
               color: (calendar.valueColor != null
                   ? Color(calendar.valueColor!)
-                  : primaryColor(context)).withAlpha(200),
+                  : context.style.color.primaryColor).withAlpha(200),
               borderRadius: BorderRadius.circular(4),
               border: Border.all(color: (calendar.valueColor != null ? Color(calendar.valueColor!) : Colors.deepPurple), width: 1),
             ),

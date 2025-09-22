@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/dialogs/popup_dialog/controller.dart';
+import 'package:smart_learn/app/ui/widgets/popup_menu_widget.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/presentation/screens/play/quizs/a_quiz_widget.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/dialogs/popup_dialog/controller.dart';
-import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
 
 class SCRQuizCheck extends StatefulWidget {
   final List<ENTQuiz> quizs;
@@ -39,6 +40,8 @@ class _SCRQuizCheckState extends State<SCRQuizCheck> {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Scaffold(
       appBar: AppBar(),
       body: Column(
@@ -77,14 +80,14 @@ class _SCRQuizCheckState extends State<SCRQuizCheck> {
                               width: 2,
                             ),
                             color: isCurrent
-                                ? primaryColor(context).withAlpha(50)
+                                ? color.primaryColor.withAlpha(50)
                                 : Colors.transparent,
                           ),
                           child: Text('${index + 1}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: isCurrent
-                                  ? primaryColor(context)
+                                  ? color.primaryColor
                                   : isCorrect
                                   ? Colors.green
                                   : Colors.red,
@@ -143,7 +146,7 @@ class _SCRQuizCheckState extends State<SCRQuizCheck> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: currentIndex == 0
                           ? Colors.grey.shade400
-                          : primaryColor(context).withAlpha(100),
+                          : color.primaryColor.withAlpha(100),
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -157,7 +160,7 @@ class _SCRQuizCheckState extends State<SCRQuizCheck> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: currentIndex == widget.quizs.length - 1
                           ? Colors.grey.shade400
-                          : primaryColor(context).withAlpha(100),
+                          : color.primaryColor.withAlpha(100),
                       foregroundColor: Colors.white,
                     ),
                   ),

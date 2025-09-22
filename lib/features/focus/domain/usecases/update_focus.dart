@@ -2,7 +2,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/focus/domain/repositories/focus_repository.dart';
 import '../entities/weekly_focus_entity.dart';
 

@@ -1,24 +1,22 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/subject/domain/entities/subject_entity.dart';
 import 'package:smart_learn/features/subject/domain/repositories/subject_repository.dart';
 
 class SubjectUpdateParams {
   final ENTSubject subject;
   final String? name;
-  final List<String>? tags;
   final String? level;
-  final List<double>? exercisesScores;
   final DateTime? lastStudyDate;
+  final bool? isHide;
 
   SubjectUpdateParams(
     this.subject, {
         this.name,
-        this.tags,
         this.level,
-        this.exercisesScores,
         this.lastStudyDate,
+        this.isHide,
   });
 }
 
@@ -32,9 +30,8 @@ class UCESubjectUpdate extends UseCase<ENTSubject, SubjectUpdateParams> {
       id: params.subject.id,
       name: params.name ?? params.subject.name,
       lastStudyDate: params.lastStudyDate ?? params.subject.lastStudyDate,
-      tags: params.tags ?? params.subject.tags,
       level: params.level ?? params.subject.level,
-      exercisesScores: params.exercisesScores ?? params.subject.exercisesScores,
+      isHide: params.isHide ?? params.subject.isHide,
     );
     final result = await repository.update(subjectUpdated);
     return result.fold((failure) => Left(failure), (sucsses) => sucsses ? Right(subjectUpdated) : Left(CacheFailure()));

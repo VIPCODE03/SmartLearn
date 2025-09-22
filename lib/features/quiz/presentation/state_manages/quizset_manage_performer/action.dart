@@ -102,8 +102,7 @@ class CreateQuizByAI extends QuizSetManageAction {
               return current;
             }
             else {
-              return CreatedQuizByAI(
-                  quizzes: [...current.quizzes, ...data], newQuizzes: data);
+              return CreatedQuizByAI(quizzes: [...current.quizzes, ...data], newQuizzes: data);
             }
           }
       );

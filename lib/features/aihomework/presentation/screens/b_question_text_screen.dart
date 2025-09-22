@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
-import 'package:smart_learn/global.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/utils/keybroad_util.dart';
 
 import 'c_instruction_ai_screen.dart';
 
@@ -36,7 +38,7 @@ class _SCRAITextState extends State<SCRAIText> with AppRouterMixin {
                     topRight: Radius.circular(10)),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryColor(context).withAlpha(20),
+                    color: context.style.color.primaryColor.withAlpha(20),
                     blurRadius: 6,
                     spreadRadius: 1,
                     offset: const Offset(0, 0),
@@ -46,7 +48,7 @@ class _SCRAITextState extends State<SCRAIText> with AppRouterMixin {
               child: Text(
                 globalLanguage.next,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: context.style.color.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
               ),
@@ -67,7 +69,7 @@ class _SCRAITextState extends State<SCRAIText> with AppRouterMixin {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: primaryColor(context).withAlpha(20),
+                        color: context.style.color.primaryColor.withAlpha(20),
                         blurRadius: 6,
                         spreadRadius: 1,
                         offset: const Offset(0, 0.5),

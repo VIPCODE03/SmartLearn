@@ -22,6 +22,10 @@ class FlashCardLoadedState extends FlashCardHasDataState {
   FlashCardLoadedState(super.cards);
 }
 
+class FlashCardCreatingState extends FlashCardHasDataState {
+  FlashCardCreatingState(super.cards);
+}
+
 class FlashCardCompletedState extends FlashCardHasDataState {
   FlashCardCompletedState(super.cards);
 }

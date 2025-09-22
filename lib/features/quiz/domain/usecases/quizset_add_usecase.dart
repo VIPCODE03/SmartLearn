@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_onechoice_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_multichoice_entity.dart';
@@ -18,14 +18,14 @@ class UCEQuizAdd extends UseCase<ENTQuiz?, QuizAddParams> {
       AddQuizOneChoiceParams() => ENTQuizOneChoice(
         id: UTIGenerateID.random(),
         question: params.question,
-        answers: params.answers,
+        options: params.answers,
         correctAnswer: params.correctAnswer,
       ),
 
       AddQuizMultiChoiceParams() => ENTQuizMultiChoice(
         id: UTIGenerateID.random(),
         question: params.question,
-        answers: params.answers,
+        options: params.answers,
         correctAnswer: params.correctAnswer,
       ),
       _ => throw Exception('Unknown Quiz type: ${params.runtimeType}')

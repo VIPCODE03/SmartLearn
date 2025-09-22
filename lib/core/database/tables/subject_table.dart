@@ -8,9 +8,8 @@ class SubjectTable extends Table {
   String get columnId      => 'id';
   String get columnName    => 'name';
   String get columnLastStudyDate  => 'lastStudyDate';
-  String get columnTags  => 'tags';
   String get columnLevel  => 'level';
-  String get columnExercisesScores  => 'exercisesScores';
+  String get columnIsHide  => 'isHide';
 
   @override
   String get build => '''
@@ -18,9 +17,8 @@ class SubjectTable extends Table {
       $columnId      TEXT PRIMARY KEY,
       $columnName    TEXT NOT NULL,
       $columnLastStudyDate  TEXT,
-      $columnTags  TEXT,
       $columnLevel  TEXT NOT NULL,
-      $columnExercisesScores  TEXT
+      $columnIsHide  INTEGER DEFAULT 0
       );
     ''';
 }

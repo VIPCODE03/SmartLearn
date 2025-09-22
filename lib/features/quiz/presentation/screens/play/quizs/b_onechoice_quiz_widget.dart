@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_onechoice_entity.dart';
-import 'package:smart_learn/global.dart';
-
 import 'a_quiz_widget.dart';
 
 class WIDQuizOneChoice extends WIDQuiz<ENTQuizOneChoice> {
@@ -33,8 +32,8 @@ class _WdgOneChoiceQuizState extends State<WIDQuizOneChoice> {
     return Padding(
       padding: const EdgeInsets.all(6),
       child: ListView(children: [
-        ...List.generate(widget.quiz.answers.length, (index) {
-          String answer = widget.quiz.answers[index];
+        ...List.generate(widget.quiz.options.length, (index) {
+          String answer = widget.quiz.options[index];
           return GestureDetector(
             onTap: () {
               setState(() {
@@ -53,11 +52,11 @@ class _WdgOneChoiceQuizState extends State<WIDQuizOneChoice> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: answer == selected
-                      ? primaryColor(context).withAlpha(50)
+                      ? context.style.color.primaryColor.withAlpha(50)
                       : Colors.grey.withAlpha(10),
                   border: Border.all(
                       width: 2,
-                      color: primaryColor(context).withAlpha(50)
+                      color: context.style.color.primaryColor.withAlpha(50)
                   )
               ),
               child: Row(

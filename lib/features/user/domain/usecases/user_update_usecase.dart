@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/user/domain/entities/user_entity.dart';
 import 'package:smart_learn/features/user/domain/parameters/user_params.dart';
 import 'package:smart_learn/features/user/domain/repositories/user_repository.dart';

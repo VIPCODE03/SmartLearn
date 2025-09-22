@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
 import 'package:smart_learn/core/error/log.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/zz_cycle_entity.dart';

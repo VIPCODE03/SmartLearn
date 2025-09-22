@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:performer/performer_build.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_create_ai_params.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_get_params.dart';
@@ -9,11 +11,9 @@ import 'package:smart_learn/features/quiz/presentation/screens/editor/b_quiz_edi
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/action.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/performer.dart';
 import 'package:smart_learn/features/quiz/presentation/state_manages/quizset_manage_performer/state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
-import 'package:smart_learn/ui/dialogs/dialog_textfiled.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/dialogs/app_bottom_sheet.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 
 enum _TypeAdd {
   handmade, ai
@@ -50,21 +50,6 @@ class _QuizManageScaffold extends StatefulWidget {
 
 class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouterMixin {
 
-  void _addQuiz(BuildContext context, _TypeAdd type, QuizManagePerformer performer) async {
-
-    if (type == _TypeAdd.handmade) {
-      pushSlideLeft(context, SCRQuizEditor(
-        performer: performer,
-        foreign: widget.foreign,
-      ));
-    }
-
-    else {
-      final instruct = await showInputDialog(context: context, title: 'Hướng dẫn');
-      performer.add(CreateQuizByAI(QuizCreateQuizAIParams(instruct: instruct ?? '')));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return PerformerBuilder<QuizManagePerformer>(
@@ -89,15 +74,33 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
 
               if(state is QuizManageHasDataState) {
                 final quizzes = state.quizzes;
-                return quizzes.isNotEmpty
-                    ? ListView.builder(
-                  itemCount: quizzes.length,
-                  itemBuilder: (context, index) {
-                    final quiz = quizzes[index];
-                    return _ItemQuiz(quiz: quiz, index: index, performer: performer, foreign: widget.foreign);
-                  },
-                )
-                    : const Center(child: Text('Chưa có dữ liệu'));
+                return Stack(
+                  children: [
+                    IgnorePointer(
+                      ignoring: state is CreatingQuizByAI,
+                      child: Opacity(
+                        opacity: state is CreatingQuizByAI ? 0.5 : 1.0,
+                        child: quizzes.isNotEmpty
+                            ? ListView.builder(
+                          itemCount: quizzes.length,
+                          itemBuilder: (context, index) {
+                            final quiz = quizzes[index];
+                            return _ItemQuiz(
+                              quiz: quiz,
+                              index: index,
+                              performer: performer,
+                              foreign: widget.foreign,
+                            );
+                          },
+                        )
+                            : const Center(child: Text('Chưa có dữ liệu')),
+                      ),
+                    ),
+
+                    if (state is CreatingQuizByAI)
+                      const Center(child: WdgLoading()),
+                  ],
+                );
               }
 
               return const Center(child: WdgLoading());
@@ -122,7 +125,7 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
           children: [
             _buildOptionCard(
               icon: Icons.edit,
-              color: Colors.blue,
+              color: Colors.blue.withValues(alpha: 0.5),
               title: 'Tạo thủ công',
               subtitle: 'Tự nhập câu hỏi và đáp án',
               onTap: () {
@@ -133,17 +136,44 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
             const SizedBox(height: 12),
             _buildOptionCard(
               icon: Icons.smart_toy,
-              color: Colors.purple,
+              color: Colors.purple.withValues(alpha: 0.5),
               title: 'Tạo bằng AI',
               subtitle: 'AI tạo quiz dựa trên hướng dẫn',
               onTap: () {
                 Navigator.pop(context);
-              _addQuiz(parentContext, _TypeAdd.ai, performer);
+                _addQuiz(parentContext, _TypeAdd.ai, performer);
               },
             ),
           ],
         )
     );
+  }
+
+  void _addQuiz(BuildContext context, _TypeAdd type, QuizManagePerformer performer) async {
+
+    if (type == _TypeAdd.handmade) {
+      pushSlideLeft(context, SCRQuizEditor(
+        performer: performer,
+        foreign: widget.foreign,
+      ));
+    }
+
+    else {
+      showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.9,
+              child: appWidget.assistant.assistantCreate(
+                  prompt: performer.promptAI,
+                  instruct: performer.instructAI,
+                  onCreated: (json) {
+                    performer.add(CreateQuizByAI(QuizCreateQuizAIParams(widget.foreign, instruct: 'Tạo các dữ liệu với $json')));
+                  }),
+            );
+          });
+    }
   }
 
   Widget _buildOptionCard({
@@ -195,7 +225,8 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
   }
 }
 
-class _ItemQuiz extends StatelessWidget {
+/// Item quiz ------------------------------------------------------------------
+class _ItemQuiz extends StatelessWidget with AppRouterMixin {
   final ENTQuiz quiz;
   final int index;
   final QuizManagePerformer performer;
@@ -221,14 +252,14 @@ class _ItemQuiz extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: primaryColor(context).withAlpha(100),
+          backgroundColor: context.style.color.primaryColor.withAlpha(100),
           child: Text('${index + 1}'),
         ),
         title: Text(quiz.question, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: quiz.answers.asMap().entries.map((entry) {
+          children: quiz.options.asMap().entries.map((entry) {
             final index = entry.key;
             final answer = entry.value;
             return Padding(
@@ -243,13 +274,10 @@ class _ItemQuiz extends StatelessWidget {
   }
 
   void _editQuiz(BuildContext context, ENTQuiz quiz, int index, QuizManagePerformer performer) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => SCRQuizEditor(
-        quiz: quiz,
-        performer: performer,
-        foreign: foreign,
-      )),
-    );
+    pushSlideLeft(context, SCRQuizEditor(
+      quiz: quiz,
+      performer: performer,
+      foreign: foreign,
+    ));
   }
 }

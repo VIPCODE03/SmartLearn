@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/game/games/math_matrix/game_math_screen.dart';
 import 'package:smart_learn/features/game/games/maze/presentation/maze_game_screen.dart';
 import 'package:smart_learn/features/game/main/presentation/screens/game_screen.dart';

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_learn/config/app_config.dart';
-import 'package:smart_learn/core/router/app_router.dart';
-import 'package:smart_learn/providers/theme_provider.dart';
-import 'package:smart_learn/services/banner_service.dart';
-import 'package:smart_learn/services/language_service.dart';
-import 'package:smart_learn/ui/screens/a_mainscreen/mainscreen.dart';
+import 'package:smart_learn/app/config/app_config.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/style/theme.dart';
+import 'package:smart_learn/core/link/routers/app_router.dart';
+import 'package:smart_learn/app/services/banner_service.dart';
+import 'package:smart_learn/screen/smartlearn/mainscreen/mainscreen.dart';
 import 'global.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -31,9 +31,8 @@ void main() async {
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => LanguageService()),
-          ChangeNotifierProvider(create: (_) => ThemeProvider()),
-          ChangeNotifierProvider(create: (_) => BannerService()),
+          ChangeNotifierProvider(create: (_) => AppLanguageProvider()),
+          ChangeNotifierProvider(create: (_) => AppBannerService()),
         ],
         child: const SmartLearn(),
       ),
@@ -94,45 +93,44 @@ class _SmartLearnState extends State<SmartLearn> {
 
   @override
   Widget build(BuildContext context) {
-    final languageService = Provider.of<LanguageService>(context);
-    final bannerService  = context.watch<BannerService>();
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final languageService = Provider.of<AppLanguageProvider>(context);
+    final bannerService  = context.watch<AppBannerService>();
 
-    globalLanguage = languageService.textGlobal;
-
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: AppConfig.appName,
-      debugShowCheckedModeBanner: AppConfig.isDebug,
-      locale: languageService.locale,
-      theme: themeProvider.themeData,
-      builder: (context, child) {
-        return Material(
-          child: SafeArea(
-            child: Column(
-              children: [
-                AnimatedSize(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  alignment: Alignment.topCenter,
-                  clipBehavior: Clip.none,
-                  child: bannerService.currentBanner != null
-                      ? bannerService.currentBanner!
-                      : const SizedBox.shrink(),
-                ),
-                Expanded(child: child!),
-              ],
+    return AppTheme(builder: (context, theme) {
+      return MaterialApp(
+        navigatorKey: navigatorKey,
+        title: AppConfig.appName,
+        debugShowCheckedModeBanner: AppConfig.isDebug,
+        locale: languageService.locale,
+        theme: theme,
+        builder: (context, child) {
+          return Material(
+            child: SafeArea(
+              child: Column(
+                children: [
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    alignment: Alignment.topCenter,
+                    clipBehavior: Clip.none,
+                    child: bannerService.currentBanner != null
+                        ? bannerService.currentBanner!
+                        : const SizedBox.shrink(),
+                  ),
+                  Expanded(child: child!),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-      home: const MainScreen(),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        FlutterQuillLocalizations.delegate,
-      ],
-    );
+          );
+        },
+        home: const MainScreen(),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          FlutterQuillLocalizations.delegate,
+        ],
+      );
+    });
   }
 }

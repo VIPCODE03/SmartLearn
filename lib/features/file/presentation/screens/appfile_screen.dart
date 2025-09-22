@@ -3,26 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
-import 'package:smart_learn/core/router/app_router.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/core/link/routers/app_router.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/file/domain/entities/appfile_entity.dart';
 import 'package:smart_learn/features/file/domain/parameters/create_params.dart';
 import 'package:smart_learn/features/file/domain/parameters/file_params.dart';
 import 'package:smart_learn/features/file/domain/parameters/load_params.dart';
 import 'package:smart_learn/features/file/domain/parameters/update_params.dart';
+import 'package:smart_learn/features/file/presentation/libraries/flutter_drawing_custom/draw_screen.dart';
+import 'package:smart_learn/features/file/presentation/libraries/text_quill/text_editor_screen.dart';
 import 'package:smart_learn/features/file/presentation/mappers/appfile_ui.dart';
 import 'package:smart_learn/features/file/presentation/state_manages/appfile_bloc/bloc.dart';
 import 'package:smart_learn/features/file/presentation/state_manages/appfile_bloc/events.dart';
 import 'package:smart_learn/features/file/presentation/state_manages/appfile_bloc/states.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/libraries/flutter_drawing_custom/draw_screen.dart';
-import 'package:smart_learn/libraries/text_quill/text_editor_screen.dart';
-import 'package:smart_learn/services/storage_service.dart';
-import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
-import 'package:smart_learn/ui/snackbars/app_snackbar.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
-import 'package:smart_learn/ui/widgets/popup_menu_widget.dart';
+import 'package:smart_learn/app/services/storage_service.dart';
+import 'package:smart_learn/app/ui/dialogs/app_bottom_sheet.dart';
+import 'package:smart_learn/app/ui/snackbars/app_snackbar.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/popup_menu_widget.dart';
 import 'package:path/path.dart' as p;
 
 enum SupportType {
@@ -78,6 +80,8 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final color = context.style.color;
+
     return BlocProvider<AppFileBloc>.value(
       value: bloc,
       child: Scaffold(
@@ -135,15 +139,11 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
                                     );
                                   },
                                   child: nameFolder.isEmpty
-                                      ? Icon(Icons.home,
-                                      size: 16,
-                                      color: primaryColor(context,
-                                      ))
-                                      : Text(
-                                      nameFolder,
+                                      ? Icon(Icons.home, size: 16, color: color.primaryColor)
+                                      : Text(nameFolder,
                                       style: TextStyle(
                                         fontWeight: isLast ? FontWeight.bold : FontWeight.normal,
-                                        color: isLast ? primaryColor(context) : Colors.grey,
+                                        color: isLast ? color.primaryColor : Colors.grey,
                                       )
                                   ),
                                 ),

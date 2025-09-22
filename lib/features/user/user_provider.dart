@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/user/presentation/screens/user_screen.dart';
 import 'package:smart_learn/features/user/presentation/widgets/user_infomation_widget.dart';
 

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.dart';
 import 'package:smart_learn/features/calendar/domain/entities/b_calendar_event_entity.dart';
 import 'package:smart_learn/features/calendar/domain/parameters/calendar_params.dart';
 import 'package:smart_learn/features/calendar/domain/parameters/cycle_params.dart';
 import 'package:smart_learn/features/calendar/presentation/state_manages/editor_viewmodel.dart';
-import 'package:smart_learn/ui/dialogs/scale_dialog.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/divider_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
-import 'package:smart_learn/utils/datetime_util.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
-import '../../../../global.dart';
 
 class SCRCalendarEditor extends StatefulWidget {
   final ENTCalendar? calendar;
   final String? title;
+  final VoidCallback? onSave;
 
-  const SCRCalendarEditor({super.key, this.calendar, this.title});
+  const SCRCalendarEditor({super.key, this.calendar, this.title, this.onSave});
 
   @override
   State<SCRCalendarEditor> createState() => _SCRCalendarEditorState();
@@ -29,20 +29,35 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
 
   int _selectedType = 0;
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   DateTime? _start;
   DateTime? _end;
   String? _cycle;
   final Set<int> _selectedWeekdays = {};
   int? _valueColor;
 
+  Color get _primaryColor => context.style.color.primaryColor;
+
   @override
   void initState() {
     super.initState();
     _viewModel = VMLCalendarEditor(getIt(), getIt(), getIt());
 
-    if(widget.calendar != null) {
+    if (widget.calendar != null) {
       _loadCalendar(widget.calendar!);
+    } else {
+      final now = DateTime.now();
+      _start = now;
+      _end = now.add(const Duration(minutes: 30));
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _viewModel.dispose();
+    _titleController.dispose();
+    _descController.dispose();
   }
 
   @override
@@ -56,7 +71,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
           },
         ),
 
-        title: Text(widget.title ?? 'Trình chỉnh sửa Lịch'),
+        title: Text(widget.title ?? 'Lịch'),
 
         actionsPadding: const EdgeInsets.only(right: 16),
         actions: [
@@ -89,6 +104,9 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
       _selectedType = 1;
     }
     _titleController.text = calendar.title;
+    if(calendar is ENTCalendarEvent) {
+      _descController.text = calendar.description ?? '';
+    }
     _start = calendar.start;
     _end = calendar.end;
     _cycle = calendar.cycle?.type.name;
@@ -122,20 +140,17 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
       if (ok) {
         if(widget.calendar == null) {
           final params = _selectedType == 0
-              ? PARCalendarEventAdd(title: _titleController.text, start: _start!, end: _end!, valueColor: _valueColor, desc: 'abc')
+              ? PARCalendarEventAdd(title: _titleController.text, start: _start!, end: _end!, valueColor: _valueColor, desc: _descController.text)
               : PARCalendarSubjectAdd(title: _titleController.text, start: _start!, end: _end!, valueColor: _valueColor, subjectId: 'abc');
           _viewModel.add(params: params);
         }
         else {
           final PARCalendarUpdate params = _selectedType == 0
-              ? PARCalendarEventUpdate(widget.calendar as ENTCalendarEvent,
-              title: _titleController.text, start: _start!, end: _end!,cycle: _createCycleParams(), valueColor: _valueColor,
-              desc: 'abc')
-              : PARCalendarSubjectUpdate(widget.calendar as ENTCalendarSubject,
-              title: _titleController.text, start: _start!, end: _end!, cycle: _createCycleParams(), valueColor: _valueColor,
-              subjectId: 'abc');
+              ? PARCalendarEventUpdate(widget.calendar as ENTCalendarEvent, title: _titleController.text, start: _start!, end: _end!, cycle: _createCycleParams(), valueColor: _valueColor, desc: _descController.text)
+              : PARCalendarSubjectUpdate(widget.calendar as ENTCalendarSubject, title: _titleController.text, start: _start!, end: _end!, cycle: _createCycleParams(), valueColor: _valueColor, subjectId: 'abc');
           _viewModel.update(params: params);
         }
+        widget.onSave?.call();
         Navigator.of(context).pop();
       }
     });
@@ -145,9 +160,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
   Widget _buildSelectType() {
     return SizedBox(
       height: 60.0,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Wrap(
         children: [
           _buildItemType('Sự kiện', Icons.event, 0),
           _buildItemType('Môn học', Icons.subject, 1),
@@ -164,9 +177,9 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: isSelected ? primaryColor(context) : Colors.grey,),
+              Icon(icon, color: isSelected ? _primaryColor : Colors.grey,),
 
-              Text(name, style: TextStyle(color: isSelected ? primaryColor(context) : Colors.grey)),
+              Text(name, style: TextStyle(color: isSelected ? _primaryColor : Colors.grey)),
             ],
           ),
           onTap: () {
@@ -184,44 +197,72 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
-
-        const WdgDivider(width: 300, height: 1.5),
+        const WdgDivider(width: 300, height: 2),
 
         /// --- Nhập tiêu đề ------------------------------------------------
+        const SizedBox(height: 16),
         TextField(
-            controller: _titleController,
-            decoration: inputDecoration(context: context, hintText: 'Tiêu đề')
+          controller: _titleController,
+          decoration: inputDecoration(context: context, hintText: 'Tiêu đề'),
         ),
-        const SizedBox(height: 16),
 
-        ///--- Chọn thời gian bắt đầu ----------------------------------------
-        _buildDateTimePicker(
-          context: context,
-          label: 'Thời gian bắt đầu',
-          dateTime: _start,
-          onPicked: (picked) {
-            setState(() {
-              _start = picked;
-            });
-          },
+        const SizedBox(height: 16),
+        if(_selectedType == 0)
+          TextField(
+            controller: _descController,
+            decoration: inputDecoration(context: context, hintText: 'Ghi chú'),
+          ),
+
+        /// --- Row chọn ngày (bắt đầu/kết thúc) ------------------------------
+        const SizedBox(height: 32),
+        Row(
+          children: [
+            Expanded(
+              child: _buildDatePicker(
+                context: context,
+                label: 'Ngày bắt đầu',
+                date: _start ?? DateTime.now(),
+                onPicked: (d) => setState(() => _start = d),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildDatePicker(
+                context: context,
+                label: 'Ngày kết thúc',
+                date: _end ?? DateTime.now(),
+                onPicked: (d) => setState(() => _end = d),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
 
-        /// --- Chọn thời gian kết thúc --------------------------------------
-        _buildDateTimePicker(
-          context: context,
-          label: 'Thời gian kết thúc',
-          dateTime: _end,
-          onPicked: (picked) {
-            setState(() {
-              _end = picked;
-            });
-          },
+        /// --- Row chọn giờ (bắt đầu/kết thúc) --------------------------------
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildTimePicker(
+                context: context,
+                label: 'Giờ bắt đầu',
+                date: _start ?? DateTime.now(),
+                onPicked: (d) => setState(() => _start = d),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildTimePicker(
+                context: context,
+                label: 'Giờ kết thúc',
+                date: _end ?? DateTime.now(),
+                onPicked: (d) => setState(() => _end = d),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
 
-        /// --- Chọn chu kỳ --------------------------------------------------
+        /// --- Chọn chu kỳ ----------------------------------------------------
+        const SizedBox(height: 16),
         DropdownButtonFormField<String>(
           decoration: inputDecoration(context: context, hintText: 'Chu kỳ'),
           value: _cycle ?? 'none',
@@ -250,6 +291,70 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
           _valueColor = color.toARGB32();
         }))
       ],
+    );
+  }
+
+  Widget _buildDatePicker({
+    required BuildContext context,
+    required String label,
+    required DateTime date,
+    required ValueChanged<DateTime> onPicked,
+  }) {
+    return InkWell(
+      onTap: () async {
+        final DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: date,
+          firstDate: DateTime(DateTime.now().year),
+          lastDate: DateTime(DateTime.now().year + 5),
+        );
+        if (picked != null) {
+          // Giữ nguyên giờ cũ
+          final updated = DateTime(
+            picked.year,
+            picked.month,
+            picked.day,
+            date.hour,
+            date.minute,
+          );
+          onPicked(updated);
+        }
+      },
+      child: InputDecorator(
+        decoration: inputDecoration(context: context, hintText: label),
+        child: Text("${date.day}/${date.month}/${date.year}"),
+      ),
+    );
+  }
+
+  Widget _buildTimePicker({
+    required BuildContext context,
+    required String label,
+    required DateTime date,
+    required ValueChanged<DateTime> onPicked,
+  }) {
+    return InkWell(
+      onTap: () async {
+        final TimeOfDay? picked = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
+        );
+        if (picked != null) {
+          // Giữ nguyên ngày cũ
+          final updated = DateTime(
+            date.year,
+            date.month,
+            date.day,
+            picked.hour,
+            picked.minute,
+          );
+          onPicked(updated);
+        }
+      },
+      child: InputDecorator(
+        decoration: inputDecoration(context: context, hintText: label),
+        child: Text("${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}"),
+      ),
     );
   }
 
@@ -283,58 +388,6 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
     }).toList();
   }
 
-  Widget _buildDateTimePicker({
-    required BuildContext context,
-    required String label,
-    required DateTime? dateTime,
-    required ValueChanged<DateTime> onPicked,
-  }) {
-    final now = DateTime.now();
-    return InkWell(
-      onTap: () async {
-
-        final DateTime? pickedDate = await showDatePicker(
-          context: context,
-          initialDate: dateTime ?? now,
-          firstDate: DateTime(now.year),
-          lastDate: DateTime(now.year + 5),
-        );
-
-        if (pickedDate != null && context.mounted) {
-          final TimeOfDay? pickedTime = await showTimePicker(
-            context: context,
-            initialTime: dateTime != null
-                ? TimeOfDay(hour: dateTime.hour, minute: dateTime.minute)
-                : TimeOfDay.fromDateTime(now),
-          );
-
-          if (pickedTime != null) {
-            final combined = DateTime(
-              pickedDate.year,
-              pickedDate.month,
-              pickedDate.day,
-              pickedTime.hour,
-              pickedTime.minute,
-            );
-            onPicked(combined);
-          }
-        }
-      },
-      child: InputDecorator(
-        decoration: inputDecoration(context: context, hintText: label),
-        child: Text(
-          dateTime != null
-              ? '${dateTime.day}/${dateTime.month}/${dateTime.year} ${UTIDateTime.getFormatHHmm(dateTime)}'
-              : '${now.day}/${now.month}/${now.year} ${UTIDateTime.getFormatHHmm(now)}',
-          style: TextStyle(
-            color: dateTime != null ? null : Colors.grey,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildColorPicker(BuildContext context, Function(Color color) onSelect) {
     return ListTile(
       leading: Icon(Icons.color_lens, color: _valueColor != null ? Color(_valueColor!) : Colors.grey),
@@ -349,7 +402,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
             return WdgScaleDialog(
               child: SingleChildScrollView(
                 child: BlockPicker(
-                  pickerColor: Color(_valueColor ?? primaryColor(context).toARGB32()),
+                  pickerColor: Color(_valueColor ?? _primaryColor.toARGB32()),
                   onColorChanged: (Color color) {
                     onSelect(color);
                     Navigator.of(context).pop();
@@ -412,7 +465,7 @@ void _showDialogConfirm(
                       alignment: Alignment.bottomRight,
                       child: WdgBounceButton(
                         onTap: () => Navigator.of(context).pop(),
-                        child: Text('OK', style: TextStyle(color: primaryColor(context)),),
+                        child: Text('OK', style: TextStyle(color: context.style.color.primaryColor),),
                       ),
                     )
                   ],
@@ -451,7 +504,7 @@ void _showDialogConfirm(
                       child: Text(
                         'OK',
                         style: TextStyle(
-                          color: primaryColor(context),
+                          color: context.style.color.primaryColor,
                           fontWeight: FontWeight.w700,
                         ),
                       ),

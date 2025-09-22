@@ -2,9 +2,11 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/features/assistant/domain/entities/content_entity.dart';
+import 'package:smart_learn/features/assistant/domain/parameters/conversation_params.dart';
 import 'package:smart_learn/features/assistant/domain/parameters/mess_params.dart';
 import 'package:smart_learn/features/assistant/domain/usecases/message_usecase/mess_add_usecase.dart';
 import 'package:smart_learn/features/assistant/domain/usecases/message_usecase/mess_get_usecase.dart';
+import 'package:smart_learn/features/assistant/presentation/state_manages/assistantconversation_viewmodel.dart';
 import 'package:smart_learn/performers/action_unit/gemini_action.dart';
 import 'package:smart_learn/performers/data_state/gemini_state.dart';
 import 'package:smart_learn/performers/performer/gemini_performer.dart';
@@ -13,7 +15,8 @@ import 'package:zent_gemini/gemini_models.dart';
 class VMLAssistantMessage extends ChangeNotifier {
   final UCEMessAdd _add;
   final UCEMessGet _get;
-  VMLAssistantMessage(this._add, this._get);
+  final bool isTemp;
+  VMLAssistantMessage(this._add, this._get, {required this.isTemp});
 
   final ValueNotifier<bool> isError = ValueNotifier(false);
   MessForeignParams? currentConversation;
@@ -47,19 +50,21 @@ class VMLAssistantMessage extends ChangeNotifier {
     logDev(_messages.length.toString(), context: 'VMLAssistantMessage.loadMessage');
   }
 
-  //--- Gửi tin nhắn  --------------------------------------------------------------
-  void sendMessage(String textPrompt, {Uint8List? image}) async {
+  //--- Gửi tin nhắn  ----------------------------------------------------------
+  void sendMessage(String textPrompt, {String? instruct,Uint8List? image, required VMLAssistantConversation conversationViewmodel}) async {
     bool resultAdd;
     try {
       if (image != null) {
         resultAdd = await _addMessage(MessAddParams(
             currentConversation!, role: Role.user,
-            content: ENTContentImage(await Content.build(textPrompt: textPrompt, image: image))));
+            content: ENTContentImage(
+                await Content.build(textPrompt: textPrompt, image: image))));
       }
       else {
         resultAdd = await _addMessage(MessAddParams(
             currentConversation!, role: Role.user,
-            content: ENTContentText(await Content.build(textPrompt: textPrompt))));
+            content: ENTContentText(
+                await Content.build(textPrompt: textPrompt))));
       }
     }
     catch (e, s) {
@@ -67,8 +72,15 @@ class VMLAssistantMessage extends ChangeNotifier {
       logError(e, stackTrace: s, context: 'VMLAssistantMessage.sendMessage');
     }
 
-    //- Nếu thêm thành công -
+    //- Nếu thêm thành công ----------------------------------------------------
     if(resultAdd) {
+      //  Kiểm tra nếu là cuộc trò chuyện mới ----------------------------------
+      if(!isTemp && conversationViewmodel.currentConversation!.title.isEmpty && textPrompt.trim().isNotEmpty) {
+        String name = textPrompt.substring(0, textPrompt.length > 20 ? 20 : textPrompt.length);
+        conversationViewmodel.updateConversation(ConversationUpdateParams(conversationViewmodel.currentConversation!, name: name));
+      }
+
+      //  Hỏi AI  --------------------------------------------------------------
       isEnting.value = true;
       final List<Content> histories = [];
       for (final mess in _messages) {
@@ -76,6 +88,7 @@ class VMLAssistantMessage extends ChangeNotifier {
       }
       _gemPerformer.add(GemChat(
           mess: textPrompt,
+          instruct: instruct,
           image: image,
           histories: histories
       ));
@@ -87,7 +100,7 @@ class VMLAssistantMessage extends ChangeNotifier {
           _processingResults(state.answers);
           break;
         } else if (state is GeminiErrorState) {
-          _addMessageBotError(state.message ?? 'Lỗi');
+          _addMessageBotError(state.message ?? 'Có lỗi');
           break;
         }
       }
@@ -99,29 +112,45 @@ class VMLAssistantMessage extends ChangeNotifier {
 
   //--- Xử lý kết quả AI  ------------------------------------------------------
   Future<bool> _processingResults(Content contentBot) async {
+    final String? text = contentBot.text;
+    if(text != null) {
+      if(text.startsWith('{') || text.startsWith('```')) {
+        return _addMessage(MessAddParams(currentConversation!, role: Role.bot, content: ENTContentCreate(contentBot)));
+      }
+    }
     return _addMessage(MessAddParams(currentConversation!, role: Role.bot, content: ENTContentText(contentBot)));
   }
 
-  //--- Thêm tin nhắn vào csdl  và danh sách  -----------------------------------
+  //--- Thêm tin nhắn vào csdl  và danh sách  ----------------------------------
   Future<bool> _addMessage(MessAddParams params) async {
-    final result = await _add(params);
-    return result.fold(
-            (fail) => false,
-            (sucsess) {
-              _messages.add(sucsess);
-              notifyListeners();
-              return true;
-            }
-    );
+    if(isTemp) {
+      _messages.add(ENTMessage('', params.role, params.content));
+      notifyListeners();
+      return true;
+    }
+
+    else {
+      final result = await _add(params);
+      return result.fold(
+              (fail) => false,
+              (sucsess) {
+            _messages.add(sucsess);
+            notifyListeners();
+            return true;
+          }
+      );
+    }
   }
 
   void _addMessageBotError(String message) {
     _messages.add(ENTMessage.other(Role.bot, ENTContentError(message), DateTime.now()));
+    notifyListeners();
   }
 
   void _addMessageBotTyping() {
     if(isEnting.value) {
       _messages.add(ENTMessage.other(Role.bot, ENTContentTyping(), DateTime.now()));
+      notifyListeners();
     }
   }
 

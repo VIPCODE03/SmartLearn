@@ -1,17 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
-import 'package:smart_learn/core/router/app_router_mixin.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/features/flashcard/domain/parameters/flashcardsetpramas/foreign_params.dart';
 import 'package:smart_learn/features/flashcard/presentation/screens/flashcard_screen.dart';
 import 'package:smart_learn/features/flashcard/presentation/screens/manage/flashcard_manage_screen.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_extenal_bloc/bloc.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_extenal_bloc/event.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_extenal_bloc/state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
 
 class SCRFlashCardExtenal extends StatelessWidget with AppRouterMixin {
   final String? fileId;
@@ -22,16 +22,18 @@ class SCRFlashCardExtenal extends StatelessWidget with AppRouterMixin {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryColor(context).withValues(alpha: 0.4),
+        backgroundColor: color.primaryColor.withValues(alpha: 0.4),
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.design_services)
         ),
       ),
       body: CustomPaint(
-        painter: _FlashCardBackgroundPainter(color: primaryColor(context)),
+        painter: _FlashCardBackgroundPainter(color: color.primaryColor),
         child: BlocProvider(
           create: (context) => FlashCardExtenalBloc(getIt(), getIt())
             ..add(FlashCardExtenalLoadOrCreate(params: _params)),

@@ -2,15 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/appbar_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/features/flashcard/domain/entities/flashcard_entity.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_bloc/bloc.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_bloc/event.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_bloc/state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/divider_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 import 'package:confetti/confetti.dart';
 
 class SCRFlashCard extends StatefulWidget {
@@ -28,10 +29,7 @@ class _SCRFlashCardState extends State<SCRFlashCard> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flashcard'),
-        leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.design_services)
-        ),
+        leading: WIDAppBar.leadingDefault(context)
       ),
 
       body: BlocProvider<FlashCardBloc>(
@@ -116,7 +114,7 @@ class _FlashCardCurrent extends StatelessWidget {
                           backgroundColor: Colors.grey.withValues(
                               alpha: 0.3),
                           valueColor: AlwaysStoppedAnimation<Color>(
-                              primaryColor(context).withValues(
+                              context.style.color.primaryColor.withValues(
                                   alpha: 0.5)),
                           minHeight: 20,
                         ),
@@ -254,6 +252,8 @@ class _FlashCardFlipState extends State<_FlashCardFlip> with TickerProviderState
             _left = cardLeft;
           }
 
+          final color = context.style.color;
+
           return Stack(
             children: [
               AnimatedPositioned(
@@ -296,11 +296,11 @@ class _FlashCardFlipState extends State<_FlashCardFlip> with TickerProviderState
                       height: cardHeight,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Color.alphaBlend(primaryColor(context), Colors.grey).withValues(alpha: 0.05),
+                        color: Color.alphaBlend(color.primaryColor, Colors.grey).withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           width: 1.5,
-                          color: primaryColor(context).withValues(alpha: 0.5),
+                          color: color.primaryColor.withValues(alpha: 0.5),
                         ),
                       ),
                         child: Transform(

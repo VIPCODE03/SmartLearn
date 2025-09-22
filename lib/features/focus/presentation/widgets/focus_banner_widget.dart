@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/focus/presentation/state_manages/focus_performer/focus_performer.dart';
-import 'package:smart_learn/global.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/utils/time_formatter.dart';
 
@@ -44,7 +44,7 @@ class _GlobalFocusTimerBarState extends State<GlobalFocusTimerBar> with SingleTi
         return Container(
           height: 30,
           width: MediaQuery.of(context).size.width,
-          color: primaryColor(context).withAlpha(150),
+          color: context.style.color.primaryColor.withAlpha(150),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _buildContent(state.elapsed, perf),
         );

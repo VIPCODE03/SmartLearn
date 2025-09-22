@@ -39,10 +39,10 @@ class AppDatabase {
   Future<Database> _initOnce() async {
     return await Future.sync(() async {
       if (_database != null) return _database!;
-      final path = join(await getDatabasesPath(), 'vvva.db');
+      final path = join(await getDatabasesPath(), 'vlva.db');
       _database = await openDatabase(
         path,
-        version: 3,
+        version: 4,
         onConfigure: (db) async {
           await db.execute('PRAGMA foreign_keys = ON');
         },

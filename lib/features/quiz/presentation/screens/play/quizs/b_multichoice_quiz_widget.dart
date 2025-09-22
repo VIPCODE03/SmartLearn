@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_multichoice_entity.dart';
-import 'package:smart_learn/global.dart';
 
 import 'a_quiz_widget.dart';
 
@@ -34,12 +34,14 @@ class _WdgMultiChoiceQuizState extends State<WIDQuizMultiChoice> {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.style.color;
+
     return Padding(
       padding: const EdgeInsets.all(6),
       child: ListView(
         children: [
-          ...List.generate(widget.quiz.answers.length, (index) {
-            String answer = widget.quiz.answers[index];
+          ...List.generate(widget.quiz.options.length, (index) {
+            String answer = widget.quiz.options[index];
             bool isSelected = _selected.contains(answer);
 
             return GestureDetector(
@@ -61,18 +63,18 @@ class _WdgMultiChoiceQuizState extends State<WIDQuizMultiChoice> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: isSelected
-                      ? primaryColor(context).withAlpha(15)
+                      ? color.primaryColor.withAlpha(15)
                       : Colors.grey.withAlpha(10),
                   border: Border.all(
                       width: 2,
-                      color: primaryColor(context).withAlpha(50)
+                      color: color.primaryColor.withAlpha(50)
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       isSelected ? Icons.check_box : Icons.check_box_outline_blank,
-                      color: isSelected ? primaryColor(context) : Colors.grey,
+                      color: isSelected ? color.primaryColor : Colors.grey,
                     ),
 
                     const SizedBox(width: 10),

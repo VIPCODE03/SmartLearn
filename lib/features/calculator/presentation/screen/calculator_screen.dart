@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_calculator/flutter_awesome_calculator.dart';
-
-import '../../../../../global.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 
 class SCRCalculator extends StatelessWidget {
   const SCRCalculator({super.key});
@@ -19,7 +18,7 @@ class SCRCalculator extends StatelessWidget {
         fractionDigits: 1,
         buttonRadius: 8,
         clearButtonColor: Colors.red,
-        operatorsButtonColor: primaryColor(context),
+        operatorsButtonColor: context.style.color.primaryColor,
         onChanged: (ans,expression){
 
         },

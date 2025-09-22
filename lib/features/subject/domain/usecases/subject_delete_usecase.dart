@@ -1,7 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:smart_learn/core/error/failures.dart';
-import 'package:smart_learn/core/usecase.dart';
+import 'package:smart_learn/core/usecase/usecase.dart';
 import 'package:smart_learn/features/subject/domain/repositories/subject_repository.dart';
 
 class SubjectDeleteParams {

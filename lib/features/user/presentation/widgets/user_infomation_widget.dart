@@ -5,7 +5,7 @@ import 'package:smart_learn/features/user/domain/parameters/user_params.dart';
 import 'package:smart_learn/features/user/presentation/state_manages/user_bloc/bloc.dart';
 import 'package:smart_learn/features/user/presentation/state_manages/user_bloc/event.dart';
 import 'package:smart_learn/features/user/presentation/state_manages/user_bloc/state.dart';
-import 'package:smart_learn/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
 
 typedef UserInfoBuilder = Widget Function(String name, int age, String email, String bio, String grade, String hobbies);
 

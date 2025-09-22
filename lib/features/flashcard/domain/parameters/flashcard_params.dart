@@ -31,6 +31,12 @@ class FlashCardDeleteParams {
   FlashCardDeleteParams(this.id);
 }
 
+class FlashCardGetWithAIParams {
+  final String instruct;
+  final String cardSetId;
+  FlashCardGetWithAIParams({required this.instruct, required this.cardSetId});
+}
+
 abstract class FlashCardGetParams {
   final String cardSetId;
   FlashCardGetParams(this.cardSetId);

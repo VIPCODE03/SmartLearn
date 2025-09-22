@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:performer/performer_build.dart';
+import 'package:smart_learn/app/ui/widgets/loading_item_widget.dart';
 import 'package:smart_learn/features/translate/domain/entities/language_entity.dart';
 import 'package:smart_learn/features/translate/domain/entities/translation_entity.dart';
 
 import '../../../../../performers/action_unit/gemini_action.dart';
 import '../../../../../performers/data_state/gemini_state.dart';
 import '../../../../../performers/performer/gemini_performer.dart';
-import '../../../../../services/text_to_speech_service.dart';
-import '../../../../../ui/widgets/loading_item_widget.dart';
+import '../../../../app/services/text_to_speech_service.dart';
 
 ///-  Màn hình dịch ------------------------------------------------------------
 class SCRTranslated extends StatefulWidget {
@@ -168,7 +168,7 @@ class _TranslateItem extends StatelessWidget {
                         children: [
                           IconButton(
                               onPressed: () {
-                                final textToSpeech = TextToSpeechService()..setLanguage(languageCode);
+                                final textToSpeech = AppTextToSpeechService()..setLanguage(languageCode);
                                 textToSpeech.speak(data);
                               },
                               icon: const Icon(Icons.volume_up)

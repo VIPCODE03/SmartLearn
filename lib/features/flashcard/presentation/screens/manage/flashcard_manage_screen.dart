@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/dialogs/app_bottom_sheet.dart';
+import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
+import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
+import 'package:smart_learn/app/ui/widgets/textfeild_widget.dart';
+import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
 import 'package:smart_learn/features/flashcard/domain/entities/flashcard_entity.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_manage_bloc/bloc.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_manage_bloc/events.dart';
 import 'package:smart_learn/features/flashcard/presentation/state_manages/flashcard_manage_bloc/state.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/ui/dialogs/app_bottom_sheet.dart';
-import 'package:smart_learn/ui/dialogs/scale_dialog.dart';
-import 'package:smart_learn/ui/widgets/app_button_widget.dart';
-import 'package:smart_learn/ui/widgets/divider_widget.dart';
-import 'package:smart_learn/ui/widgets/textfeild_widget.dart';
 
 import '../../../domain/parameters/flashcard_params.dart';
 
@@ -56,26 +58,44 @@ class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
           }
           else if(state is FlashCardHasDataState) {
             final cards = state.cards;
-            return cards.isNotEmpty ? ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              itemCount: cards.length,
-              itemBuilder: (context, index) {
-                final card = cards[index];
-                return GestureDetector(
-                    onTap: () {
-                      _showEditCardSheet(flashCard: card);
-                    },
-                    child: _ItemCard(card, index: index, onChange: (card) {
-                      if(card == null) {
-                        setState(() {
-                          cards.removeAt(index);
-                        });
-                      }
-                    })
-                );
-              },
-            )
-                : const Center(child: Text('No data'));
+            final isCreating = state is FlashCardCreatingState;
+
+            return Stack(
+              children: [
+                IgnorePointer(
+                  ignoring: isCreating,
+                  child: Opacity(
+                    opacity: isCreating ? 0.5 : 1.0,
+                    child: cards.isNotEmpty
+                        ? ListView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      itemCount: cards.length,
+                      itemBuilder: (context, index) {
+                        final card = cards[index];
+                        return GestureDetector(
+                          onTap: () {
+                            _showEditCardSheet(flashCard: card);
+                          },
+                          child: _ItemCard(
+                            card,
+                            index: index,
+                            onChange: (value) {
+                              if (value == null) {
+                                _flashCardBloc.add(DeleteFlashCardEvent(FlashCardDeleteParams(card.id)));
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    )
+                        : const Center(child: Text('No data')),
+                  ),
+                ),
+
+                if (isCreating)
+                  const Center(child: WdgLoading()),
+              ],
+            );
           }
 
           return const SizedBox();
@@ -126,13 +146,39 @@ class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if(isAdd)
+              _buildOptionCard(
+                  icon: Icons.smart_toy,
+                  color: context.style.color.primaryColor.withValues(alpha: 0.5),
+                  title: 'Tạo bằng AI',
+                  subtitle: 'Tạo các thẻ flashcard bằng AI',
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.9,
+                            child: appWidget.assistant.assistantCreate(
+                                prompt: _flashCardBloc.promptAI,
+                                instruct: _flashCardBloc.instructAI,
+                                onCreated: (json) {
+                                  _flashCardBloc.add(AIFlashcardEvent(FlashCardGetWithAIParams(cardSetId: widget.cardSetId,instruct: 'Tạo các dữ liệu với $json')));
+                                }),
+                          );
+                        });
+                  }
+              ),
+
+              const SizedBox(height: 16),
+
               WdgTextFeildCustom(
                 hintText: 'Mặt trước',
                 controller: frontController,
                 validator: (value) => (value == null || value.isEmpty) ? 'Please enter a front.' : null,
               ),
-
               const SizedBox(height: 16),
+
               WdgTextFeildCustom(
                 hintText: 'Mặt sau',
                 controller: backController,
@@ -141,6 +187,54 @@ class _SCRFlashCardManageState extends State<SCRFlashCardManage> {
             ],
           ),
         ),
+    );
+  }
+
+  Widget _buildOptionCard({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return WdgBounceButton(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          border: Border.all(color: color, width: 1.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 14),
+                ),
+                const SizedBox(width: 8),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+
+            const SizedBox(height: 2),
+            Text(subtitle,
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700])
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -188,7 +282,7 @@ class _ItemCard extends StatelessWidget {
 
           const SizedBox(height: 6),
 
-          WdgDivider(height: 6, color: primaryColor(context).withAlpha(30)),
+          WdgDivider(height: 6, color: context.style.color.primaryColor.withAlpha(30)),
 
           const SizedBox(height: 6),
 

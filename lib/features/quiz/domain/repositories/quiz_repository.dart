@@ -11,5 +11,5 @@ abstract class REPQuiz {
   Future<Either<Failure, ENTQuiz?>> getById(String id);
   Future<Either<Failure, List<ENTQuiz>>> getAll({required ForeignKeyParams foreign});
 
-  Future<Either<Failure, List<ENTQuiz>>> getQuizzesAI(String intruct);
+  Future<Either<Failure, List<ENTQuiz>>> getQuizzesAI(String intruct, {required ForeignKeyParams foreign});
 }

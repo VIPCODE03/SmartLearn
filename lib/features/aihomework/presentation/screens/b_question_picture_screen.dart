@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:smart_learn/global.dart';
-import 'package:smart_learn/services/camera_service.dart';
-import 'package:smart_learn/ui/dialogs/scale_dialog.dart';
-
+import 'package:smart_learn/app/router/app_router.dart';
+import 'package:smart_learn/app/router/app_router_mixin.dart';
+import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
+import 'package:smart_learn/app/services/camera_service.dart';
 import 'c_instruction_ai_screen.dart';
 
 class SCRAICamera extends StatefulWidget {
@@ -16,8 +16,8 @@ class SCRAICamera extends StatefulWidget {
   State createState() => _SCRAICameraState();
 }
 
-class _SCRAICameraState extends State<SCRAICamera> {
-  final CameraService _cameraService = CameraService();
+class _SCRAICameraState extends State<SCRAICamera> with AppRouterMixin {
+  final AppCameraService _cameraService = AppCameraService();
   late String _filePath;
   CroppedFile? _croppedFile;
 

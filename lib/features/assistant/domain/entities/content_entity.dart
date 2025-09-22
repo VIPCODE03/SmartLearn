@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:smart_learn/utils/generate_id_util.dart';
 import 'package:smart_learn/utils/json_util.dart';
@@ -71,6 +72,19 @@ class ENTContentQuiz extends ENTContent {
       return UTIJson.cleanRawJsonString(json);
     }
     return null;
+  }
+}
+
+class ENTContentCreate extends ENTContent {
+  ENTContentCreate(super.content);
+
+  String get text {
+    final text = content?.text;
+    if (text is String) {
+      final json = UTIJson.cleanRawJsonString(text);
+      return jsonDecode(json)['text'];
+    }
+    return '';
   }
 }
 

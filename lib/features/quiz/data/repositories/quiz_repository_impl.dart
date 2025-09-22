@@ -82,9 +82,9 @@ class REPQuizSetImpl extends REPQuiz {
   }
 
   @override
-  Future<Either<Failure, List<ENTQuiz>>> getQuizzesAI(String instruct, {String? fileId}) async {
+  Future<Either<Failure, List<ENTQuiz>>> getQuizzesAI(String instruct, {required ForeignKeyParams foreign}) async {
     try {
-      final quizzes = await _aiDataSource.getQuizzesAI(instruct);
+      final quizzes = await _aiDataSource.getQuizzesAI(instruct, foreign: foreign);
       return Right(quizzes);
     } catch (e, s) {
       logError(e, stackTrace: s, context: 'REPQuizSetImpl.getQuizzesAI');

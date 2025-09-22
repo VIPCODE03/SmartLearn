@@ -2,17 +2,17 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/languages/provider.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
+import 'package:smart_learn/app/ui/widgets/loading_item_widget.dart';
+import 'package:smart_learn/app/ui/widgets/text_ai_format_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/bloc.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/event.dart';
 import 'package:smart_learn/features/aihomework/presentation/state_manages/ask_ai_bloc/state.dart';
 import 'package:smart_learn/features/aihomework/presentation/widgets/question_widget.dart';
 import 'package:smart_learn/performers/data_state/gemini_state.dart';
-import 'package:smart_learn/ui/widgets/divider_widget.dart';
-import 'package:smart_learn/ui/widgets/loading_item_widget.dart';
-import 'package:smart_learn/ui/widgets/text_ai_format_widget.dart';
 import 'package:smart_learn/utils/json_util.dart';
-import '../../../../global.dart';
 
 class SCRExerciseSolution extends StatelessWidget {
   final String textQuestion;

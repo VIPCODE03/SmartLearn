@@ -340,4 +340,10 @@ class EnLanguage extends AppLanguage {
   @override
   String get addAnswer => 'Add answer';
 
+  @override
+  String get play => 'Play';
+
+  @override
+  String get descGame => 'Play games to improve your memory, reflexes, and quick thinking skills!';
+
 }

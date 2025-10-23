@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_learn/app/languages/provider.dart';
-import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/app/ui/widgets/loading_item_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
@@ -59,8 +58,7 @@ class WIDAIHomeWorkHistory extends StatelessWidget with AppRouterMixin {
               }
               if(state is AIHomeWorkHistoryHasData) {
                 final mapHistories = state.histories.map((e) => {'id': e.id, 'title': e.textQuestion}).toList();
-                return WdgBounceButton(
-                  onTap: () {},
+                return SizedBox(
                   child: builder(
                       mapHistories,
                       (id) async {

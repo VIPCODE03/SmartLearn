@@ -1,10 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/dialogs/dialog_textfiled.dart';
+import 'package:smart_learn/app/ui/snackbars/app_snackbar.dart';
 import 'package:smart_learn/core/di/injection.dart';
 import 'package:smart_learn/core/error/log.dart';
 import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
@@ -342,13 +342,42 @@ class _WIDListMessageState extends State<_WIDListMessage> {
   }
 
   _buildContentText(String text, {bool isUser = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
-      decoration: BoxDecoration(
-        color: isUser ? context.style.color.primaryColor.withAlpha(150) : null,
-        borderRadius: BorderRadius.circular(12.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+        crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: isUser ? const EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0) : null,
+            decoration: BoxDecoration(
+              color: isUser
+                  ? context.style.color.primaryColor.withAlpha(150)
+                  : null,
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 16.0),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await Clipboard.setData(ClipboardData(text: text));
+                  if (!mounted) return;
+                  showAppSnackbar(context, 'Copy');
+                },
+                child: const Icon(Icons.copy, size: 18, color: Colors.grey),
+              ),
+            ],
+          ),
+        ],
       ),
-      child: Text(text, style: const TextStyle(fontSize: 16.0)),
     );
   }
 

@@ -93,23 +93,26 @@ class _SmartLearnState extends State<_SmartLearn> {
         locale: languageService.locale,
         theme: theme,
         builder: (context, child) {
-          return Material(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    alignment: Alignment.topCenter,
-                    clipBehavior: Clip.none,
-                    child: bannerService.currentBanner != null
-                        ? bannerService.currentBanner!
-                        : const SizedBox.shrink(),
+          return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+              child: Material(
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        alignment: Alignment.topCenter,
+                        clipBehavior: Clip.none,
+                        child: bannerService.currentBanner != null
+                            ? bannerService.currentBanner!
+                            : const SizedBox.shrink(),
+                      ),
+                      Expanded(child: child!),
+                    ],
                   ),
-                  Expanded(child: child!),
-                ],
-              ),
-            ),
+                ),
+              )
           );
         },
         home: const SplashScreen(),

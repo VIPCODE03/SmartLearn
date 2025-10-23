@@ -1,6 +1,13 @@
 import 'package:smart_learn/app/languages/language.dart';
 
 class ZhLanguage extends AppLanguage {
+
+  @override
+  String get play => '播放';
+
+  @override
+  String get descGame => '通过玩游戏来锻炼记忆力、反应能力和快速思维能力！';
+
   @override
   String get picture => '相机';
 

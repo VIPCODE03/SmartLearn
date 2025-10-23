@@ -146,4 +146,7 @@ abstract class AppLanguage {
   String get chooseMulti;
   String get answer;
   String get addAnswer;
+
+  String get play;
+  String get descGame;
 }

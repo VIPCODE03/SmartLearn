@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/ui/widgets/web_widget.dart';
 import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
 
 bool _isShowingTranslationSheet = false;
@@ -47,6 +48,21 @@ void showChatBottomSheet(BuildContext context) {
       appWidget.assistant.assistantView(),
       'Trợ lý', () {
     _isShowChat = false;
+  });
+}
+
+bool _isShowWeb = false;
+
+void showWebBottomSheet(BuildContext context, String url) {
+  if (_isShowWeb) return;
+
+  _isShowWeb = true;
+
+  _showUtilBottomSheet(
+      context,
+      WIDWeb(url: url),
+      'Trình duyệt', () {
+    _isShowWeb = false;
   });
 }
 

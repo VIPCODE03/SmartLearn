@@ -7,7 +7,7 @@ import 'package:smart_learn/app/router/app_router.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
 import 'package:smart_learn/app/services/camera_service.dart';
-import 'c_instruction_ai_screen.dart';
+import 'package:smart_learn/features/aihomework/presentation/screens/d_exercise_solution_screen.dart';
 
 class SCRAICamera extends StatefulWidget {
   const SCRAICamera({super.key});
@@ -71,7 +71,7 @@ class _SCRAICameraState extends State<SCRAICamera> with AppRouterMixin {
       if(context.mounted) {
         navigateToNextScreen(
             context,
-            SCRAIInstruction(
+            SCRExerciseSolution(
                 textQuestion: '',
                 image: imageBytes),
             offsetBegin: const Offset(0, 0),

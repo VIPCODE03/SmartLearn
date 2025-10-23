@@ -5,7 +5,7 @@ class WIDButtonGame extends StatefulWidget {
   final BorderRadiusGeometry? radius;
   final VoidCallback onPressed;
   final Color? color;
-  
+
   const WIDButtonGame({super.key,
     required this.child,
     required this.onPressed,
@@ -25,10 +25,14 @@ class _WIDButtonGameState extends State<WIDButtonGame> {
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapUp: (_) => Future.delayed(const Duration(milliseconds: 100), () {
+        setState(() => _isPressed = false);
+      }),
       onTapCancel: () => setState(() => _isPressed = false),
       onTap: () {
-        widget.onPressed();
+        Future.delayed(const Duration(milliseconds: 100), () {
+          widget.onPressed();
+        });
       },
       child: Container(
         margin: EdgeInsets.only(top: _isPressed ? 5 : 0),

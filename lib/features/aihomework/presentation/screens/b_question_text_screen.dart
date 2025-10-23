@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/features/aihomework/presentation/screens/d_exercise_solution_screen.dart';
 import 'package:smart_learn/utils/keybroad_util.dart';
-
-import 'c_instruction_ai_screen.dart';
 
 class SCRAIText extends StatefulWidget {
   const SCRAIText({super.key});
@@ -27,7 +26,7 @@ class _SCRAITextState extends State<SCRAIText> with AppRouterMixin {
           GestureDetector(
             onTap: () {
               hideKeyboardAndRemoveFocus(context);
-              pushSlideLeft(context, SCRAIInstruction(textQuestion: _textController.text.trim()));
+              pushSlideLeft(context, SCRExerciseSolution(textQuestion: _textController.text.trim()));
             },
             child: Container(
               padding:

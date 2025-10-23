@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/style/appstyle.dart';
 
 class WdgItem extends StatelessWidget {
   final String text;
   final IconData icon;
-  final Color color;
-  final Color backgroundColor;
   final VoidCallback? onTap;
 
   const WdgItem({
     super.key,
     required this.text,
     required this.icon,
-    this.backgroundColor = Colors.indigo,
-    this.color = Colors.blue,
     this.onTap,
   });
 
@@ -23,17 +20,16 @@ class WdgItem extends StatelessWidget {
         children: [
           FloatingActionButton(
             onPressed: onTap,
-            backgroundColor: backgroundColor,
+            backgroundColor: context.style.color.primaryColor.withValues(alpha: 0.7),
             child: Icon(
               icon,
-              color: color,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             text,
-            style: TextStyle(
-              color: color,
+            style: const TextStyle(
               fontWeight: FontWeight.bold
             ),
             textAlign: TextAlign.center,

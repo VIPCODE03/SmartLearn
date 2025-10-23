@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/services/floating_bubble_service.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
+import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
 import 'package:smart_learn/global.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,7 +15,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _showColors = false;
   bool _showLanguage = false;
 
   @override
@@ -31,6 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 8),
           _GroupCard(
             children: [
+              /// DARTMODE  ----------------------------------------------------
               SwitchListTile(
                 secondary: const Icon(Icons.dark_mode),
                 title: Text(globalLanguage.darkMode),
@@ -41,44 +43,61 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
               ),
+
+              /// MÀU SẮC  -----------------------------------------------------
               ListTile(
                 leading: const Icon(Icons.color_lens),
                 title: Text(globalLanguage.color),
-                trailing: Icon(_showColors ? Icons.expand_less : Icons.expand_more),
-                onTap: () {
-                  setState(() => _showColors = !_showColors);
-                },
-              ),
-              if (_showColors)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Wrap(
-                    children: AppColor.primaryColors.map((color) {
-                      return GestureDetector(
-                        onTap: () => themeProvider.updateTheme(color),
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          margin: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: themeProvider.themeData.primaryColor == color
-                                  ? Colors.black
-                                  : Colors.grey,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                trailing: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: themeProvider.themeData.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey),
                   ),
                 ),
+                onTap: () async {
+                  Color selectedColor = themeProvider.themeData.primaryColor;
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: SingleChildScrollView(
+                          child: ColorPicker(
+                            pickerColor: selectedColor,
+                            onColorChanged: (color) {
+                              selectedColor = color;
+                            },
+                            pickerAreaHeightPercent: 0.8,
+                            enableAlpha: false,
+                            displayThumbColor: true,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(globalLanguage.cancel),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              themeProvider.updateTheme(selectedColor);
+                              Navigator.pop(context);
+                            },
+                            child: Text(globalLanguage.edit),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
+          const WdgDivider(),
+          const SizedBox(height: 10),
 
           /// Nhóm tiện ích ----------------------------------------------------
           Text(globalLanguage.utilities, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -102,7 +121,9 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
+          const WdgDivider(),
+          const SizedBox(height: 10),
 
           /// Ngôn ngữ  --------------------------------------------------------
           Text(globalLanguage.language, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -153,23 +174,11 @@ class _GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Colors.grey.withValues(alpha: 0.05),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: children
-            .map((child) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: child,
-        ))
-            .toList(),
-      ),
+    return  Column(
+      children: children.map((child) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: child,
+      )).toList(),
     );
   }
 }

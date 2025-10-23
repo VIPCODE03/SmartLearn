@@ -34,72 +34,62 @@ class HomeUtilities extends StatelessWidget {
                 globalLanguage.utilities,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
             ),
+            GridView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 1.2,
+                ),
+                children: [
+                  _MenuItem(
+                      icon: Icons.style,
+                      label: globalLanguage.flashCard,
+                      onTap: () {
+                        appRouter.flashCard.goFlashCardSet(context);
+                      }),
+                  _MenuItem(
+                      icon: Icons.calculate,
+                      label: globalLanguage.calculator,
+                      onTap: () =>
+                          appRouter.calculator.goCalculatorScreen(context)),
+                  _MenuItem(
+                      icon: Icons.assistant,
+                      label: globalLanguage.assistant,
+                      onTap: () =>
+                          appRouter.assistant.goAssistantScreen(context)),
+                  _MenuItem(
+                      icon: Icons.translate,
+                      label: globalLanguage.translate,
+                      onTap: () => appRouter.translate.goTranslation(context)),
+                ]),
 
-            Center(
-              child: Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: [
-                    _MenuItem(
-                        icon: Icons.style,
-                        label: globalLanguage.flashCard,
-                        onTap: () {
-                          appRouter.flashCard.goFlashCardSet(context);
-                        }
-                    ),
-
-                    _MenuItem(
-                        icon: Icons.calculate,
-                        label: globalLanguage.calculator,
-                        onTap: () => appRouter.calculator.goCalculatorScreen(context)
-                    ),
-
-                    _MenuItem(
-                        icon: Icons.assistant,
-                        label: globalLanguage.assistant,
-                        onTap: () => appRouter.assistant.goAssistantScreen(context)
-                    ),
-
-                    _MenuItem(
-                        icon: Icons.translate,
-                        label: globalLanguage.translate,
-                        onTap: () => appRouter.translate.goTranslation(context)
-                    ),
-
-                    _MenuItem(
-                        icon: Icons.gamepad,
-                        label: globalLanguage.game,
-                        onTap: () => appRouter.game.goGameScreen(context)
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          globalLanguage.floatingUtil,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        ValueListenableBuilder(
-                            valueListenable: AppFloatingBubbleService.isVisibled,
-                            builder: (context, value, child) {
-                              return Switch.adaptive(
-                                activeColor: color.primaryColor,
-                                value: AppFloatingBubbleService.isBubbleVisible,
-                                onChanged: (changed) {
-                                  if(changed) {
-                                    showFloatingBubble(context);
-                                  }
-                                  else {
-                                    AppFloatingBubbleService.hideBubble();
-                                  }
-                                });
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  globalLanguage.floatingUtil,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                ValueListenableBuilder(
+                    valueListenable: AppFloatingBubbleService.isVisibled,
+                    builder: (context, value, child) {
+                      return Switch.adaptive(
+                          activeThumbColor: color.primaryColor,
+                          value: AppFloatingBubbleService.isBubbleVisible,
+                          onChanged: (changed) {
+                            if (changed) {
+                              showFloatingBubble(context);
+                            } else {
+                              AppFloatingBubbleService.hideBubble();
                             }
-                        )
-                      ],
-                    ),
-                  ]
-              ),
-            )
+                          });
+                    })
+              ],
+            ),
           ],
         )
     );
@@ -121,29 +111,26 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return WdgBounceButton(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 32,
-              color: context.style.color.iconColor,
-            ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 32,
+            color: context.style.color.iconColor,
+          ),
 
-            const SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

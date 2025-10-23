@@ -7,13 +7,10 @@ import 'package:star_menu/star_menu.dart';
 
 //---   Show tiện ích   ------------------------------------------------
 void showFloatingBubble(BuildContext context) {
-  final StarMenuController controller = StarMenuController();
   final otherEntries = <Widget>[
     WdgItem(
       text: 'Dịch thuật',
       icon: Icons.translate,
-      color: Colors.grey,
-      backgroundColor: Colors.blueGrey,
       onTap: () {
         showTranslationBottomSheet(navigatorKey.currentContext!);
       },
@@ -22,8 +19,6 @@ void showFloatingBubble(BuildContext context) {
     WdgItem(
       text: 'Trợ lý',
       icon: Icons.smart_toy_rounded,
-      color: Colors.grey,
-      backgroundColor: Colors.deepPurple,
       onTap: () {
         showChatBottomSheet(navigatorKey.currentContext!);
       },
@@ -32,10 +27,16 @@ void showFloatingBubble(BuildContext context) {
     WdgItem(
       text: 'Máy tính',
       icon: Icons.calculate,
-      color: Colors.grey,
-      backgroundColor: Colors.brown,
       onTap: () {
         showCaculator(navigatorKey.currentContext!);
+      },
+    ),
+
+    WdgItem(
+      text: 'Trình duyệt',
+      icon: Icons.web,
+      onTap: () {
+        showWebBottomSheet(navigatorKey.currentContext!, 'https://www.google.com');
       },
     ),
   ];
@@ -45,19 +46,15 @@ void showFloatingBubble(BuildContext context) {
     child: StarMenu(
       onStateChanged: (state) {
         switch(state) {
-          case MenuState.closed:
-            // FloatingBubbleService.hideDimmingLayer();
-          case MenuState.closing:
-            AppFloatingBubbleService.visible();
-          case MenuState.opening:
-            AppFloatingBubbleService.fade();
+          case MenuState.closing:AppFloatingBubbleService.visible();
+          case MenuState.opening:AppFloatingBubbleService.fade();
           case MenuState.open:
-            // FloatingBubbleService.showDimmingLayer(context);
+          case MenuState.closed:
         }
       },
       controller: StarMenuController(),
       items: otherEntries,
-      child: const Icon(Icons.ac_unit_sharp, color: Colors.grey, size: 30),
+      child: const Icon(Icons.widgets_rounded, color: Colors.grey, size: 24),
     ),
   );
 }

@@ -1,6 +1,13 @@
 import 'package:smart_learn/app/languages/language.dart';
 
 class ViLanguage extends AppLanguage {
+
+  @override
+  String get play => 'Chơi';
+
+  @override
+  String get descGame => 'Chơi game để rèn luyện trí nhớ, phản xạ và khả năng tư duy nhanh!';
+
   @override
   String get picture => 'Máy ảnh';
 

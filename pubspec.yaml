@@ -53,12 +53,12 @@ dependencies:
   flutter_quill: ^11.2.0 #thư viện nhập kí tự
   file_picker: ^10.1.2
   open_filex: ^4.7.0
-  path: ^1.9.1
+  path: ^1.9.0
   ulid: ^2.0.1 #thư viện id ngẫu nhiên
   flutter_expandable_fab: ^2.5.0
   star_menu: ^4.0.1
   flutter_awesome_calculator: ^1.0.0+1
-  intl: ^0.19.0 #thư viện định dạng thời gian
+  intl: ^0.20.2 #thư viện định dạng thời gian
   fl_chart: ^1.0.0 #thư viện biểu đồ
   home_widget: ^0.8.0
   app_links: ^6.4.0
@@ -69,7 +69,6 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   confetti: ^0.7.0
 
-
   #-----------------------------
   sqflite: ^2.4.2
   dartz: ^0.10.1
@@ -79,6 +78,10 @@ dependencies:
 
   flame: ^1.30.1 #game
   google_fonts: ^6.3.0
+  webview_flutter: ^4.13.0 #webview
+  flutter_local_notifications: ^19.5.0 #thông báo
+  timezone: ^0.10.1
+
 
   zent_gemini:
     git:

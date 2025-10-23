@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
@@ -27,29 +28,30 @@ class SCRQuizExtenal extends StatelessWidget with AppRouterMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(width: MediaQuery.of(context).size.width),
+
               /// TIÊU ĐỀ + MÔ TẢ ------------------------------------------
-              const Text(
-                "Quiz",
-                style: TextStyle(
+              Text(
+                globalLanguage.quiz,
+                style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
               const SizedBox(height: 8),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  "Mẹo: Làm quiz thường xuyên giúp bạn rèn luyện phản xạ và ghi nhớ tốt hơn. "
-                      "Hãy bắt đầu hoặc chỉnh sửa bộ câu hỏi để phù hợp với mục tiêu học tập của bạn.",
+                  globalLanguage.tipLearn,
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
               ),
               const SizedBox(height: 50),
 
               /// NÚT BẮT ĐẦU -----------------------------------------
               _buildCustomButton(
-                label: "🚀 Bắt đầu học",
+                label: "🚀 ${globalLanguage.start}",
                 gradient: const LinearGradient(
                   colors: [Colors.purple, Colors.pink],
                 ),
@@ -62,7 +64,7 @@ class SCRQuizExtenal extends StatelessWidget with AppRouterMixin {
 
               /// NÚT SỬA --------------------------------------------
               _buildCustomButton(
-                label: "✏️ Chỉnh sửa quiz",
+                label: "✏️ ${globalLanguage.edit}",
                 gradient: const LinearGradient(
                   colors: [Colors.yellow, Colors.deepOrange],
                 ),
@@ -153,7 +155,7 @@ class _QuizBackgroundPainter extends CustomPainter {
           width: c.width,
           height: c.height,
         ),
-        const Radius.circular(12), // bo nhiều hơn cho mềm
+        const Radius.circular(12),
       );
       canvas.drawRRect(rrect, cardPaint);
       canvas.restore();

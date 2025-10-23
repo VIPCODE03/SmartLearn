@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
@@ -15,10 +16,9 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SCRCalendarEditor extends StatefulWidget {
   final ENTCalendar? calendar;
-  final String? title;
   final VoidCallback? onSave;
 
-  const SCRCalendarEditor({super.key, this.calendar, this.title, this.onSave});
+  const SCRCalendarEditor({super.key, this.calendar, this.onSave});
 
   @override
   State<SCRCalendarEditor> createState() => _SCRCalendarEditorState();
@@ -41,7 +41,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
   @override
   void initState() {
     super.initState();
-    _viewModel = VMLCalendarEditor(getIt(), getIt(), getIt());
+    _viewModel = VMLCalendarEditor(getIt(), getIt(), getIt(), getIt());
 
     if (widget.calendar != null) {
       _loadCalendar(widget.calendar!);
@@ -71,7 +71,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
           },
         ),
 
-        title: Text(widget.title ?? 'Lịch'),
+        title: Text(globalLanguage.calendar),
 
         actionsPadding: const EdgeInsets.only(right: 16),
         actions: [
@@ -162,8 +162,8 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
       height: 60.0,
       child: Wrap(
         children: [
-          _buildItemType('Sự kiện', Icons.event, 0),
-          _buildItemType('Môn học', Icons.subject, 1),
+          _buildItemType(globalLanguage.event, Icons.event, 0),
+          _buildItemType(globalLanguage.subject, Icons.subject, 1),
         ],
       ),
     );
@@ -203,14 +203,14 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
         const SizedBox(height: 16),
         TextField(
           controller: _titleController,
-          decoration: inputDecoration(context: context, hintText: 'Tiêu đề'),
+          decoration: inputDecoration(context: context, hintText: globalLanguage.title),
         ),
 
         const SizedBox(height: 16),
         if(_selectedType == 0)
           TextField(
             controller: _descController,
-            decoration: inputDecoration(context: context, hintText: 'Ghi chú'),
+            decoration: inputDecoration(context: context, hintText: globalLanguage.note),
           ),
 
         /// --- Row chọn ngày (bắt đầu/kết thúc) ------------------------------
@@ -220,7 +220,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
             Expanded(
               child: _buildDatePicker(
                 context: context,
-                label: 'Ngày bắt đầu',
+                label: globalLanguage.startDay,
                 date: _start ?? DateTime.now(),
                 onPicked: (d) => setState(() => _start = d),
               ),
@@ -229,7 +229,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
             Expanded(
               child: _buildDatePicker(
                 context: context,
-                label: 'Ngày kết thúc',
+                label: globalLanguage.endDay,
                 date: _end ?? DateTime.now(),
                 onPicked: (d) => setState(() => _end = d),
               ),
@@ -244,7 +244,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
             Expanded(
               child: _buildTimePicker(
                 context: context,
-                label: 'Giờ bắt đầu',
+                label: globalLanguage.startTime,
                 date: _start ?? DateTime.now(),
                 onPicked: (d) => setState(() => _start = d),
               ),
@@ -253,7 +253,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
             Expanded(
               child: _buildTimePicker(
                 context: context,
-                label: 'Giờ kết thúc',
+                label: globalLanguage.endTime,
                 date: _end ?? DateTime.now(),
                 onPicked: (d) => setState(() => _end = d),
               ),
@@ -264,12 +264,12 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
         /// --- Chọn chu kỳ ----------------------------------------------------
         const SizedBox(height: 16),
         DropdownButtonFormField<String>(
-          decoration: inputDecoration(context: context, hintText: 'Chu kỳ'),
+          decoration: inputDecoration(context: context, hintText: globalLanguage.cycle),
           value: _cycle ?? 'none',
-          items: const [
-            DropdownMenuItem(value: 'none', child: Text('Không lặp')),
-            DropdownMenuItem(value: 'daily', child: Text('Lặp hàng ngày')),
-            DropdownMenuItem(value: 'weekly', child: Text('Lặp hàng tuần')),
+          items: [
+            DropdownMenuItem(value: 'none', child: Text(globalLanguage.cycleNone)),
+            DropdownMenuItem(value: 'daily', child: Text(globalLanguage.cycleDaily)),
+            DropdownMenuItem(value: 'weekly', child: Text(globalLanguage.cycleWeekly)),
           ],
           onChanged: (value) {
             setState(() {
@@ -289,7 +289,19 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
         ///-  CHỌN MÀU  --------------------------------------------------------
         _buildColorPicker(context, (color) => setState(() {
           _valueColor = color.toARGB32();
-        }))
+        })),
+        
+        ///-  XÓA --------------------------------------------------------------
+        const SizedBox(height: 16),
+        if(widget.calendar != null)
+        WdgBounceButton(
+          onTap: () => _showDialogDelete(context, () {
+            _viewModel.delete(params: PARCalendarDelete(widget.calendar!.id));
+            widget.onSave?.call();
+            Navigator.of(context).pop();
+          }),
+          child: const Icon(Icons.delete, color: Colors.red),
+        )
       ],
     );
   }
@@ -309,7 +321,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
           lastDate: DateTime(DateTime.now().year + 5),
         );
         if (picked != null) {
-          // Giữ nguyên giờ cũ
+          // Giữ nguyên giờ cũ  ------------------------------------------------
           final updated = DateTime(
             picked.year,
             picked.month,
@@ -340,7 +352,7 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
           initialTime: TimeOfDay(hour: date.hour, minute: date.minute),
         );
         if (picked != null) {
-          // Giữ nguyên ngày cũ
+          // Giữ nguyên ngày cũ ------------------------------------------------
           final updated = DateTime(
             date.year,
             date.month,
@@ -391,9 +403,9 @@ class _SCRCalendarEditorState extends State<SCRCalendarEditor> {
   Widget _buildColorPicker(BuildContext context, Function(Color color) onSelect) {
     return ListTile(
       leading: Icon(Icons.color_lens, color: _valueColor != null ? Color(_valueColor!) : Colors.grey),
-      title: const Text(
-        'Chọn màu',
-        style: TextStyle(fontWeight: FontWeight.bold),
+      title: Text(
+        globalLanguage.color,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       onTap: () {
         showDialog(
@@ -435,7 +447,7 @@ void _showDialogConfirm(
           child: FutureBuilder<bool>(
             future: check,
             builder: (context, snapshot) {
-              String statusText = 'Đang kiểm tra lịch...';
+              String statusText = globalLanguage.checkingTheCalendar;
               Widget? action;
 
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -457,7 +469,7 @@ void _showDialogConfirm(
 
                     const SizedBox(height: 8),
 
-                    const Text('Thời gian bắt đầu phải trước thời gian kết thúc'),
+                    Text(globalLanguage.startBeforeEnd),
 
                     const SizedBox(height: 30),
 
@@ -475,8 +487,8 @@ void _showDialogConfirm(
               if (snapshot.hasData) {
                 final bool hasConflict = snapshot.data!;
                 statusText = hasConflict
-                    ? 'Có lịch bị trùng!'
-                    : 'Không có lịch trùng.';
+                    ? globalLanguage.duplicate
+                    : globalLanguage.noduplicate;
 
                 action = Row(
                   mainAxisSize: MainAxisSize.min,
@@ -485,9 +497,9 @@ void _showDialogConfirm(
                       onTap: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text(
-                        'Hủy',
-                        style: TextStyle(
+                      child: Text(
+                        globalLanguage.cancel,
+                        style: const TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.w700,
                         ),
@@ -552,5 +564,44 @@ void _showDialogConfirm(
         )
       );
     },
+  );
+}
+
+///-  DIALOG XÁC NHẬN XÓA ------------------------------------------------------
+void _showDialogDelete(BuildContext context, Function() onDelete) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return WdgScaleDialog(
+        border: true,
+        shadow: true,
+        barrierDismissible: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 28),
+            const SizedBox(height: 8),
+            Text(globalLanguage.delete, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: context.style.color.primaryColor)),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+                children: [
+                  WdgBounceButton(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Text(globalLanguage.cancel, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w700),),
+                  ),
+                  const SizedBox(width: 32),
+                  WdgBounceButton(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      onDelete();
+                    },
+                    child: Text(globalLanguage.delete, style: TextStyle(color: context.style.color.primaryColor, fontWeight: FontWeight.w700),),
+                  )
+                ]
+            )
+          ])
+      );
+    }
   );
 }

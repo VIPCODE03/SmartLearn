@@ -191,15 +191,17 @@ class _FilterSubject extends SubjectAction {
 
   @override
   Stream<SubjectState> execute(SubjectState current) async* {
+    List<ENTSubject> subjectFiltered;
     if(filterBy == FilterSubjectBy.none) {
-      yield current.copyWith(subjectsFilted: current.subjects, filterBy: filterBy);
+      subjectFiltered = current.subjects.where((subject) {
+        return subject.isHide == false;
+      }).toList();
+
+      yield current.copyWith(subjectsFilted: subjectFiltered, filterBy: filterBy);
     }
     else {
-      List<ENTSubject> subjectFiltered = current.subjects.where((subject) {
-        if (filterBy == FilterSubjectBy.isHide) {
-          return subject.isHide == true;
-        }
-        return true;
+      subjectFiltered = current.subjects.where((subject) {
+        return subject.isHide == true;
       }).toList();
 
       yield current.copyWith(subjectsFilted: subjectFiltered, filterBy: filterBy);

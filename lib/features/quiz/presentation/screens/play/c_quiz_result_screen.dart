@@ -1,6 +1,7 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/quiz/domain/entities/c_quiz_result_entity.dart';
@@ -69,28 +70,20 @@ class _WdgHead extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 50.0, bottom: 60.0),
       width: double.infinity,
-      child: const Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.check_circle_outline,
             size: 80.0,
           ),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           Text(
-            "Hoàn Thành Xuất Sắc!",
-            style: TextStyle(
+            globalLanguage.yourCompleted,
+            style: const TextStyle(
               fontSize: 28.0,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 5.0),
-          Text(
-            "Chúc mừng bạn đã hoàn thành bài tập!",
-            style: TextStyle(
-              fontSize: 16.0,
             ),
             textAlign: TextAlign.center,
           ),
@@ -118,9 +111,9 @@ class _QuizResultCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Kết Quả Của Bạn',
-              style: TextStyle(
+            Text(
+              globalLanguage.yourResult,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -145,11 +138,11 @@ class _QuizResultCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildTextItem('Đúng: ${quizResult.correctTotal}', Colors.green.shade600, Icons.check_circle),
+                      _buildTextItem('${globalLanguage.correct}: ${quizResult.correctTotal}', Colors.green.shade600, Icons.check_circle),
 
                       const SizedBox(height: 15),
 
-                      _buildTextItem('Sai: ${quizResult.wrongTotal}', Colors.red.shade200, Icons.cancel),
+                      _buildTextItem('${globalLanguage.wrong}: ${quizResult.wrongTotal}', Colors.red.shade200, Icons.cancel),
                     ],
                   ),
                 ),
@@ -195,7 +188,7 @@ class _WIDFootAction extends StatelessWidget with AppRouterMixin {
         children: [
           Row(children: [
             Expanded(
-                child: _buildButton('Làm lại', Icons.refresh, color.primaryColor, () {
+                child: _buildButton(globalLanguage.redo, Icons.refresh, color.primaryColor, () {
                   PerformerProvider.of<QuizReviewPerformer>(context).add(StartQuiz(quizResult.quizs));
                 })
             ),
@@ -203,7 +196,7 @@ class _WIDFootAction extends StatelessWidget with AppRouterMixin {
             const SizedBox(width: 15),
 
             Expanded(
-              child: _buildButton('Xem lại', Icons.history_edu, color.primaryColor, () {
+              child: _buildButton(globalLanguage.review, Icons.history_edu, color.primaryColor, () {
                 pushSlideLeft(context, SCRQuizCheck(
                     quizs: quizResult.quizs,
                     userAnswers: quizResult.userAnswers)
@@ -225,9 +218,9 @@ class _WIDFootAction extends StatelessWidget with AppRouterMixin {
                 borderRadius: BorderRadius.circular(16),
                 color: color.primaryColor.withValues(alpha: 0.4),
               ),
-              child: const Text(
-                'Hoàn Thành',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Text(
+                globalLanguage.completed,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             )
           ),

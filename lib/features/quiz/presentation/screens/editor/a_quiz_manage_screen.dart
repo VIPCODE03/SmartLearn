@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:performer/performer_build.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
@@ -69,7 +70,7 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
           body: Builder(
             builder: (_) {
               if(state is QuizError) {
-                return const Center(child: Text('Error'));
+                return Center(child: Text(globalLanguage.error));
               }
 
               if(state is QuizManageHasDataState) {
@@ -93,7 +94,7 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
                             );
                           },
                         )
-                            : const Center(child: Text('Chưa có dữ liệu')),
+                            : Center(child: Text(globalLanguage.noData)),
                       ),
                     ),
 
@@ -120,14 +121,14 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
   void _showSelectType(BuildContext parentContext, QuizManagePerformer performer) {
     showAppBottomSheet(
         context: parentContext,
-        title: 'Quiz',
+        title: globalLanguage.createNew,
         child: Column(
           children: [
             _buildOptionCard(
               icon: Icons.edit,
               color: Colors.blue.withValues(alpha: 0.5),
-              title: 'Tạo thủ công',
-              subtitle: 'Tự nhập câu hỏi và đáp án',
+              title: globalLanguage.handcrafted,
+              subtitle: globalLanguage.subHand,
               onTap: () {
                 Navigator.pop(context);
                 _addQuiz(parentContext, _TypeAdd.handmade, performer);
@@ -137,8 +138,8 @@ class _QuizManageScaffoldState extends State<_QuizManageScaffold> with AppRouter
             _buildOptionCard(
               icon: Icons.smart_toy,
               color: Colors.purple.withValues(alpha: 0.5),
-              title: 'Tạo bằng AI',
-              subtitle: 'AI tạo quiz dựa trên hướng dẫn',
+              title: globalLanguage.createWithAI,
+              subtitle: globalLanguage.subAI,
               onTap: () {
                 Navigator.pop(context);
                 _addQuiz(parentContext, _TypeAdd.ai, performer);

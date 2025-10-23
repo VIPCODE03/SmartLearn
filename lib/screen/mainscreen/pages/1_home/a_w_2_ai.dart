@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
@@ -31,9 +32,9 @@ class HomeAI extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// TIÊU ĐỀ ----------------------------------------------------------
-          const Text(
-            'Hỏi AI',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          Text(
+            globalLanguage.askAI,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 12),
 
@@ -52,9 +53,9 @@ class HomeAI extends StatelessWidget {
                     onTap: () {
                       appRouter.aiHomework.goAIText(context);
                     },
-                    child: const Text(
-                    'Tìm kiếm câu trả lời',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    child: Text(
+                    globalLanguage.findAnswer,
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                 )),
 
@@ -77,9 +78,9 @@ class HomeAI extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (histories.isNotEmpty)
-                  const Text(
-                    'Lịch sử gần đây',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  Text(
+                    globalLanguage.history,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 const SizedBox(height: 8),
 
@@ -98,7 +99,7 @@ class HomeAI extends StatelessWidget {
                     onTap: () {
                       _showFullHistoryDialog(context, histories, openDetail);
                     },
-                    child: const Text('Xem thêm', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey)),
+                    child: Text(globalLanguage.seeMore, style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.grey)),
                   ),
                 ),
               ],
@@ -136,7 +137,7 @@ class HomeAI extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Tất cả lịch sử',
+                      globalLanguage.history,
                       style: TextStyle(
                         color: context.style.color.primaryColor,
                         fontSize: 20,
@@ -147,19 +148,8 @@ class HomeAI extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     /// Ô TÌM KIẾM  -------------------------------------------------------
-                    // TextField(
-                    //   decoration: inputDecoration(
-                    //       context: context,
-                    //       hintText: 'Tìm kiếm'
-                    //   ),
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       searchText = value;
-                    //     });
-                    //   },
-                    // ),
                     WdgTextFeildCustom(
-                      hintText: 'Tìm kiếm',
+                      hintText: globalLanguage.search,
                       onChanged: (value) {
                         setState(() {
                           searchText = value;

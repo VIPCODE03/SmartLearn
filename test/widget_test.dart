@@ -1,19 +1,18 @@
-// This is a basic Flutter screen test.
+// This is a basic Flutter smartlearn test.
 //
-// To perform an interaction with a screen in your test, use the WidgetTester
+// To perform an interaction with a smartlearn in your test, use the WidgetTester
 // utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the screen
-// tree, read text, and verify that the values of screen properties are correct.
+// gestures. You can also use WidgetTester to find child widgets in the smartlearn
+// tree, read text, and verify that the values of smartlearn properties are correct.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:smart_learn/main.dart';
+import 'package:smart_learn/screen/smartlearn/smartleanrn_screen.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const SmartLearn());
+    await tester.pumpWidget(const SmartLearnScreen());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

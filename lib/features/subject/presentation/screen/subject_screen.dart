@@ -214,7 +214,7 @@ class _SCRSubjectState extends State<SCRSubject> {
         }
       },
       context: context,
-      title: 'Thêm môn học',
+      title: globalLanguage.addSubject,
       child: Form(
         key: formKey,
         child: Column(
@@ -225,10 +225,10 @@ class _SCRSubjectState extends State<SCRSubject> {
             TextFormField(
               controller: nameController,
               maxLines: 1,
-              decoration: inputDecoration(context: context, hintText: 'Tên môn học'),
+              decoration: inputDecoration(context: context, hintText: globalLanguage.name),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Vui lòng nhập tên môn học';
+                  return globalLanguage.pleaseEnterNameSubject;
                 }
                 return null;
               },
@@ -237,7 +237,7 @@ class _SCRSubjectState extends State<SCRSubject> {
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: inputDecoration(context: context, hintText: 'Chọn lớp'),
+              decoration: inputDecoration(context: context, hintText: globalLanguage.chooseClass),
               items: educationLevels.map((level) {
                 return DropdownMenuItem<String>(value: level, child: Text(level));
               }).toList(),
@@ -246,7 +246,7 @@ class _SCRSubjectState extends State<SCRSubject> {
               },
               validator: (value) {
                 if (value == null) {
-                  return 'Vui lòng chọn lớp';
+                  return globalLanguage.pleaseChooseClass;
                 }
                 return null;
               },

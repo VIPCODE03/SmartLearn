@@ -88,11 +88,11 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
           body: BlocListener<AppFileBloc, AppFileState>(
               listener: (context, state) {
                 if (state is AppFileCreated || state is AppFileUpdated) {
-                  showAppSnackbar(context, 'Đã cập nhật', type: SnackbarType.success);
+                  showAppSnackbar(context, globalLanguage.updated, type: SnackbarType.success);
                 }
 
                 if (state is AppFileDeleted) {
-                  showAppSnackbar(context, 'Đã xóa', type: SnackbarType.success);
+                  showAppSnackbar(context, globalLanguage.deleted, type: SnackbarType.success);
                 }
 
                 if (state is AppFileError) {
@@ -181,12 +181,12 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
                                   ),
                                   trailing: kIsWeb ? null : WdgPopupMenu(
                                     items: [
-                                      MenuItem('Đổi tên', Icons.edit, () {
-                                        _showEditName(context, 'Đổi tên', file.name, (newName) {
+                                      MenuItem(globalLanguage.rename, Icons.edit, () {
+                                        _showEditName(context, globalLanguage.rename, file.name, (newName) {
                                           bloc.add(AppFileUpdateEvent(AppFileUpdateParams.rename(file, name: newName)));
                                         });
                                       }),
-                                      MenuItem('Xóa', Icons.delete, () async {
+                                      MenuItem(globalLanguage.delete, Icons.delete, () async {
                                         bloc.add(AppFileDeleteEvent(file: file));
                                       }),
                                     ],
@@ -205,7 +205,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
                     );
                   }
 
-                  return const Center(child: Text('Error'));
+                  return Center(child: Text(globalLanguage.error));
                 },
               )
           ),
@@ -234,12 +234,12 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
 
         if (result.type != ResultType.done) {
           if(context.mounted) {
-            showAppSnackbar(context, 'Có lỗi xảy ra', type: SnackbarType.error);
+            showAppSnackbar(context, globalLanguage.error, type: SnackbarType.error);
           }
         }
       } catch (e) {
         if(context.mounted) {
-          showAppSnackbar(context, 'Có lỗi xảy ra', type: SnackbarType.error);
+          showAppSnackbar(context, globalLanguage.error, type: SnackbarType.error);
         }
         debugPrint(e.toString());
       }
@@ -283,7 +283,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
       switch(type) {
       //----------------folder---------------
         case SupportType.folder: {
-          _showEditName(context, 'Thư mục', '', (name) {
+          _showEditName(context, globalLanguage.folder, '', (name) {
             bloc.add(AppFileCreateEvent(AppFileCreateParams.folder(fileExtenal, name: name, pathId: pathId)));
           });
           break;
@@ -293,7 +293,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
         case SupportType.txt: {
           if (!context.mounted) return;
 
-          _showEditName(context, 'Ghi chú', '', (name) {
+          _showEditName(context, globalLanguage.note, '', (name) {
             bloc.add(AppFileCreateEvent(AppFileCreateParams.txt(fileExtenal, name: name, pathId: pathId)));
           });
           break;
@@ -304,7 +304,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
         case SupportType.draw: {
           if (!context.mounted) return;
 
-          _showEditName(context, 'Bản vẽ', '', (name) {
+          _showEditName(context, globalLanguage.draw, '', (name) {
             bloc.add(AppFileCreateEvent(AppFileCreateParams.draw(fileExtenal, name: name, pathId: pathId)));
           });
           break;
@@ -326,7 +326,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
         case SupportType.quiz: {
           if (!context.mounted) return;
 
-          _showEditName(context, 'Bài tập', '', (name) {
+          _showEditName(context, globalLanguage.quiz, '', (name) {
             bloc.add(AppFileCreateEvent(AppFileCreateParams.quiz(fileExtenal, name: name, pathId: pathId)));
           });
           break;
@@ -335,7 +335,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
         case SupportType.flashcard: {
           if (!context.mounted) return;
 
-          _showEditName(context, 'Flashcard', '', (name) {
+          _showEditName(context, globalLanguage.flashCard, '', (name) {
             bloc.add(AppFileCreateEvent(AppFileCreateParams.flashcard(fileExtenal, name: name, pathId: pathId)));
           });
           break;
@@ -343,7 +343,7 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
       }
     } catch (e) {
       if(context.mounted) {
-        showAppSnackbar(context, 'Có lỗi xảy ra', type: SnackbarType.error);
+        showAppSnackbar(context, globalLanguage.error, type: SnackbarType.error);
       }
       debugPrint(e.toString());
     }
@@ -376,10 +376,10 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
                   focusNode: focusNode,
                   controller: nameController,
                   maxLines: 1,
-                  decoration: inputDecoration(context: context, hintText: 'Nhập tên'),
+                  decoration: inputDecoration(context: context, hintText: globalLanguage.name),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Vui lòng nhập tên';
+                      return globalLanguage.pleaseEnterName;
                     }
                     return null;
                   },
@@ -438,36 +438,36 @@ class _SCRAppFileState extends State<SCRAppFile> with AppRouterMixin, AutomaticK
   void _showSelectType(BuildContext context) {
     showAppBottomSheet(
         context: context,
-        title: 'Chọn kiểu',
+        title: globalLanguage.chooseTypeFile,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _itemType(icon: Icons.folder, name: 'Thư mục', subName: 'Thêm thư mục', color: Colors.yellow,
+            _itemType(icon: Icons.folder, name: globalLanguage.folder, subName: globalLanguage.subFolder, color: Colors.yellow,
                 onTap: () => _add(context, SupportType.folder, bloc.stackFolder.last['pathId']!)
             ),
 
             if (widget.supportTypes.contains(SupportType.txt))
-              _itemType(icon: Icons.description, name: 'Ghi chú', subName: 'Thêm ghi chú', color: Colors.blue,
+              _itemType(icon: Icons.description, name: globalLanguage.note, subName: globalLanguage.subNote, color: Colors.blue,
                   onTap: () => _add(context, SupportType.txt, bloc.stackFolder.last['pathId']!)
               ),
 
             if (widget.supportTypes.contains(SupportType.draw))
-              _itemType(icon: Icons.draw, name: 'Bản vẽ', subName: 'Thêm bản vẽ', color: Colors.orange,
+              _itemType(icon: Icons.draw, name: globalLanguage.draw, subName: globalLanguage.subDraw, color: Colors.orange,
                   onTap: () => _add(context, SupportType.draw, bloc.stackFolder.last['pathId']!)
               ),
 
             if (widget.supportTypes.contains(SupportType.system))
-              _itemType(icon: Icons.insert_drive_file, name: 'File', subName: 'Chọn file từ hệ thống', color: Colors.grey,
+              _itemType(icon: Icons.insert_drive_file, name: globalLanguage.fileSystem, subName: globalLanguage.subFileSystem, color: Colors.grey,
                   onTap: () => _add(context, SupportType.system, bloc.stackFolder.last['pathId']!)
               ),
 
             if (widget.supportTypes.contains(SupportType.quiz))
-              _itemType(icon: Icons.quiz, name: 'Bài tập', subName: 'Thêm bài tập', color: Colors.green,
+              _itemType(icon: Icons.quiz, name: globalLanguage.quiz, subName: globalLanguage.subQuiz, color: Colors.green,
                   onTap: () => _add(context, SupportType.quiz, bloc.stackFolder.last['pathId']!)
               ),
 
             if (widget.supportTypes.contains(SupportType.flashcard))
-              _itemType(icon: Icons.style, name: 'Flashcard', subName: 'Thêm flashcard', color: Colors.brown,
+              _itemType(icon: Icons.style, name: globalLanguage.flashCard, subName: globalLanguage.subFlashCard, color: Colors.brown,
                   onTap: () => _add(context, SupportType.flashcard, bloc.stackFolder.last['pathId']!)
               ),
           ]

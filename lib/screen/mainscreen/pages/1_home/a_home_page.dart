@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/1_home/a_w_1_appbar.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/1_home/a_w_2_ai.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/1_home/a_w_3_utilities_widget.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/1_home/a_w_focus.dart';
+import 'package:smart_learn/screen/mainscreen/pages/1_home/a_w_1_appbar.dart';
+import 'package:smart_learn/screen/mainscreen/pages/1_home/a_w_2_ai.dart';
+import 'package:smart_learn/screen/mainscreen/pages/1_home/a_w_3_utilities_widget.dart';
+import 'package:smart_learn/screen/mainscreen/pages/1_home/a_w_focus.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -25,12 +25,7 @@ class HomePage extends StatelessWidget {
         SizedBox(height: 10),
         WdgDivider(),
 
-
         HomeFocusStatus()
-        // HomeFocusStatus(),
-        // _WdgLearningProgress(),
-        // WdgDivider(),
-        // _WdgRecommendedLessons(),
       ],
     );
   }

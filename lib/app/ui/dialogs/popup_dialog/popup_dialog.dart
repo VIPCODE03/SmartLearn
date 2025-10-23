@@ -12,11 +12,11 @@ enum PressType {
   singleClick,
 }
 
-//--------------------Xác định vị trí ưu tiên để hiển thị menu popup so với screen con.
+//--------------------Xác định vị trí ưu tiên để hiển thị menu popup so với smartlearn con.
 enum PreferredPosition {
-  /// Ưu tiên hiển thị menu ở phía trên screen con.
+  /// Ưu tiên hiển thị menu ở phía trên smartlearn con.
   top,
-  /// Ưu tiên hiển thị menu ở phía dưới screen con.
+  /// Ưu tiên hiển thị menu ở phía dưới smartlearn con.
   bottom,
 }
 
@@ -30,7 +30,7 @@ enum _MenuLayoutId {
   content,
 }
 
-//------------------Các vị trí có thể của menu popup so với screen con.
+//------------------Các vị trí có thể của menu popup so với smartlearn con.
 enum _MenuPosition {
   /// Góc dưới bên trái.
   bottomLeft,
@@ -68,7 +68,7 @@ class WdgPopupDialog extends StatefulWidget {
   final Widget child;
   /// Xác định kiểu tương tác (nhấn đơn hoặc nhấn giữ) để kích hoạt hiển thị menu.
   final PressType pressType;
-  /// Xác định xem có hiển thị mũi tên nhỏ trỏ vào screen con từ menu hay không.
+  /// Xác định xem có hiển thị mũi tên nhỏ trỏ vào smartlearn con từ menu hay không.
   final bool showArrow;
   /// Màu popup.
   final Color color;
@@ -78,18 +78,18 @@ class WdgPopupDialog extends StatefulWidget {
   final Color barrierColor;
   /// Khoảng cách ngang giữa menu và cạnh của màn hình.
   final double horizontalMargin;
-  /// Khoảng cách dọc giữa menu và screen con (nếu có mũi tên) hoặc cạnh của màn hình.
+  /// Khoảng cách dọc giữa menu và smartlearn con (nếu có mũi tên) hoặc cạnh của màn hình.
   final double verticalMargin;
   /// Kích thước của mũi tên menu.
   final double arrowSize;
   /// Bộ điều khiển tùy chỉnh để quản lý trạng thái hiển thị của menu. Nếu không được cung cấp, một bộ điều khiển mặc định sẽ được tạo.
   final PopupMenuController? controller;
-  /// Hàm builder trả về screen chứa nội dung của menu popup.
+  /// Hàm builder trả về smartlearn chứa nội dung của menu popup.
   final Widget Function() menuBuilder;
-  /// Vị trí ưu tiên để hiển thị menu (trên hoặc dưới screen con). Nếu không được chỉ định, vị trí sẽ được tự động xác định.
+  /// Vị trí ưu tiên để hiển thị menu (trên hoặc dưới smartlearn con). Nếu không được chỉ định, vị trí sẽ được tự động xác định.
   final PreferredPosition? position;
 
-  /// Xác định xem sự kiện chạm có được chuyển đến các screen bên dưới lớp phủ hay không.
+  /// Xác định xem sự kiện chạm có được chuyển đến các smartlearn bên dưới lớp phủ hay không.
   /// Chỉ hoạt động khi [barrierColor] trong suốt.
   final bool enablePassEvent;
 
@@ -300,11 +300,11 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     this.position,
   });
 
-  /// Kích thước của screen con.
+  /// Kích thước của smartlearn con.
   final Size anchorSize;
-  /// Vị trí của screen con trên màn hình.
+  /// Vị trí của smartlearn con trên màn hình.
   final Offset anchorOffset;
-  /// Khoảng cách dọc giữa menu và screen con.
+  /// Khoảng cách dọc giữa menu và smartlearn con.
   final double verticalMargin;
   /// Vị trí ưu tiên để hiển thị menu.
   final PreferredPosition? position;

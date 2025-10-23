@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/widgets/appbar_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
@@ -28,7 +29,7 @@ class _SCRFlashCardState extends State<SCRFlashCard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flashcard'),
+        title: Text(globalLanguage.flashCard),
         leading: WIDAppBar.leadingDefault(context)
       ),
 
@@ -39,7 +40,7 @@ class _SCRFlashCardState extends State<SCRFlashCard> {
             if(state is FlashCardLoading) {
               return const Center(child: WdgLoading());
             }
-            return const Center(child: Text('No data'));
+            return Center(child: Text(globalLanguage.noData));
           }
 
           if (state is FlashCardHasData) {
@@ -81,7 +82,7 @@ class _FlashCardCurrent extends StatelessWidget {
           child: Row(
             children: [
               Tooltip(
-                message: 'Chưa nhớ',
+                message: globalLanguage.dontRemember,
                 child: Container(
                   width: 40,
                   height: 40,
@@ -132,7 +133,7 @@ class _FlashCardCurrent extends StatelessWidget {
               ),
 
               Tooltip(
-                message: 'Đã nhớ',
+                message: globalLanguage.remember,
                 child: Container(
                   width: 40,
                   height: 40,
@@ -310,17 +311,17 @@ class _FlashCardFlipState extends State<_FlashCardFlip> with TickerProviderState
                           child: Stack(
                             children: [
                               if(widget.card.isDontRemember)
-                                const Positioned(
+                                Positioned(
                                   top: 5,
                                   left: 5,
-                                  child: Text('Chưa nhớ', style: TextStyle(color: Colors.redAccent))
+                                  child: Text(globalLanguage.dontRemember, style: const TextStyle(color: Colors.redAccent))
                                 ),
 
                               if(widget.card.isRemember)
-                                const Positioned(
+                                Positioned(
                                   top: 5,
                                   left: 5,
-                                  child: Text('Đã nhớ', style: TextStyle(color: Colors.green))
+                                  child: Text(globalLanguage.remember, style: const TextStyle(color: Colors.green))
                                 ),
 
                               Center(
@@ -368,13 +369,13 @@ class _FlashCardFlipState extends State<_FlashCardFlip> with TickerProviderState
 
     setState(() {
       if (velocityX.abs() > flingThreshold || velocityY.abs() > flingThreshold) {
-        _positionDuration = 150;
+        _positionDuration = 300;
         _left += maxWidth / distanceX + maxWidth * 0.2;
         _top += maxHeight / distanceY + maxHeight * 0.1;
         _rotationZ = _left / cardWidth;
 
-      } else if (_left + cardWidth * 0.66 > maxWidth / 10 && _left + cardWidth * 0.33 < maxWidth - maxWidth / 10) {
-        _positionDuration = 50;
+      } else if (_left + cardWidth * 0.66 > maxWidth / 7 && _left + cardWidth * 0.33 < maxWidth - maxWidth / 7) {
+        _positionDuration = 100;
         _top = cardTop;
         _left = cardLeft;
         _rotationZ = 0;
@@ -470,7 +471,7 @@ class _FlashCardCompletedScreenState extends State<_FlashCardCompletedScreen> {
                 const SizedBox(height: 100),
 
                 /// THÔNG TIN --------------------------------------------------
-                const Text("Bạn đã hoàn thành", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+                Text(globalLanguage.yourCompleted, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
 
                 const SizedBox(height: 8),
 
@@ -478,7 +479,7 @@ class _FlashCardCompletedScreenState extends State<_FlashCardCompletedScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Nhớ: ${data.totalRemember}",
+                      "${globalLanguage.remember}: ${data.totalRemember}",
                       style: const TextStyle(fontSize: 18, color: Colors.green, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(width: 4),
@@ -490,7 +491,7 @@ class _FlashCardCompletedScreenState extends State<_FlashCardCompletedScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Chưa nhớ: ${data.totalDontRemember}",
+                      "${globalLanguage.dontRemember}: ${data.totalDontRemember}",
                       style: const TextStyle(fontSize: 18, color: Colors.redAccent, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(width: 4),
@@ -510,7 +511,7 @@ class _FlashCardCompletedScreenState extends State<_FlashCardCompletedScreen> {
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(color: Colors.cyan)
                     ),
-                    child: const Text('Làm lại tất cả', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                    child: Text(globalLanguage.reviewAll, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                   ),
                 ),
 
@@ -526,7 +527,7 @@ class _FlashCardCompletedScreenState extends State<_FlashCardCompletedScreen> {
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: Colors.purpleAccent)
                       ),
-                      child: const Text('Ôn lại phần chưa nhớ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                      child: Text(globalLanguage.reviewDontRemember, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                     ),
                   ),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_get_params.dart';
 import 'package:smart_learn/features/quiz/domain/parameters/quiz_params.dart';
@@ -54,7 +55,7 @@ class _SCRQuizById extends StatelessWidget {
                 return builder(state.quizzes);
               }
               else {
-                return const Center(child: Text('Không có dữ liệu'));
+                return Center(child: Text(globalLanguage.noData));
               }
             }
             else {

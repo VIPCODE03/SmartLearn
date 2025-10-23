@@ -47,7 +47,5 @@ class WIDQuestionAI extends StatelessWidget {
         ),
       )
     );
-
-
   }
 }

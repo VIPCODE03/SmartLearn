@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/1_home/a_home_page.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/2_subject/a_subject_page.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/3_schedule/a_schedule.dart';
-import 'package:smart_learn/screen/smartlearn/mainscreen/pages/4_profile/a_profile.dart';
+import 'package:smart_learn/screen/mainscreen/pages/1_home/a_home_page.dart';
+import 'package:smart_learn/screen/mainscreen/pages/2_subject/a_subject_page.dart';
+import 'package:smart_learn/screen/mainscreen/pages/3_schedule/a_schedule.dart';
+import 'package:smart_learn/screen/mainscreen/pages/4_settings/a_settings.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -20,11 +21,13 @@ class _MainScreenState extends State<MainScreen> {
     const HomePage(),
     const SubjectPage(),
     const SchedulePage(),
-    const PS(),
+    const SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final lang = context.watch<AppLanguageProvider>().textGlobal;
+
     return Scaffold(
       extendBody: false,
       body: _pages[_selected],
@@ -59,19 +62,19 @@ class _MainScreenState extends State<MainScreen> {
             items: [
               BottomNavigationBarItem(
                 icon: const Icon(Icons.home_outlined),
-                label: globalLanguage.tab1,
+                label: lang.tab1,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(Icons.book_outlined),
-                label: globalLanguage.tab2,
+                label: lang.tab2,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(Icons.calendar_today_outlined),
-                label: globalLanguage.tab3,
+                label: lang.tab3,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(Icons.settings_outlined),
-                label: globalLanguage.tab4,
+                label: lang.tab4,
               ),
             ],
           ),

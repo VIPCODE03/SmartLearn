@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:performer/performer_build.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/dialogs/app_bottom_sheet.dart';
 import 'package:smart_learn/app/ui/dialogs/scale_dialog.dart';
@@ -106,9 +107,9 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
                 controller: _tabController,
                 labelColor: context.style.color.primaryColor,
                 indicatorColor: context.style.color.primaryColor,
-                tabs: const [
-                  Tab(text: 'Lý thuyết'),
-                  Tab(text: 'Bài tập'),
+                tabs: [
+                  Tab(text: globalLanguage.theory),
+                  Tab(text: globalLanguage.exercise),
                 ],
               ),
               actions: [
@@ -172,7 +173,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
         }
       },
       context: context,
-      title: 'Tùy chỉnh',
+      title: globalLanguage.edit,
       child: Form(
         key: formKey,
         child: Column(
@@ -184,10 +185,10 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
             TextFormField(
               controller: nameController,
               maxLines: 1,
-              decoration: inputDecoration(context: context, hintText: 'Tên môn học'),
+              decoration: inputDecoration(context: context, hintText: globalLanguage.name),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Vui lòng nhập tên môn học';
+                  return globalLanguage.pleaseEnterNameSubject;
                 }
                 return null;
               },
@@ -197,7 +198,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: levelSelected,
-              decoration: inputDecoration(context: context, hintText: 'Chọn lớp'),
+              decoration: inputDecoration(context: context, hintText: globalLanguage.chooseClass),
               items: educationLevels.map((level) {
                 return DropdownMenuItem<String>(value: level, child: Text(level));
               }).toList(),
@@ -206,7 +207,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
               },
               validator: (value) {
                 if (value == null) {
-                  return 'Vui lòng chọn lớp';
+                  return globalLanguage.pleaseChooseClass;
                 }
                 return null;
               },
@@ -216,7 +217,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
             const SizedBox(height: 16),
             Row(
               children: [
-                const Expanded(child: Text('Ẩn môn học', style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(child: Text(globalLanguage.hideSubject, style: const TextStyle(fontWeight: FontWeight.bold))),
                 StatefulBuilder(
                   builder: (context, setState) {
                     return Switch.adaptive(
@@ -246,7 +247,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text('Xóa môn học?'),
+                            Text(globalLanguage.deleteSubject),
                             const SizedBox(height: 16),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -255,7 +256,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
                                   onTap: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Hủy', style: TextStyle(color: Colors.grey)),
+                                  child: Text(globalLanguage.cancel, style: const TextStyle(color: Colors.grey)),
                                 ),
                                 const SizedBox(width: 32),
                                 WdgBounceButton(
@@ -265,7 +266,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Xóa', style: TextStyle(color: Colors.red)),
+                                  child: Text(globalLanguage.delete, style: const TextStyle(color: Colors.red)),
                                 )
                               ]
                             )
@@ -275,7 +276,7 @@ class _DetaiSubjectScreenState extends State<_SCRSubjectDetail> with SingleTicke
                     }
                 );
               },
-              child: const Text('Xóa môn học', style: TextStyle(color: Colors.red)),
+              child: const Icon(Icons.delete, color: Colors.red),
             )
           ],
         ),

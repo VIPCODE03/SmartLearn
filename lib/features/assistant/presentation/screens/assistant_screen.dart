@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/dialogs/dialog_textfiled.dart';
 import 'package:smart_learn/core/di/injection.dart';
@@ -49,7 +50,7 @@ class _SCRAssistantState extends State<SCRAssistant> {
   bool get _isTemp => widget.onCreated != null;
 
   void _showDialogEditName(BuildContext context, ENTConversation conversation, VMLAssistantConversation viewmodel) async {
-    final newName = await showInputDialog(context: context, title: 'Đổi tên');
+    final newName = await showInputDialog(context: context, title: globalLanguage.rename);
     if (newName != null) {
       viewmodel.updateConversation(ConversationUpdateParams(conversation, name: newName));
     }
@@ -65,7 +66,7 @@ class _SCRAssistantState extends State<SCRAssistant> {
               child: DrawerHeader(
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Tìm kiếm hội thoại...',
+                    hintText: globalLanguage.findConversation,
                     prefixIcon: const Icon(Icons.search),
                     filled: true,
                     border: OutlineInputBorder(
@@ -92,15 +93,15 @@ class _SCRAssistantState extends State<SCRAssistant> {
                       final conversation = conversations[index];
                       final title = conversation.title.isNotEmpty
                           ? conversation.title
-                          : 'Hội thoại mới';
+                          : globalLanguage.newConversation;
 
                       return WdgPopupMenu(
                         pressType: PressType.longPress,
                         items: [
-                          MenuItem('Đổi tên', Icons.edit, () {
+                          MenuItem(globalLanguage.rename, Icons.edit, () {
                             _showDialogEditName(context, conversation, viewModel);
                           }),
-                          MenuItem('Xóa', Icons.delete, () {
+                          MenuItem(globalLanguage.delete, Icons.delete, () {
                             viewModel.deleteConversation(conversation.id);
                           }),
                         ],
@@ -151,7 +152,7 @@ class _SCRAssistantState extends State<SCRAssistant> {
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.design_services)
                 ),
-                title: const Text("Trợ lý"),
+                title: Text(globalLanguage.assistant),
                 actions: _isTemp
                     ? []
                     : [
@@ -186,7 +187,7 @@ class _SCRAssistantState extends State<SCRAssistant> {
                 child: Column(
                   children: [
                     if(_isTemp)
-                      const Text('Đoạn chat tạm thời', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
+                      Text(globalLanguage.conversationTemp, style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
 
                     Expanded(
                       child: _WIDListMessage(externalScrollController: widget.externalScrollController, isTemp: _isTemp, onCreated: widget.onCreated),
@@ -319,7 +320,7 @@ class _WIDListMessageState extends State<_WIDListMessage> {
         ],
       );
     } else if (content is ENTContentTyping) {
-      contentWidget = _Typing(text: content.text);
+      contentWidget = const _Typing();
 
     } else if (content is ENTContentError) {
       contentWidget = Text(
@@ -498,8 +499,8 @@ class _WIDInputContainerState extends State<_WIDInputContainer> {
 
                       TextField(
                         controller: _textController,
-                        decoration: const InputDecoration.collapsed(
-                          hintText: "Nhập tin nhắn...",
+                        decoration: InputDecoration.collapsed(
+                          hintText: globalLanguage.enterMess,
                         ),
                         minLines: 1,
                         maxLines: 5,
@@ -568,7 +569,7 @@ class _GreetingState extends State<_Greeting> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    final text = 'Xin chào ${widget.name}';
+    final text = '${globalLanguage.helloUser} ${widget.name}';
 
     return AnimatedBuilder(
       animation: _controller,
@@ -607,11 +608,7 @@ class _GreetingState extends State<_Greeting> with SingleTickerProviderStateMixi
 
 ///---  Text hiển thị trạng thái đang nhập  ------------------------------------
 class _Typing extends StatefulWidget {
-  final String text;
-
-  const _Typing({
-    this.text = 'Đang trả lời',
-  });
+  const _Typing();
 
   @override
   State<_Typing> createState() => _TypingState();
@@ -660,7 +657,7 @@ class _TypingState extends State<_Typing> with SingleTickerProviderStateMixin {
           },
           blendMode: BlendMode.srcATop,
           child: Text(
-            widget.text,
+            globalLanguage.entering,
             style: const TextStyle(fontSize: 16),
           ),
         );

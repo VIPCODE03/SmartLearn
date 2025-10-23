@@ -239,7 +239,7 @@ class _WdgDailyCalendarState extends State<WdgDailyCalendar> with AppRouterMixin
       width: width - 8,
       height: height,
       child: WdgBounceButton(
-        onTap: () => pushFade(context, SCRCalendarEditor(title: 'Chỉnh sửa', calendar: calendar, onSave: () {
+        onTap: () => pushFade(context, SCRCalendarEditor(calendar: calendar, onSave: () {
           _viewModel.dataChanged();
         },)),
         scaleFactor: 0.9,

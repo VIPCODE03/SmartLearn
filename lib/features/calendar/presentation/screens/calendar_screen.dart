@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/router/app_router_mixin.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
@@ -72,7 +74,7 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
                     ///-  Thông tin ngày đang chọn  -------------------------------------------
                     Expanded(
                       child: Text(
-                          DateFormat('EEEE, dd MMMM yyyy', 'vi_VN').format(_selectedDate),
+                          DateFormat('EEEE, dd MMMM yyyy', context.read<AppLanguageProvider>().localeString).format(_selectedDate),
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color.primaryColor)),
                     ),
 
@@ -85,7 +87,7 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
                     TextButton(
                       onPressed: _selectToDay,
                       child: Text(
-                        'Hôm nay',
+                        globalLanguage.today,
                         style: TextStyle(
                             color: color.primaryColor, fontSize: 16),
                       ),
@@ -142,7 +144,7 @@ class _SCRCalendarState extends State<SCRCalendar> with AppRouterMixin {
                                       children: [
                                         ///-  Thứ  ----------------------------------
                                         Text(
-                                          DateFormat('EEE', 'vi_VN').format(day),
+                                          DateFormat('EEE', context.read<AppLanguageProvider>().localeString).format(day),
                                           style: TextStyle(
                                             color: isSelected
                                                 ? Colors.white

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/core/link/routers/app_router.dart';
@@ -29,9 +30,9 @@ class HomeUtilities extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-                'Tiện ích',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+            Text(
+                globalLanguage.utilities,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
             ),
 
             Center(
@@ -41,7 +42,7 @@ class HomeUtilities extends StatelessWidget {
                   children: [
                     _MenuItem(
                         icon: Icons.style,
-                        label: 'Thêm thẻ',
+                        label: globalLanguage.flashCard,
                         onTap: () {
                           appRouter.flashCard.goFlashCardSet(context);
                         }
@@ -49,34 +50,34 @@ class HomeUtilities extends StatelessWidget {
 
                     _MenuItem(
                         icon: Icons.calculate,
-                        label: 'Máy tính',
+                        label: globalLanguage.calculator,
                         onTap: () => appRouter.calculator.goCalculatorScreen(context)
                     ),
 
                     _MenuItem(
                         icon: Icons.assistant,
-                        label: 'Trợ lý',
+                        label: globalLanguage.assistant,
                         onTap: () => appRouter.assistant.goAssistantScreen(context)
                     ),
 
                     _MenuItem(
                         icon: Icons.translate,
-                        label: 'Dịch thuật',
+                        label: globalLanguage.translate,
                         onTap: () => appRouter.translate.goTranslation(context)
                     ),
 
                     _MenuItem(
                         icon: Icons.gamepad,
-                        label: 'Game',
+                        label: globalLanguage.game,
                         onTap: () => appRouter.game.goGameScreen(context)
                     ),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Tiện ích nổi',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        Text(
+                          globalLanguage.floatingUtil,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         ValueListenableBuilder(
                             valueListenable: AppFloatingBubbleService.isVisibled,

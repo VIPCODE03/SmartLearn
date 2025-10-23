@@ -109,7 +109,7 @@ class _SCRQuizCheckState extends State<SCRQuizCheck> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Câu hỏi: ${widget.quizs[currentIndex].question}',
+                '${globalLanguage.question}: ${widget.quizs[currentIndex].question}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,

@@ -86,8 +86,8 @@ class GemChat extends GeminiAction {
       final Content? result;
       result = await gemAI.sendMessage(await Content.build(
           textPrompt: ""
-              "Tin nhắn user: $mess\n"
-              "Nhắc nhở từ hệ thống: Nhớ lại các thông tin hệ thống đã hướng dẫn",
+              "User: $mess\n"
+              "Hệ thống: Tuân thủ quy tắc đã hướng dẫn",
           image: image,
           pdf: pdf
       ));

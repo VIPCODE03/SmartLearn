@@ -71,6 +71,7 @@ class _ImageAssets {
   final String logo = "assets/images/logo.png";
   final String bgUser = "assets/images/bg_user.png";
   final String loadingGif = "assets/images/loading.gif";
+  final String splashGif = "assets/images/splash.gif";
 }
 
 // 📂 Icon

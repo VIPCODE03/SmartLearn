@@ -3,6 +3,7 @@ import 'package:smart_learn/features/calendar/data/datasources/calendar_local_da
 import 'package:smart_learn/features/calendar/data/repositories/calendar_repository_impl.dart';
 import 'package:smart_learn/features/calendar/domain/repositories/calendar_repository.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_add_usecase.dart';
+import 'package:smart_learn/features/calendar/domain/usecases/calendar_delete_usecase.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_get_usecase.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_update_usecase.dart';
 
@@ -13,6 +14,7 @@ Future<void> initCalendarDI(GetIt getIt) async {
   // 1. UseCases
   getIt.registerLazySingleton(() => UCECalendarAdd(getIt()));
   getIt.registerLazySingleton(() => UCECalendarUpdate(getIt()));
+  getIt.registerLazySingleton(() => UCECalendarDelete(getIt()));
   getIt.registerLazySingleton(() => UCECalendarGet(getIt()));
   getIt.registerLazySingleton(() => UCECalendarCheckDuplicate(getIt()));
 

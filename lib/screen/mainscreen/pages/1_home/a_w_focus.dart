@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/widgets/divider_widget.dart';
 import 'package:smart_learn/core/feature_widgets/app_widget_provider.dart';
@@ -29,9 +30,9 @@ class HomeFocusStatus extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Chế độ tập trung',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          Text(
+                            globalLanguage.focusMode,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Switch.adaptive(
                             value: isFocused,
@@ -50,9 +51,9 @@ class HomeFocusStatus extends StatelessWidget {
                       /// Thống kê trong tuần -----------------------------------------------
                       const SizedBox(height: 12),
 
-                      const Text(
-                        'Tuần này',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      Text(
+                        globalLanguage.thisWeek,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
 

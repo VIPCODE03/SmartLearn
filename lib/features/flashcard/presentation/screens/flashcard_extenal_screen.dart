@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/app/ui/widgets/loading_widget.dart';
@@ -47,29 +48,30 @@ class SCRFlashCardExtenal extends StatelessWidget with AppRouterMixin {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    SizedBox(width: MediaQuery.of(context).size.width),
+
                     /// TIÊU ĐỀ + MÔ TẢ ------------------------------------------
-                    const Text(
-                      "Bộ Flashcard",
-                      style: TextStyle(
+                    Text(
+                      globalLanguage.flashCard,
+                      style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
                     const SizedBox(height: 8),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Text(
-                        "Mẹo: Ôn tập thường xuyên giúp bạn nhớ lâu hơn. "
-                            "Hãy bắt đầu hoặc chỉnh sửa bộ flashcard để cá nhân hóa kiến thức của bạn.",
+                        globalLanguage.tipLearn,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        style: const TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                     ),
                     const SizedBox(height: 50),
 
                     /// NÚT BẮT ĐẦU -----------------------------------------
                     _buildCustomButton(
-                      label: "🚀 Bắt đầu học",
+                      label: "🚀 ${globalLanguage.start}",
                       gradient: const LinearGradient(
                         colors: [Colors.purple, Colors.pink],
                       ),
@@ -81,7 +83,7 @@ class SCRFlashCardExtenal extends StatelessWidget with AppRouterMixin {
 
                     /// NÚT SỬA --------------------------------------------
                     _buildCustomButton(
-                      label: "✏️ Chỉnh sửa thẻ",
+                      label: "✏️ ${globalLanguage.edit}",
                       gradient: const LinearGradient(
                         colors: [Colors.yellow, Colors.deepOrange],
                       ),

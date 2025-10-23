@@ -56,7 +56,7 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(6),
-                            child: Text('Hoàn thành',
+                            child: Text(globalLanguage.completed,
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -130,7 +130,7 @@ class _SCRQuizReviewState extends State<SCRQuizReview> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Câu hỏi: ${widget.quizs[currentIndex].question}',
+                      '${globalLanguage.question}: ${widget.quizs[currentIndex].question}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,

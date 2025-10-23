@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:performer/main.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/focus/presentation/state_manages/focus_performer/focus_performer.dart';
 import 'package:smart_learn/core/di/injection.dart';
@@ -56,19 +57,17 @@ class _GlobalFocusTimerBarState extends State<GlobalFocusTimerBar> with SingleTi
     if (_showFullLayout || _showTitleOnly) {
       return Stack(
         children: [
-          AnimatedPositioned(
+          AnimatedAlign(
             duration: const Duration(milliseconds: 300),
-            left: _showTitleOnly ? MediaQuery.of(context).size.width / 3 : 0,
-            top: 4,
-            bottom: 0,
-            child: const Text(
-                'Chế độ tập trung',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+            alignment: _showTitleOnly ? Alignment.center : Alignment.centerLeft,
+            child: Text(
+              globalLanguage.focusMode,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
+            ),
           ),
 
           Positioned(

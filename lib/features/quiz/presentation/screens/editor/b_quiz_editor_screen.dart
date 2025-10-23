@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/style/appstyle.dart';
 import 'package:smart_learn/features/quiz/domain/entities/a_quiz_entity.dart';
 import 'package:smart_learn/features/quiz/domain/entities/b_quiz_multichoice_entity.dart';
@@ -74,7 +75,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
   void _onSave() {
     final question = _questionController.text.trim();
     if (question.isEmpty) {
-      showAppSnackbar(context, 'Vui lòng nhập câu hỏi');
+      showAppSnackbar(context, globalLanguage.pleaseEnterQuestion);
       return;
     }
 
@@ -88,7 +89,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
               : widget.performer.add(UpdateQuiz(params: QuizOneChoiceUpdateParams(widget.quiz as ENTQuizOneChoice, question: question, correctAnswer: data['correct'], answers: data['answers'])));
           Navigator.pop(context);
         } else {
-          showAppSnackbar(context, 'Dữ liệu không hợp lệ');
+          showAppSnackbar(context, globalLanguage.invalidData);
         }
         break;
 
@@ -101,7 +102,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
               : widget.performer.add(UpdateQuiz(params: QuizMultiChoiceUpdateParams(widget.quiz as ENTQuizMultiChoice, question: question, correctAnswer: data['correct'], answers: data['answers'])));
           Navigator.pop(context);
         } else {
-          showAppSnackbar(context, 'Dữ liệu không hợp lệ');
+          showAppSnackbar(context, globalLanguage.invalidData);
         }
         break;
     }
@@ -111,7 +112,7 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thêm Quiz'),
+        title: Text(globalLanguage.quiz),
         actions: [
           IconButton(onPressed: _onSave, icon: const Icon(Icons.save)),
         ],
@@ -125,21 +126,21 @@ class _SCRQuizEditorState extends State<SCRQuizEditor> {
               onChanged: (value) {
                 if (value != null) setState(() => type = value);
               },
-              items: const [
+              items: [
                 DropdownMenuItem(
                   value: TypeQuiz.choice,
-                  child: Text('Chọn 1 đáp án'),
+                  child: Text(globalLanguage.chooseOne),
                 ),
                 DropdownMenuItem(
                   value: TypeQuiz.multiChoice,
-                  child: Text('Chọn nhiều đáp án'),
+                  child: Text(globalLanguage.chooseMulti),
                 ),
               ],
             ),
             const SizedBox(height: 10),
             WdgTextFeildCustom(
                 controller: _questionController,
-                hintText:  'Câu hỏi',
+                hintText:  globalLanguage.question,
                 color:  context.style.color.primaryColor
             ),
             const SizedBox(height: 12),
@@ -232,7 +233,7 @@ class _WdgChoiceState extends State<_WdgChoice> {
                     Expanded(
                         child: WdgTextFeildCustom(
                             controller: _controllers[index],
-                            hintText: 'Đáp án ${index + 1}',
+                            hintText: '${globalLanguage.answer} ${index + 1}',
                             color: color,
                         )
                     ),
@@ -341,7 +342,7 @@ class _WdgMultiChoiceState extends State<_WdgMultiChoice> {
                     Expanded(
                       child: WdgTextFeildCustom(
                           controller: _controllers[index],
-                          hintText: 'Đáp án ${index + 1}',
+                          hintText: '${globalLanguage.answer} ${index + 1}',
                           color: context.style.color.primaryColor,
                       )
                     ),
@@ -371,14 +372,14 @@ Widget _addButton(BuildContext context, VoidCallback onTap) {
         color: context.style.color.primaryColor,
         borderRadius: BorderRadius.circular(24),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.add, color: Colors.white),
-          SizedBox(width: 8),
+          const Icon(Icons.add, color: Colors.white),
+          const SizedBox(width: 8),
           Text(
-            'Thêm đáp án',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+            globalLanguage.addAnswer,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
           ),
         ],
       ),

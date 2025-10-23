@@ -3,14 +3,16 @@ import 'package:smart_learn/features/calendar/domain/entities/a_calendar_entity.
 import 'package:smart_learn/features/calendar/domain/parameters/calendar_params.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_add_usecase.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_check_duplicate_usecase.dart';
+import 'package:smart_learn/features/calendar/domain/usecases/calendar_delete_usecase.dart';
 import 'package:smart_learn/features/calendar/domain/usecases/calendar_update_usecase.dart';
 
 class VMLCalendarEditor extends ChangeNotifier {
   final UCECalendarAdd _add;
   final UCECalendarUpdate _update;
+  final UCECalendarDelete _delete;
   final UCECalendarCheckDuplicate _useCaseCheckDuplicate;
 
-  VMLCalendarEditor(this._add, this._update, this._useCaseCheckDuplicate);
+  VMLCalendarEditor(this._add, this._update, this._delete, this._useCaseCheckDuplicate);
 
   Future<ENTCalendar?> add({
     required PARCalendarAdd params
@@ -29,6 +31,16 @@ class VMLCalendarEditor extends ChangeNotifier {
     return result.fold(
             (l) => null,
             (newCalendar) => newCalendar
+    );
+  }
+
+  Future<bool> delete({
+    required PARCalendarDelete params
+  }) async {
+    final result = await _delete(params);
+    return result.fold(
+            (l) => false,
+            (sucsess) => sucsess
     );
   }
 

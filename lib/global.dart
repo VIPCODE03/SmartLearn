@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_learn/app/services/floating_bubble_service.dart';
 import 'package:smart_learn/app/ui/dialogs/bubble_funs_dialog.dart';
 import 'package:smart_learn/app/ui/widgets/item_widget.dart';
+import 'package:smart_learn/screen/smartlearn/smartleanrn_screen.dart';
 import 'package:star_menu/star_menu.dart';
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 //---   Show tiện ích   ------------------------------------------------
 void showFloatingBubble(BuildContext context) {

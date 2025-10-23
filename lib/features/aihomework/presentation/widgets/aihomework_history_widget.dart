@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_learn/app/languages/provider.dart';
 import 'package:smart_learn/app/ui/widgets/app_button_widget.dart';
 import 'package:smart_learn/app/ui/widgets/loading_item_widget.dart';
 import 'package:smart_learn/core/di/injection.dart';
@@ -53,7 +54,7 @@ class WIDAIHomeWorkHistory extends StatelessWidget with AppRouterMixin {
                   );
                 }
                 if(state is AIHomeWorkHistoryError) {
-                  return const Text("Lỗi");
+                  return Text(globalLanguage.error);
                 }
               }
               if(state is AIHomeWorkHistoryHasData) {

@@ -38,6 +38,7 @@ class _WIDButtonGameState extends State<WIDButtonGame> {
         margin: EdgeInsets.only(top: _isPressed ? 5 : 0),
         decoration: BoxDecoration(
           borderRadius: widget.radius,
+          color: (widget.color ?? Colors.grey).withValues(alpha: 0.2),
           border: Border(
             bottom: BorderSide(
               color: widget.color ?? Colors.grey,

@@ -29,7 +29,9 @@ class _WIDWebState extends State<WIDWeb> {
   @override
   Widget build(BuildContext context) {
     if (_controller == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator(
+        color: context.style.color.primaryColor,
+      ));
     }
 
     return Scaffold(
@@ -51,12 +53,6 @@ class _WIDWebState extends State<WIDWeb> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // KHÔNG xoá controller => giữ lại trạng thái
-    super.dispose();
   }
 }
 

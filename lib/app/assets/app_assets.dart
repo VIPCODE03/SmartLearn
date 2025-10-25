@@ -49,6 +49,13 @@ class _GameAssets {
   const _GameAssets();
 
   final maze = const _Maze();
+  final avatar = const _Avatar();
+}
+
+class _Avatar {
+  const _Avatar();
+  final String maze = "assets/game/avatar/maze.jpg";
+  final String matrix = "assets/game/avatar/matrix.jpg";
 }
 
 class _Maze {

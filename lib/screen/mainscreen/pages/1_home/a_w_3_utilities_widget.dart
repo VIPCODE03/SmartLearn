@@ -34,11 +34,12 @@ class HomeUtilities extends StatelessWidget {
                 globalLanguage.utilities,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
             ),
+
             GridView(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 100,
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
                   childAspectRatio: 1.2,
@@ -65,6 +66,8 @@ class HomeUtilities extends StatelessWidget {
                       label: globalLanguage.translate,
                       onTap: () => appRouter.translate.goTranslation(context)),
                 ]),
+
+            const SizedBox(height: 10),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

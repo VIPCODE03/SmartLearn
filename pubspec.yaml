@@ -124,6 +124,7 @@ flutter:
       - assets/images/
       - assets/train/
       - assets/game/maze/
+      - assets/game/avatar/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
